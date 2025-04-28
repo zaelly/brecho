@@ -1,0 +1,244 @@
+.newsletter{
+    width: 65%;
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    padding: 0px 140px;
+    margin-bottom: 150px;
+    background:linear-gradient(180deg, rgb(235, 214, 255) 0%, #e1ffea22 60%) ;
+    gap:30px;
+}
+
+.newsletter h1{
+    color: #454545;
+    font-size: 50px;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.newsletter p{
+    color: #454545;
+    font-size: 20px;
+}
+
+.inpt{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    width: 730px;
+    height: 70px;
+    border-radius: 80px;
+    border: 1px solid #e3e3e3;
+}
+
+.newsletter input{
+    width: 500px;
+    margin-left: 30px;
+    border: none;
+    outline: none;
+    font-family: Poppins;
+    color: #616161;
+    font-size: 16px;
+}
+
+.inpt button{
+    width: 210px;
+    height: 70px;
+    border-radius: 80px;
+    color: white;
+    background: black;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+@media(max-width:1360px){
+    .newsletter{
+        width: 85%;
+    }
+    .newsletter h1{
+        font-size: 40px;
+        text-align: center;
+    }
+    .newsletter p{
+        font-size: 22px;
+    }
+}
+
+@media(max-width:1280px){
+    .newsletter{
+        width: 85%;
+        height: 60vh;
+    }
+    .newsletter h1{
+        font-size: 40px;
+        text-align: center;
+    }
+    .newsletter p{
+        font-size: 22px;
+    }
+}
+
+@media(max-width: 1024px){
+    .newsletter{
+        width: 85%;
+        height: 60vh;
+    }
+    .newsletter h1{
+        font-size: 35px;
+        text-align: center;
+    }
+    .newsletter p{
+        text-align: center;
+        font-size: 20px
+    }
+    .newsletter input{
+        width: 200px;
+        margin-left: 30px;
+        font-size: 16px;
+    }
+    .inpt {
+        width: 650px;
+        height: 55px;
+    }
+    .inpt button{
+        width: 200px;
+        height: 55px;
+        border-radius: 80px;
+        color: white;
+        background: black;
+        font-size: 16px;
+        cursor: pointer;
+    }
+}
+
+@media(max-width: 800px){
+    .newsletter{
+        width: 85%;
+        height: 60vh;
+    }
+    .newsletter h1{
+        font-size: 30px;
+        text-align: center;
+    }
+    .newsletter p{
+        text-align: center;
+        font-size: 18px
+    }
+    .newsletter input{
+        width: 150px;
+        margin-left: 30px;
+        font-size: 16px;
+    }
+    .inpt {
+        width: 500px;
+        height: 50px;
+    }
+    .inpt button{
+        width: 180px;
+        height: 50px;
+        font-size: 16px;
+    }
+    .texts{
+        width: 150%;
+    }
+}
+
+.texts{
+    display: flex;
+    margin-bottom: 1rem;
+    justify-content: center;
+    flex-direction: column;
+}
+
+@media(max-width: 600px){
+    .newsletter {
+        width: 85%;
+        height: 60vh;
+    }
+
+    .newsletter h1{
+        font-size: 1.5rem;
+    }
+
+    .newsletter p{
+        font-size: 18px
+    }
+    .newsletter input{
+        width: 150px;
+        margin-left: 30px;
+        font-size: 12px;
+    }
+    .inpt {
+        width: 350px;
+        height: 50px;
+    }
+    .inpt button{
+        width: 180px;
+        height: 50px;
+    }
+    .texts{
+        width: 150%;
+    }
+}
+
+@media(max-width: 500px){
+    .newsletter{
+        width: 80%;
+        height: 60vh;
+    }
+    .newsletter h1{
+        font-size: 25px;
+    }
+    .newsletter p{
+        font-size: 15px
+    }
+    .newsletter input{
+        width: 100px;
+    }
+    .inpt {
+        width: 250px;
+    }
+    .inpt button{
+        height: 50px;
+    }
+    .texts{
+        width: 220%;
+    }
+}
+
+@media(max-width: 450px){
+    .newsletter{
+        width: 80%;
+        height: 65vh;
+    }
+    .newsletter h1{
+        font-size: 20px;
+    }
+    .newsletter p{
+        font-size: 15px
+    }
+
+    .texts{
+        width: 250%;
+    }
+}
+
+@media(max-width: 400px){
+    .newsletter{
+        width: 80%;
+        height: 55vh;
+    }
+    .newsletter h1{
+        font-size: 20px;
+    }
+    .newsletter p{
+        font-size: 15px
+    }
+    .texts{
+        width: 800%;
+    }
+}
