@@ -54,6 +54,7 @@
     color: white;
     font-size: 22px;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .hero-latest-btn img{
@@ -90,6 +91,13 @@
     }
     .iconModel{
         width: 80%;
+    }
+    .hero-latest-btn{
+        width: 300px;
+    }
+    
+    .hero-latest-btn img{
+        width: 1.7rem;
     }
 }
 

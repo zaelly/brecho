@@ -41,7 +41,7 @@ let collections = [
     {
         id:5,
         name: "Lavanderia Roupas Coloridas",
-        category:"unisex",
+        category:"Unissex",
         image: p5_img,
         new_price: 50.0,
         old_price:80.5,

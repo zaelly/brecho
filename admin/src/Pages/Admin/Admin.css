@@ -1,3 +1,13 @@
 .Admin{
+    display: flex;
+}
+.welcome{
+    order: 2;
+}
 
+@media(max-width:800px){
+    .Admin{
+        flex-direction: column;
+    }
+    
 }

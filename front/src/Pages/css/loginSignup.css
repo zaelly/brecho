@@ -75,7 +75,10 @@
 
 @media(max-width:1366px){
     .loginSignup-container{
-        width: 40%;
+        width: 55%;
+        height:550px;
+        margin-bottom: 3rem;
+        margin-top: 3rem;
     }   
     .login{
         font-size: 16px;
@@ -96,6 +99,11 @@
     } 
 }
 
+@media(max-width:1000px){
+    .loginSignup-container{
+        width: 60%;
+    }   
+}
 @media(max-width:850px){
     .loginSignup-container{
         width: 70%;
@@ -153,4 +161,8 @@
 
 .active{
     display: block;
+}
+
+.login span{
+    cursor: pointer;
 }

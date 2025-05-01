@@ -16,7 +16,7 @@ let all_product = [
     {
         id:1,
         name: "Lavanderia Roupas Coloridas",
-        category:"unisex",
+        category:"Unissex",
         image: p1_img,
         new_price: 50.0,
         old_price:80.5,

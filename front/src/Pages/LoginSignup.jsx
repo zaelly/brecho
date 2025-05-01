@@ -1,9 +1,61 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './css/loginSignup.css'
 
 const LoginSignup = () => {
 
   const [changeSignup, setSignup] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    email: ""
+  })
+
+  const changeHandle = (e) =>{
+    setFormData({...formData, [e.target.name]:e.target.value})
+  }
+
+  const login = async() =>{
+    console.log("login", formData)
+
+    let responseData;
+    await fetch('http://localhost:4000/login',{
+      method:'POST',
+      headers:{
+        Accept:'application/form-data',
+        'Content-Type': 'application/json'
+      }, body:JSON.stringify(formData),
+    }).then((response)=>response.json())
+    .then((data)=>responseData=data);
+
+    if(responseData.success){
+      localStorage.setItem('auth-token', responseData.token);
+      window.location.replace("/");
+    }else{
+      alert(responseData.errors)
+    }
+  }
+
+  const signup = async() =>{
+    console.log("signup", formData);
+
+    let responseData;
+    await fetch('http://localhost:4000/signup',{
+      method:'POST',
+      headers:{
+        Accept:'application/form-data',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(formData),
+    }).then((response)=>response.json())
+    .then((data)=>responseData=data);
+
+    if(responseData.success){
+      localStorage.setItem('auth-token', responseData.token);
+      window.location.replace("/");
+    }else{
+      alert(responseData.errors)
+    }
+  }
 
   const handleLogin = ()=>{
       setSignup(false);
@@ -11,8 +63,17 @@ const LoginSignup = () => {
 
   const handleSignup = ()=>{
       setSignup(true);
-    console.log("cadastro")
   }
+
+  // const handleEnter = (e)=>{
+  //   if(e.key === "Enter"){
+  //     if(changeSignup){
+  //       signup();
+  //     }else{
+  //       login();
+  //     }
+  //   }
+  // }
 
   return (
     <div className="LoginSignup">
@@ -22,11 +83,11 @@ const LoginSignup = () => {
           <>
           {/* CADASTRO */}
             <div className="login-fields">
-                <input type="text" placeholder="Adicione seu nome" />
-                <input type="email" placeholder="Adicione seu email" />
-                <input type="password" placeholder="Crie uma senha" />
+                <input value={formData.username} onChange={changeHandle} type="text" name="username" placeholder="Adicione seu nome" />
+                <input value={formData.email} onChange={changeHandle} type="email" name="email" placeholder="Adicione seu email" />
+                <input value={formData.password} onChange={changeHandle} type="password" name="password" placeholder="Crie uma senha" />
             </div>
-            <button>Continue</button>
+            <button onClick={()=>{signup()}}>Continue</button>
 
             <p className="login">
               Já tem uma conta? <span onClick={handleLogin}>Faça login</span>
@@ -41,10 +102,10 @@ const LoginSignup = () => {
           <>
           {/* LOGIN*/}
             <div className="login-fields">
-                <input type="email" placeholder="Adicione seu email" />
-                <input type="password" placeholder="Crie uma senha" />
+                <input value={formData.email} onChange={changeHandle} type="email" name='email' placeholder="Adicione seu email" />
+                <input value={formData.password} onChange={changeHandle} type="password" name='password' placeholder="Crie uma senha" />
             </div>
-            <button>Continue</button>
+            <button onClick={()=>{login()}}>Continue</button>
 
             <p className="login">
               Ainda não tem uma conta? Faça seu <span onClick={handleSignup}>cadastro</span>

@@ -12,6 +12,10 @@
     height: 40px;
 }
 
+a:hover {
+    text-decoration: none;
+  }
+
 .nav-logo p{
     margin-top: -10px;
     color: white;

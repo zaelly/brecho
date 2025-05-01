@@ -35,7 +35,13 @@ const Navbar = () => {
     };
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);    
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('auth-token'));
 
+    const goOut = ()=>{
+        localStorage.removeItem('auth-token'); 
+        window.location.replace("/")
+        setIsLoggedIn(false);
+    }
   return (
     <> 
         <div className="navbar">
@@ -65,11 +71,20 @@ const Navbar = () => {
              <div className="nav-login-cart">
                 <Link to="cart"><i className="fa-solid fa-cart-shopping"></i></Link>
                 <div className="nav-cart-count">{getTotalCartItems()}</div>
-                <button>
-                    <Link to="LoginSignup">
-                        <i className="fa-solid fa-circle-user"></i> Login
-                    </Link>
-                </button>
+                {isLoggedIn ? 
+                    (
+                        <button onClick={goOut}>
+                            Sair
+                        </button> 
+                    )
+                    : (
+                    <button>
+                        <Link to="/LoginSignup">
+                            <i className="fa-solid fa-circle-user"></i> Entrar
+                        </Link>
+                    </button>
+                    )
+                }
             </div>
             )}
         </div>
@@ -87,6 +102,9 @@ const Navbar = () => {
                         </li>
                         <li onClick={() => setMenu("kid")} className={menu === "kid" ? "category" : ""}>
                             <Link to="kid">Crianças</Link>
+                        </li>
+                        <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category" : ""}>
+                            <Link to="Unissex">Unissex</Link>
                         </li>
                     </ul>
                 </div>
@@ -113,17 +131,29 @@ const Navbar = () => {
                         <li onClick={() => setMenu("kid")} className={menu === "kid" ? "category-mobile" : ""}>
                             <Link to="kid">Crianças</Link>
                         </li>
+                        <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category-mobile" : ""}>
+                            <Link to="Unissex">Unissex</Link>
+                        </li>
                     </ul>
                     <div className="nav-login-cart-mobile">
                         <Link to="cart">
                             <i className="fa-solid cart-mobile-icon fa-cart-shopping"></i>
                             <div className="nav-cart-count-mobile">{getTotalCartItems()}</div>
                         </Link>
-                        <button>
-                            <Link to="LoginSignup">
-                                <i className="fa-solid fa-circle-user"></i> Login
-                            </Link>
-                        </button>
+                        {isLoggedIn ? 
+                            (
+                                <button onClick={goOut}>
+                                    Sair
+                                </button> 
+                            )
+                            : (
+                            <button>
+                                <Link to="/LoginSignup">
+                                    <i className="fa-solid fa-circle-user"></i> Entrar
+                                </Link>
+                            </button>
+                            )
+                        }
                     </div>
                    
                 </div>

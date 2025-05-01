@@ -5,21 +5,18 @@ import Item from '../Components/Item/Item'
 
 const Category = (props) => {
 
-  const {all_products} = useContext(ShopContext);
+  const {all_product} = useContext(ShopContext);
 
   const [product, setProduct] = useState([]);
 
   useEffect(()=>{
-    if(all_products && all_products.length > 0){
-
-      const filtered = all_products.filter(
+    if(all_product && all_product.length > 0){
+      const filtered = all_product.filter(
         (product) => product.category === props.category
       );
-
       setProduct(filtered);
-
     }
-  },[all_products, props.category]);
+  },[all_product, props.category]);
 
   return (
     <div className="category">
@@ -35,14 +32,15 @@ const Category = (props) => {
       </div>
       <div className="shopcategory-indexSort">
         <p>
-        Mostrando <span>{product.length}</span> de <span>{all_products.length}</span> produtos        </p>
+          Mostrando <span>{product.length}</span> de <span>{all_product?.length || 0}</span> produtos
+        </p>
         <div className="shopcategory-sort">
           Sort by <i className="fa-solid fa-caret-down"></i>
         </div>
       </div>
       <div className="shopcategory-products">
         <div className="itens">
-          {all_products.map((item, i)=>{
+          {all_product.map((item, i)=>{
             if(props.category === item.category){
               return <Item key={i} 
               id={item.id} 

@@ -54,6 +54,25 @@
     padding: 0;
     width: 28rem;
 }
+@media(max-width:1366px){
+    .offers-left{
+        margin-left: 7rem;
+    }
+    .offers-right img{
+        margin: 0;
+        padding: 0;
+        width: 23rem;
+    }
+    .offers{
+        display: flex;
+        align-items: center;
+        width: 70%;
+        justify-content: center;
+    }
+    .offers-left h1{
+        font-size: 50px;
+    }
+}
 
 @media(max-width:1280px){
     .offers-right img{
