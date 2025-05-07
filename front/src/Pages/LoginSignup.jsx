@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './css/loginSignup.css'
+import { Link } from 'react-router-dom';
 
 const LoginSignup = () => {
 
@@ -57,6 +58,10 @@ const LoginSignup = () => {
     }
   }
 
+  const handleClick = () => {
+    window.location.href = 'http://localhost:5174'
+  };
+
   const handleLogin = ()=>{
       setSignup(false);
   }
@@ -110,6 +115,12 @@ const LoginSignup = () => {
             <p className="login">
               Ainda não tem uma conta? Faça seu <span onClick={handleSignup}>cadastro</span>
             </p>
+
+            <Link className='areaVendedor' onClick={handleClick}>
+            <p>
+              Área do vendedor
+            </p>
+            </Link>
           </>
         )}
       </div>

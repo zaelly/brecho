@@ -12,6 +12,7 @@ import men_benner from './Components/Assets/banner_men.png'
 import women_benner from './Components/Assets/banner_women.png'
 import kids_benner from './Components/Assets/banner_kids.png'
 import Unissex_benner from './Components/Assets/UNISEXFASHION.png'
+import AllProducts from './Pages/AllProducts'
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <Route path="/cart" element={<Cart/>}/>
             <Route path="/LoginSignup" element={<LoginSignup/>}/>
             <Route path="/Favoritos" element={<Favorits/>}/>
+            <Route path='/allProducts' element={<AllProducts/>}/>
           </Routes>
         </main>
         <Footer/>

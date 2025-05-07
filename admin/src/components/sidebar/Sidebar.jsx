@@ -5,13 +5,13 @@ import {Link} from 'react-router-dom'
 const Sidebar = () => {
   return (
     <div className='Sidebar'>
-        <Link to={'/addproduct'} style={{TextDecoderation: "none"}}>
+        <Link to={'/admin/addproduct'} style={{TextDecoderation: "none"}}>
             <div className="sidebar-item">
                 <i className="fa-solid fa-cart-shopping"></i>
                 <p>Adicionar produto</p>
             </div>
         </Link>
-        <Link to={'/listproduct'} style={{TextDecoderation: "none"}}>
+        <Link to={'/admin/listproduct'} style={{TextDecoderation: "none"}}>
             <div className="sidebar-item">
                 <i className="fa-solid fa-rectangle-list"></i>
                 <p>Lista de Produtos</p>

@@ -55,8 +55,9 @@ const AddProduct = () => {
         headers:{
           Accept:'application/json',
           'Content-Type':'application/json',
+          'auth-token': localStorage.getItem('auth-token'), // ou onde você salva o token do vendedor
         },
-        body:JSON.stringify(product),
+        body: JSON.stringify(product),
       }).then((resp)=>resp.json()).then((data)=>{
         data.success ? successHandle() : alert("Adição de produto falhou!")
       })

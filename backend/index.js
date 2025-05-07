@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
 
 app.use(express.json());
 app.use(cors());
@@ -52,6 +53,7 @@ app.post("/upload", upload.single('product'), (req, res)=>{
   })
 })
 
+
 //tabela para criar produtos
 const Product = mongoose.model("Product", {
   id: {
@@ -88,57 +90,210 @@ const Product = mongoose.model("Product", {
   }
 });
 
-app.post('/addproduct', async (req,res)=>{
+// -------------------------
+// Endpoints para VENDEDORES
+// -------------------------
 
-  let products = await Product.find({});
-  let id;
-  if(products.length>0){
-    let last_product_array = products.slice(-1);
-    let last_product = last_product_array[0];
-    id = last_product.id + 1;
-  }else{
-    id = 1;
+//model vendedor
+const Seller = mongoose.model("Seller", {
+  name:{
+    type: String,
+  },
+  email:{
+    type: String,
+    unique: true,
+  },
+  password:{
+    type: String,
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  },
+  image:{
+    type: String,
   }
-  const product = new Product({
-    id:id,
-    name:req.body.name,
-    image:req.body.image,
-    category:req.body.category,
-    new_price:req.body.new_price,
-    old_price:req.body.old_price,
-  })
-  console.log(product);
-  await product.save()
-  console.log("Salvo");
+});
+
+
+// Rota de signup para vendedor
+app.post("/seller/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    let check = await Seller.findOne({ email });
+    if (check) {
+      return res.status(400).json({ success: false, errors: "Email já cadastrado!" });
+    }
+
+    // Criptografa a senha
+    const hashedPassword = await bcrypt.hash(password, 8);
+
+    const seller = new Seller({
+      name,
+      email,
+      password: hashedPassword
+    });
+
+    await seller.save();
+
+    const data = {
+      seller: {
+        id: seller._id
+      }
+    };
+
+    const token = jwt.sign(data, "secret_seller");
+    res.json({ success: true, token });
+  } catch (err) {
+    console.error("Erro no signup do vendedor:", err);
+    res.status(500).json({ success: false, errors: "Erro interno do servidor" });
+  }
+});
+
+// Rota de login para vendedor
+app.post("/seller/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const seller = await Seller.findOne({ email });
+    if (seller) {
+      const isMatch = await bcrypt.compare(password, seller.password);
+      if (isMatch) {
+        const data = {
+          seller: {
+            id: seller._id
+          }
+        };
+        const token = jwt.sign(data, "secret_seller");
+        return res.json({ success: true, token });
+      }
+    }
+    res.status(401).json({ success: false, errors: "Credenciais inválidas" });
+  } catch (err) {
+    console.error("Erro no login do vendedor:", err);
+    res.status(500).json({ success: false, errors: "Erro interno do servidor" });
+  }
+});
+
+// autenticação do vendedor
+const fetchSeller = async (req, res, next) => {
+  const token = req.header("auth-token");
+  console.log("Token recebido:", token);
+  if (!token) return res.status(400).json({ errors: "Token necessário" });
+
+  try {
+    const data = jwt.verify(token, "secret_seller");
+    req.seller = data.seller;
+    next();
+  } catch (err) {
+    console.error("Erro na verificação do token do vendedor:", err);
+    return res.status(401).json({ errors: "Token inválido" });
+  }
+};
+
+//tras uma imagem carregada pelo usuario no perfil
+app.post("/uploadprofileimage", fetchSeller, upload.single('profile'), (req, res)=>{
   res.json({
-    success:true,
-    name:req.body.name,
+    success:1,
+    image_url: `http://localhost:${port}/images/${req.file.filename}`
   })
 })
+
+app.post('/addproduct', fetchSeller, async (req,res)=>{
+  try {
+    let products = await Product.find({});
+    let id;
+    if (products.length > 0) {
+      let last_product = products[products.length - 1];
+      id = last_product.id + 1;
+    } else {
+      id = 1;
+    }
+    const product = new Product({
+      id: id,
+      name: req.body.name,
+      image: req.body.image,
+      category: req.body.category,
+      new_price: req.body.new_price,
+      old_price: req.body.old_price,
+      sellerId: req.seller.id
+    });
+    await product.save();
+    res.json({
+      success: true,
+      name: req.body.name,
+    });
+  } catch (err) {
+    console.error("Erro ao adicionar produto:", err);
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+});
 
 //Criando api para deletar produtos
-
-app.post('/removeproduct', async(req,res)=>{
-  await Product.findOneAndDelete({id:req.body.id})
-  console.log("removido")
-
-  res.json({
-    success: true,
-    name:req.body.name
-  })
-})
+app.post('/removeproduct', fetchSeller, async(req,res)=>{
+  try {
+    const product = await Product.findOne({ id: req.body.id });
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Produto não encontrado" });
+    }
+    // Verifica se o produto pertence ao vendedor logado
+    if (product.sellerId !== req.seller.id) {
+      return res.status(403).json({ success: false, message: "Você não tem permissão para remover este produto" });
+    }
+    await Product.deleteOne({ id: req.body.id });
+    res.json({ success: true, message: "Produto removido com sucesso" });
+  } catch (err) {
+    console.error("Erro ao remover produto:", err);
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+});
 
 // criando api para pegar todos produtos
-
-app.get('/allproducts', async(req, res)=>{
-  let products = await Product.find({});
+app.get('/allproducts', fetchSeller, async(req, res)=>{
+  let products = await Product.find({ sellerId: req.seller.id });
 
   console.log("Todos produtos achados")
-  res.send(products)
+  res.send(products);
 })
 
-//criando esquema para user model
+//perfil vendedor
+app.post("/updateprofile", fetchSeller, async (req, res) => {
+  try {
+    const { name, email, new_password, image, description } = req.body;
 
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (email) updateFields.email = email;
+    if (description) updateFields.description = description;
+    if (image) updateFields.image = image;
+    if (new_password) {
+      const hashedPassword = await bcrypt.hash(new_password, 8);
+      updateFields.password = hashedPassword;
+    }
+
+    await Seller.findByIdAndUpdate(req.seller.id, updateFields);
+    res.json({ success: true, message: "Perfil do vendedor atualizado com sucesso." });
+  } catch (err) {
+    console.error("Erro ao atualizar perfil do vendedor:", err);
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+});
+
+//trazer dados do vendedor
+app.get("/getsellerprofile", fetchSeller, async (req, res) => {
+  try {
+    const seller = await Seller.findById(req.seller.id).select("-password");
+    res.json({ success: true, data: seller });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Erro ao buscar perfil." });
+  }
+});
+
+
+// -------------------------
+// Endpoints para USUARIOS
+// -------------------------
+
+//criando esquema para user model
 const Users = mongoose.model('Users',{
   name:{
     type: String,
@@ -159,8 +314,23 @@ const Users = mongoose.model('Users',{
   }
 })
 
-//Criando ponto final para registro de usuario
+//criando middleware para pegar usuarios
+const fetchUser = async(req,res,next)=>{
+  const token = req.header('auth-token');
+  if(!token){
+    res.status(400).send({errors:"Por favor autentique usando um token válido."})
+  }else{
+    try {
+      const data = jwt.verify(token, 'secret_ecom');
+      req.user = data.user;
+      next();
+    } catch (error) {
+      res.status(401).send({errors:"Por favor autentique usando um token válido."})
+    }
+  }
+}
 
+//Criando ponto final para registro de usuario
 app.post('/signup', async(req, res)=>{
   let check = await Users.findOne({email:req.body.email});
   if(check){
@@ -192,26 +362,51 @@ app.post('/signup', async(req, res)=>{
 
 //login
 
-app.post('/login', async(req,res)=>{
-  let user = await Users.findOne({email:req.body.email});
+// app.post('/login', async(req,res)=>{
+//   let user = await Users.findOne({email:req.body.email});
 
-  if(user){
-    const passCompare = req.body.password === user.password;
-    if(passCompare){
-      const data ={
-        user:{
-          id:user.id
-        }
+//   if(user){
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (isMatch) {
+//       const data = {
+//         user: {
+//           id: user._id
+//         }
+//       };
+//       const token = jwt.sign(data, "secret_ecom");
+//       return res.json({ success: true, token });
+//     } else {
+//       return res.status(401).json({ success: false, errors: "Senha incorreta" });
+//     }
+//   }else{
+//     res.json({success:false,errors:"Email Incorreto!"})
+//   }
+// })
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (isMatch) {
+        const data = {
+          user: {
+            id: user._id
+          }
+        };
+        const token = jwt.sign(data, "secret_ecom");
+        return res.json({ success: true, token });
+      } else {
+        return res.status(401).json({ success: false, errors: "Senha incorreta" });
       }
-      const token = jwt.sign(data,'secret_ecom')
-      res.json({success:true, token})
-    }else{
-      res.json({success:false,errors:"Senha Incorreta"})
     }
-  }else{
-    res.json({success:false,errors:"Email Incorreto!"})
+    res.status(404).json({ success: false, errors: "Email incorreto!" });
+  } catch (err) {
+    console.error("Erro no login do usuário:", err);
+    res.status(500).json({ success: false, errors: "Erro interno do servidor" });
   }
-})
+});
 
 //criando ponto para dados para novas coleções
 app.get('/newcollections', async(req, res)=>{
@@ -222,7 +417,6 @@ app.get('/newcollections', async(req, res)=>{
 })
 
 //criando ponto para popular para mulheres
-
 app.get('/popularinwomen', async(req,res)=>{
   let products = await Product.find({category:"Feminino"});
   let popular_in_women = products.slice(0,4);
@@ -230,24 +424,7 @@ app.get('/popularinwomen', async(req,res)=>{
   res.send(popular_in_women);
 })
 
-//criando middleware para pegar usuarios
-const fetchUser = async(req,res,next)=>{
-  const token = req.header('auth-token');
-  if(!token){
-    res.status(400).send({errors:"Por favor autentique usando um token válido."})
-  }else{
-    try {
-      const data = jwt.verify(token, 'secret_ecom');
-      req.user = data.user;
-      next();
-    } catch (error) {
-      res.status(401).send({errors:"Por favor autentique usando um token válido."})
-    }
-  }
-}
-
 //add produto ao carrinho
-
 app.post('/addtocart', fetchUser, async(req, res)=>{
   console.log("add", req.body.itemId);
 
@@ -276,6 +453,8 @@ app.post('/getcart', fetchUser, async(req,res)=>{
   let userData = await Users.findOne({_id:req.user.id});
   res.json(userData.cartData);
 })
+
+//perfil usuario
 
 app.listen(port, (err) => {
   if (err) {

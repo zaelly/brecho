@@ -5,26 +5,30 @@ const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
 
   const fetchInfo = async ()=>{
-    await fetch('http://localhost:4000/allproducts')
-      .then((resp)=>resp.json())
-      .then((data)=>{setAllProducts(data)});
+    await fetch('http://localhost:4000/products', {
+      headers: {
+        'auth-token': localStorage.getItem('auth-token'), // mesmo token usado no login
+      }
+    })
   }
 
   useEffect(()=>{
     fetchInfo();
   },[])
 
-const remove_product = async(id)=>{
-  await fetch('http://localhost:4000/removeproduct',{
-    method:'POST',
-    headers:{
-      Accept:'application/JSON',
-      'Content-Type': 'application/json'
-    },
-    body:JSON.stringify({id:id})
-  })
-  await fetchInfo();
-}
+  const remove_product = async(id) => {
+    await fetch('http://localhost:4000/removeproduct', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'auth-token': localStorage.getItem('auth-token') // ou seu método de persistência
+      },
+      body: JSON.stringify({ id: id })
+    });
+    await fetchInfo();
+  };
+  
   return (
     <div className='list-product'>
       <h1>Todos os Produtos</h1>
