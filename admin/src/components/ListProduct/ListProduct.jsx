@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './ListProduct.css'
 
 const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
 
   const fetchInfo = async ()=>{
-    await fetch('http://localhost:4000/products', {
+    const response = await fetch('http://localhost:4000/seller/allproducts', {
       headers: {
-        'auth-token': localStorage.getItem('auth-token'), // mesmo token usado no login
+        'auth-token': localStorage.getItem('auth-token'), 
       }
     })
+
+    const data = await response.json();
+    setAllProducts(data);
   }
 
   useEffect(()=>{
@@ -17,7 +20,7 @@ const ListProduct = () => {
   },[])
 
   const remove_product = async(id) => {
-    await fetch('http://localhost:4000/removeproduct', {
+    await fetch('http://localhost:4000/seller/removeproduct', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -42,18 +45,18 @@ const ListProduct = () => {
       </div>
       <div className="listproduct-allproducts">
         <hr />
-        {allproducts.map((product, index)=>{
-          return <>
-                    <div key={index} className="listproduct-format-main listproduct-format">
-                        <img src={product.image} alt="" className="listproduct-product-img" />
-                        <p>{product.name}</p>
-                        <p>R${product.old_price}</p>
-                        <p>R${product.new_price}</p>
-                        <p>{product.category}</p>
-                        <i className="fa-solid fa-square-xmark" onClick={()=>remove_product(product.id)}></i>
-                    </div>
-                    <hr />
-                  </>
+        {allproducts.map((product)=>{
+          return <React.Fragment key={product.id}>
+            <div className="listproduct-format-main listproduct-format">
+              <img src={product.image} alt="" className="listproduct-product-img" />
+              <p>{product.name}</p>
+              <p>R${product.old_price}</p>
+              <p>R${product.new_price}</p>
+              <p>{product.category}</p>
+              <i className="fa-solid fa-square-xmark" onClick={() => remove_product(product.id)}></i>
+            </div>
+            <hr />
+          </React.Fragment>
         })}
       </div>
     </div>

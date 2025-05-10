@@ -5,22 +5,25 @@ import { ShopContext } from '../Context/ShopContext';
 import Breadcrums from '../Components/Breadcrums/Breadcrums';
 import ProductDisplay from '../Components/ProductDisplay/ProductDisplay';
 import DescriptionBox from '../Components/DescriptionBox/DescriptionBox';
-import RelatedProucts from '../Components/RelatedProducts/RelatedProucts';
+import RelatedProducts from '../Components/RelatedProducts/RelatedProducts'; // corrigido o nome
 
 const Products = () => {
+  const { all_product } = useContext(ShopContext);
+  const { productId } = useParams();
+  const product = all_product.find((e) => e.id === Number(productId));
 
-  const {all_product} = useContext(ShopContext)
-  const {productId} = useParams();
-  const product = all_product.find((e)=> e.id === Number(productId))
+  if (!product) {
+    return <div className='looping-products'>Carregando produto...</div>;
+  }
 
   return (
     <div className="products">
-      <Breadcrums product={product}/>
-      <ProductDisplay product={product}/>
-      <DescriptionBox/>
-      <RelatedProucts/>
+      <Breadcrums product={product} />
+      <ProductDisplay product={product} />
+      <DescriptionBox />
+      <RelatedProducts />
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;

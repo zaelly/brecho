@@ -34,9 +34,6 @@ const Category = (props) => {
         <p>
           Mostrando <span>{product.length}</span> de <span>{all_product?.length || 0}</span> produtos
         </p>
-        {/* <div className="shopcategory-sort">
-          Sort by <i className="fa-solid fa-caret-down"></i>
-        </div> */}
       </div>
       <div className="shopcategory-products">
         <div className="itens">

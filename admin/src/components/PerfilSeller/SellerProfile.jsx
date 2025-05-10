@@ -115,7 +115,7 @@ const SellerProfile = () => {
             {image ? (
               <img src={URL.createObjectURL(image)} className="addprofile-thumbnail-img" />
             ) : (
-              <i className="fa-solid fa-cloud-arrow-up"></i>
+              <i className="fa-solid fa-cloud-arrow-up arrow-cloud"></i>
             )}
           </label>
           <input onChange={handleImage} type="file" name="image" id="file-input" hidden />

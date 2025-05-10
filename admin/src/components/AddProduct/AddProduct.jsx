@@ -26,7 +26,8 @@ const AddProduct = () => {
       image:"",
       category: "Feminino",
       new_price: "",
-      old_price: ""
+      old_price: "",
+      sellerId: ""
     })
   }
 
@@ -50,7 +51,7 @@ const AddProduct = () => {
     if(responseData.success){
       product.image = responseData.image_url;
 
-      await fetch('http://localhost:4000/addproduct' ,{
+      await fetch('http://localhost:4000/seller/addproduct' ,{
         method:'POST',
         headers:{
           Accept:'application/json',
@@ -72,11 +73,11 @@ const AddProduct = () => {
       </div>
       <div className="addproduct-price">
         <div className="addproduct-itemfield">
-          <p>Preço</p>
+          <p>Preço Antigo</p>
           <input value={productDetails.old_price} onChange={handleChange} type="number" name="old_price" placeholder='Digite o valor aqui' />
         </div>
         <div className="addproduct-itemfield">
-          <p>Preço de Oferta</p>
+          <p>Novo Preço</p>
           <input value={productDetails.new_price} onChange={handleChange} type="number" name="new_price" placeholder='Digite o valor aqui' />
         </div>
       </div>
@@ -94,7 +95,7 @@ const AddProduct = () => {
           {image ? (
             <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" />
           ):(
-            <i className="fa-solid fa-cloud-arrow-up"></i>
+            <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
           )}
         </label>
         <input onChange={handleImage} type="file" name="image" id="file-input" hidden />

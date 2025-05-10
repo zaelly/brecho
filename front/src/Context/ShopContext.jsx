@@ -2,13 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 export const ShopContext = createContext(null);
 
 const getDefaultCart = ()=>{
-    let cart = {};
-
-    for (let i = 0; i < 300 + 1; i++) {
-        cart[i] = 0;
-    }
-
-    return cart;
+    return {};
 }
 
 const ShopContextProvider = (props) => {
@@ -29,7 +23,7 @@ const ShopContextProvider = (props) => {
                     'auth-token': `${localStorage.getItem('auth-token')}`,
                     'Content-Type': 'application/json' 
                 },
-                body:"",
+                body: JSON.stringify({}),
             })
             .then((response)=>response.json())
             .then((data)=>setCartItems(data))
@@ -37,7 +31,7 @@ const ShopContextProvider = (props) => {
     },[])
 
     const addToCart = (itemId) => {
-        setCartItems((prev) => ({...prev,[itemId]: prev[itemId] + 1}));
+        setCartItems((prev) => ({...prev,[itemId]: (prev[itemId] || 0) + 1}));
         if(localStorage.getItem('auth-token')){
             fetch('http://localhost:4000/addtocart',{
                 method: 'POST',

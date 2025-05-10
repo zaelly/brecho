@@ -43,3 +43,12 @@
     }
     
 }
+
+.looping-products{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 14rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}

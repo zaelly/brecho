@@ -9,7 +9,9 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 
 app.use(express.json());
 app.use(cors());
@@ -78,7 +80,6 @@ const Product = mongoose.model("Product", {
   },
   old_price:{
     type: Number,
-    required: true,
   },
   date:{
     type: Date,
@@ -87,6 +88,10 @@ const Product = mongoose.model("Product", {
   avaliable:{
     type: Boolean,
     default: true,
+  },
+  sellerId:{
+    type: String,
+    required: true,
   }
 });
 
@@ -198,7 +203,7 @@ app.post("/uploadprofileimage", fetchSeller, upload.single('profile'), (req, res
   })
 })
 
-app.post('/addproduct', fetchSeller, async (req,res)=>{
+app.post('/seller/addproduct', fetchSeller, async (req,res)=>{
   try {
     let products = await Product.find({});
     let id;
@@ -229,7 +234,7 @@ app.post('/addproduct', fetchSeller, async (req,res)=>{
 });
 
 //Criando api para deletar produtos
-app.post('/removeproduct', fetchSeller, async(req,res)=>{
+app.post('/seller/removeproduct', fetchSeller, async(req,res)=>{
   try {
     const product = await Product.findOne({ id: req.body.id });
     if (!product) {
@@ -248,7 +253,7 @@ app.post('/removeproduct', fetchSeller, async(req,res)=>{
 });
 
 // criando api para pegar todos produtos
-app.get('/allproducts', fetchSeller, async(req, res)=>{
+app.get('/seller/allproducts', fetchSeller, async(req, res)=>{
   let products = await Product.find({ sellerId: req.seller.id });
 
   console.log("Todos produtos achados")
@@ -337,14 +342,12 @@ app.post('/signup', async(req, res)=>{
     return res.status(400).json({success:false, errors:"Já existe um usuário com este email!"});
   }
 
-  let cart = {}
-  for (let i = 0; i < 300; i++) {
-    cart[i] = 0;
-  }
+  const hashedPassword = await bcrypt.hash(req.body.password, 8);
+
   const user = new Users({
     name: req.body.username,
     email: req.body.email,
-    password: req.body.password,
+    password: hashedPassword,
     cartData: cart,
   })
 
@@ -360,33 +363,10 @@ app.post('/signup', async(req, res)=>{
   res.json({success:true, token});
 })
 
-//login
-
-// app.post('/login', async(req,res)=>{
-//   let user = await Users.findOne({email:req.body.email});
-
-//   if(user){
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (isMatch) {
-//       const data = {
-//         user: {
-//           id: user._id
-//         }
-//       };
-//       const token = jwt.sign(data, "secret_ecom");
-//       return res.json({ success: true, token });
-//     } else {
-//       return res.status(401).json({ success: false, errors: "Senha incorreta" });
-//     }
-//   }else{
-//     res.json({success:false,errors:"Email Incorreto!"})
-//   }
-// })
-
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await Users.findOne({ email });
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
@@ -424,6 +404,20 @@ app.get('/popularinwomen', async(req,res)=>{
   res.send(popular_in_women);
 })
 
+// criando api para pegar todos produtos publicos
+app.get('/allproducts', async(req, res)=>{
+  try{
+    let products = await Product.find({});
+
+    console.log("Todos produtos achados")
+    res.send(products);
+  }catch(err){
+    console.error("Erro ao buscar produtos", err)
+    res.status(500).json({success:false, message:"Erro ao buscar produtos"})
+  }
+})
+
+
 //add produto ao carrinho
 app.post('/addtocart', fetchUser, async(req, res)=>{
   console.log("add", req.body.itemId);
@@ -449,12 +443,43 @@ app.post('/removefromcart', fetchUser, async(req,res)=>{
 
 //trazer os produtos do carrinho
 app.post('/getcart', fetchUser, async(req,res)=>{
-  console.log("GetCart");
   let userData = await Users.findOne({_id:req.user.id});
   res.json(userData.cartData);
 })
 
 //perfil usuario
+
+//manda email do usuario
+app.post('/sendemail', async(req,res)=>{
+  const {email} = req.body;
+  if(!email){
+    return res.status(400).json({ message: 'E-mail é obrigatório' });
+  }
+
+  //Configura transportador SMTP com Gmail
+    const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'zazabarbosa2@gmail.com',
+      pass: 'vjyh aagk rpvd oelh',  
+    },
+  });
+
+  const mailOptions = {
+    from: 'zazabarbosa2@gmail.com',
+    to: email,
+    subject: 'Bem-vindo!',
+    text: 'Obrigado por se inscrever!',
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'E-mail enviado com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao enviar e-mail:', error);
+    res.status(500).json({ message: 'Erro ao enviar e-mail.' });
+  }
+})
 
 app.listen(port, (err) => {
   if (err) {

@@ -1,34 +1,58 @@
 import './Navbar.css'
 import logo from '../Assets/hat.png'
 import { useContext, useState, useEffect, useRef  } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';  // Adicionar useNavigate aqui
 import { ShopContext } from '../../Context/ShopContext';
+import { useLocation } from 'react-router-dom';
 
 const Navbar = () => {
-
+    const navigate = useNavigate();  // Declare navigate aqui, logo após a importação
     const [menu, setMenu] = useState("home");
     const {getTotalCartItems} =useContext(ShopContext);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const menuRef = useRef(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    
+    const [all_product, setAll_products] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const location = useLocation();
+
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
         const handleClickOutside = (e) => {
             if (menuRef.current && !menuRef.current.contains(e.target)) {
-              setIsMenuOpen(false);
+                setIsMenuOpen(false);
             }
-        }
-        
+        };
+
+        fetch('http://localhost:4000/allproducts')
+            .then((response) => response.json())
+            .then((data) => setAll_products(data));
+
         window.addEventListener("resize", handleResize);
         document.addEventListener("mousedown", handleClickOutside);
 
-        return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
-          window.removeEventListener("resize", handleResize);
-        };
-    }, []);
+        // const delayDebounce = setTimeout(() => {
+        //     if (searchTerm.trim() === "") {
+        //         if (location.pathname === "/search") {
+        //             navigate(-1);
+        //         } else {
+        //             navigate("/");
+        //         }
+        //     } else {
+        //         const search = searchTerm.toLowerCase();
+        //         const result = all_product.filter(product =>
+        //             product.name.toLowerCase().includes(search)
+        //         );
+        //         navigate("/search", { state: { result } });
+        //     }
+        // }, 100);
 
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            window.removeEventListener("resize", handleResize);
+            // clearTimeout(delayDebounce);
+        };
+    }, [searchTerm, all_product, navigate, location]);
 
     const handleFocus = () =>{
         setIsMenuOpen(true);
@@ -42,6 +66,32 @@ const Navbar = () => {
         window.location.replace("/")
         setIsLoggedIn(false);
     }
+
+    const searchProducts = (term)=>{
+        const search = term.toLowerCase();
+        const result = all_product.filter(product =>
+            product.name.toLowerCase().includes(search)
+        )
+        navigate("/search", { state: { result } });
+    }
+    const goOutSearch = ()=>{
+        if(searchTerm.trim() === ""){
+            if (location.pathname === "/search") {
+                navigate(-1);
+            } else {
+                navigate("/");
+            }
+        }else{
+            searchProducts(searchTerm)
+        }
+    }
+    const handleBlur = (e) => {
+    // Garantir que o onBlur só acontece quando o foco realmente for perdido
+        if (!e.currentTarget.contains(document.activeElement)) {
+            goOutSearch();
+        }
+    };
+
   return (
     <> 
         <div className="navbar">
@@ -59,10 +109,21 @@ const Navbar = () => {
             ) : (
                 <div className="nav-search">
                     <div className="input-group">
-                        <input type="text" id='searchInput' className="form-control" 
-                        placeholder='Pesquisar por...' aria-label="Username" aria-describedby="basic-addon1" />
-                        <span className="input-group-text" id="basic-addon1">      
-                            <i className="fa-solid fa-magnifying-glass"></i>      
+                       <input 
+                        type="text" 
+                        onKeyDown={(e) => {if (e.key === 'Enter') {searchProducts(searchTerm)}}}
+                        onBlur={handleBlur}
+                        value={searchTerm} 
+                        id='searchInput' 
+                        className="form-control" 
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder='Pesquisar por...' 
+                        aria-label="Username" 
+                        aria-describedby="basic-addon1" 
+                        />
+
+                        <span className="input-group-text" onClick={() => searchProducts(searchTerm)} id="basic-addon1">      
+                        <i className="fa-solid fa-magnifying-glass"></i>      
                         </span>
                     </div>
                 </div>
@@ -106,16 +167,29 @@ const Navbar = () => {
                         <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category" : ""}>
                             <Link to="Unissex">Unissex</Link>
                         </li>
+                        <li onClick={() => setMenu("TodosOsProdutos")} className={menu === "TodosOsProdutos" ? "category" : ""}>
+                            <Link to="TodosOsProdutos">Achados</Link>
+                        </li>
                     </ul>
                 </div>
             ) : (
                 <div ref={menuRef} tabIndex={0} className={`mobile-menu ${isMenuOpen ? "active" : ""}`} onFocus={handleFocus}>
-                    <div className="nav-search-mobile">
-                        <input type="text" id='searchInput' className="form-control-mobile" 
-                        placeholder='Pesquisar por...' aria-label="Username" 
-                        aria-describedby="basic-addon1" />
-                        <span className="input-group-text" id="basic-addon1">      
-                            <i className="fa-solid fa-magnifying-glass"></i>      
+                   <div className="nav-search-mobile">
+                       <input 
+                        type="text" 
+                        onKeyDown={(e) => {if (e.key === 'Enter') {searchProducts(searchTerm)}}}
+                        value={searchTerm} 
+                        onBlur={handleBlur}
+                        id='searchInput' 
+                        className="form-control" 
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder='Pesquisar por...' 
+                        aria-label="Username" 
+                        aria-describedby="basic-addon1" 
+                        />
+
+                        <span className="input-group-text" onClick={() => searchProducts(searchTerm)} id="basic-addon1">      
+                        <i className="fa-solid fa-magnifying-glass"></i>      
                         </span>
                     </div>
                      <ul className="menu-categorys-mobile">

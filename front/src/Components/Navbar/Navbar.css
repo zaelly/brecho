@@ -54,7 +54,7 @@ li{
 .form-control::placeholder, 
 .form-control-mobile::placeholder{
     color: white;
-    padding-left: 1rem;
+    padding-left: .7rem;
 }
 
 .form-control:focus,
@@ -394,6 +394,10 @@ li{
     font-size: 1.8rem;
 }
 
-.input-group-text{
-    margin-left: -2rem;
+@media(max-width: 800px){
+    .input-group-text{
+        margin-left: -2rem;
+    }
+
 }
+

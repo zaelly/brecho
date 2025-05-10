@@ -8,7 +8,7 @@ import nav_profile from '../../assets/nav_profile.png'
 const Navbar = () => {
   const [image_profile, setImage_profile] = useState(nav_profile);
   const [isLoading, setIsLoading] = useState(false);
-  const [profileDetail, setProfileDetail] = useState({ image_profile: "" });
+  const [profileFile, setProfileFile] = useState(null);
 
  const save_profile = async () => {
     setIsLoading(true); // Inicia o carregamento
@@ -16,7 +16,7 @@ const Navbar = () => {
 
     if (image_profile) {
       let formData = new FormData();
-      formData.append('profile', image_profile);
+      formData.append('profile', profileFile);
 
       try {
         const response = await fetch('http://localhost:4000/uploadprofileimage', {
@@ -31,10 +31,7 @@ const Navbar = () => {
         responseData = data;
 
         if (responseData.success) {
-          setProfileDetail(prev => ({
-            ...prev,
-            image_profile: responseData.image_url,
-          }));
+          setImage_profile(responseData.image_url);
           localStorage.setItem('seller-image', responseData.image_url);
         }
       } catch (error) {
@@ -45,14 +42,20 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const savedProfileImage = localStorage.getItem('seller-image');
-    if (savedProfileImage) {
-      setImage_profile(savedProfileImage);
-    }
+   const handleStoreChange = () =>{
+    const updateImage = localStorage.getItem('seller-image');
+    if(updateImage) setImage_profile(updateImage);
+   }
+   window.addEventListener('storage', handleStoreChange);
+
+   return ()=>{
+    window.removeEventListener('storage', handleStoreChange);
+   };
   }, []);
 
   return (
     <div className='Navbar'>
+      {/* verificar pq nao ta pegando a imagem q add no navbar */}
         <div className="nav-logo">
             <img src={logo} alt="" />
             <Link to="/admin/welcome">
@@ -61,7 +64,7 @@ const Navbar = () => {
         </div>
         <Link to='/admin/profile'>
           <div className="profile">
-            <img src={image_profile} alt=""/>
+            <img src={image_profile} onChange={save_profile} alt=""/>
             <p>Seu Perfil</p>
           </div>
         </Link>

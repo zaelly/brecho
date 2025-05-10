@@ -2,13 +2,9 @@ import './Hero.css'
 import arrow_icon from '../Assets/arrow_icon.png'
 import hero_img from '../Assets/hero.png'
 import { Link } from 'react-router-dom'
+import NewColletions from '../newColletions/NewColletions'
 
 const Hero = () => {
-
-    const handleLink = ()=>{
-        //vai para uma tela onde tem outros produtos de outros vendedores
-        console.log("")
-    }
 
   return (
     <>
@@ -23,7 +19,7 @@ const Hero = () => {
                     <p>para todos</p>
                 </div>
                 <Link to="/allProducts">
-                    <div className="hero-latest-btn" onClick={handleLink}>
+                    <div className="hero-latest-btn" onClick={<NewColletions/>}>
                         <div>
                             Últimos Lançamentos
                         </div>
