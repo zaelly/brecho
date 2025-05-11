@@ -8,6 +8,19 @@
     background-color: white;
 }
 
+.check{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.check input[type="checkbox"]{
+    width: 20px;
+    height: 20px;
+    margin-top: -8px;
+}
+
 .cloud-arrow{
     font-size: 2rem;
     margin: 1rem 0;

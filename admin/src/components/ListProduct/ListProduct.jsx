@@ -41,6 +41,7 @@ const ListProduct = () => {
         <p>Preço Novo</p>
         <p>Preço Antigo</p>
         <p>Categoria</p>
+        <p>Unid.</p>
         <p>Remover</p>
       </div>
       <div className="listproduct-allproducts">
@@ -53,6 +54,7 @@ const ListProduct = () => {
               <p>R${product.old_price}</p>
               <p>R${product.new_price}</p>
               <p>{product.category}</p>
+              <p>{product.unit}</p>
               <i className="fa-solid fa-square-xmark" onClick={() => remove_product(product.id)}></i>
             </div>
             <hr />

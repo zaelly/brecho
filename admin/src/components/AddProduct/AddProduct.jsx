@@ -9,7 +9,9 @@ const AddProduct = () => {
     image:"",
     category: "Feminino",
     new_price: "",
-    old_price: ""
+    old_price: "",
+    unit: "",
+    sellerId: "",
   })
 
   const handleImage = (e)=>{
@@ -27,7 +29,8 @@ const AddProduct = () => {
       category: "Feminino",
       new_price: "",
       old_price: "",
-      sellerId: ""
+      sellerId: "",
+      unit: ""
     })
   }
 
@@ -69,7 +72,7 @@ const AddProduct = () => {
     <div className='add-product'>
       <div className="addproduct-itemfield">
         <p>Titulo do Produto</p>
-        <input value={productDetails.name} onChange={handleChange} type="text" name="name" placeholder='Digite aqui' />
+        <input required value={productDetails.name} onChange={handleChange} type="text" name="name" placeholder='Digite aqui' />
       </div>
       <div className="addproduct-price">
         <div className="addproduct-itemfield">
@@ -78,7 +81,15 @@ const AddProduct = () => {
         </div>
         <div className="addproduct-itemfield">
           <p>Novo Preço</p>
-          <input value={productDetails.new_price} onChange={handleChange} type="number" name="new_price" placeholder='Digite o valor aqui' />
+          <input value={productDetails.new_price} onChange={handleChange} required type="number" name="new_price" placeholder='Digite o valor aqui' />
+        </div>
+        <div className="addproduct-itemfield">
+          <p>Quantidade</p>
+          <input required value={productDetails.unit} onChange={handleChange} type="number" name="unit" placeholder='Ex.: 100' />
+        </div>
+        <div className="addproduct-itemfield check">
+             <p>Habilitado</p>
+            <input onChange={handleChange} value={productDetails.enable} type="checkbox" name="enable" required/>
         </div>
       </div>
       <div className="add-product-itemfield">

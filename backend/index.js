@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 
@@ -91,6 +91,10 @@ const Product = mongoose.model("Product", {
   },
   sellerId:{
     type: String,
+    required: true,
+  },
+  unit:{
+    type: Number,
     required: true,
   }
 });
@@ -220,7 +224,8 @@ app.post('/seller/addproduct', fetchSeller, async (req,res)=>{
       category: req.body.category,
       new_price: req.body.new_price,
       old_price: req.body.old_price,
-      sellerId: req.seller.id
+      sellerId: req.seller.id,
+      unit: req.body.unit
     });
     await product.save();
     res.json({
@@ -480,6 +485,9 @@ app.post('/sendemail', async(req,res)=>{
     res.status(500).json({ message: 'Erro ao enviar e-mail.' });
   }
 })
+
+//cria endpoint para unidade de produtos 
+//cria endpoint para verificar se o produto esta habilitado, se nao tiver o produto nao é mostrado no front
 
 app.listen(port, (err) => {
   if (err) {
