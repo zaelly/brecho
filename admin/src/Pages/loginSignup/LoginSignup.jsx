@@ -24,7 +24,7 @@ const LoginSignup = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/seller/login", {
+      const response = await fetch("http://localhost:4000/api/sellers/seller/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -50,7 +50,7 @@ const LoginSignup = () => {
   const handleSignup = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:4000/seller/signup", {
+      const response = await fetch("http://localhost:4000/api/sellers/seller/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

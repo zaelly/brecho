@@ -10,7 +10,7 @@ import RelatedProducts from '../Components/RelatedProducts/RelatedProducts'; // 
 const Products = () => {
   const { all_product } = useContext(ShopContext);
   const { productId } = useParams();
-  const product = all_product.find((e) => e.id === Number(productId));
+  const product = all_product.find((e) => e._id === Number(productId));
 
   if (!product) {
     return <div className='looping-products'>Carregando produto...</div>;

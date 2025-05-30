@@ -29,7 +29,7 @@ const SellerProfile = () => {
   };
 
   const fetchProfile = async () => {
-    const res = await fetch("http://localhost:4000/getsellerprofile", {
+    const res = await fetch("http://localhost:4000/api/sellers/getsellerprofile", {
       method: "GET",
       headers: {
         'auth-token': localStorage.getItem("auth-token"),
@@ -48,6 +48,7 @@ const SellerProfile = () => {
         stars: data.data.stars,
       }));
       localStorage.setItem("seller-id", sellerId);
+      // imagem de cada vendedor setada
       localStorage.setItem(`seller-image-${sellerId}`, data.data.image || '');
     } else {
       alert(data.errors || "Erro ao buscar perfil");
@@ -67,7 +68,7 @@ const SellerProfile = () => {
       let formData = new FormData();
       formData.append('profile', image);
 
-      await fetch('http://localhost:4000/uploadprofileimage', {
+      await fetch('http://localhost:4000/api/sellers/uploadprofileimage', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -85,7 +86,7 @@ const SellerProfile = () => {
       }
     }
 
-    await fetch('http://localhost:4000/updateprofile', {
+    await fetch('http://localhost:4000/api/sellers/updateprofile', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

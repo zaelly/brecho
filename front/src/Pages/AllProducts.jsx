@@ -1,5 +1,5 @@
 import './css/AllProducts.css'
-import { useContext, useEffect, useState } from 'react'
+import { useContext} from 'react'
 import './css/Category.css'
 import { ShopContext } from '../Context/ShopContext'
 import Item from '../Components/Item/Item'

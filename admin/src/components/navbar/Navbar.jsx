@@ -19,7 +19,7 @@ const Navbar = () => {
       formData.append('profile', profileFile);
 
       try {
-        const response = await fetch('http://localhost:4000/uploadprofileimage', {
+        const response = await fetch('http://localhost:4000/api/sellers/uploadprofileimage', {
           method: 'POST',
           headers: {
             Accept: 'application/json',

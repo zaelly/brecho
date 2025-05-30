@@ -53,7 +53,7 @@ const ProductDisplay = (props) => {
                                 <div>GG</div>
                             </div>
                         </div>
-                        <button onClick={()=>{addToCart(product.id)}}>Add ao carrinho</button>
+                        <button onClick={()=>{addToCart(product._id)}}>Add ao carrinho</button>
                         <p className='productDisplay-category'>
                             <span>Categoria: </span> Mulher, T-Shirt, Crop Top
                         </p>
@@ -98,7 +98,7 @@ const ProductDisplay = (props) => {
                                 <div>GG</div>
                             </div>
                         </div>
-                        <button onClick={()=>{addToCart(product.id)}}>Add ao carrinho</button>
+                        <button onClick={()=>{addToCart(product._id)}}>Add ao carrinho</button>
                         <p className='productDisplay-category'>
                             <span>Categoria: </span> Mulher, T-Shirt, Crop Top
                         </p>

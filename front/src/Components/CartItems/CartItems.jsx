@@ -17,9 +17,9 @@ const CartItems = () => {
         </div>
         <hr />
         {all_product.map((e) => {
-            if (cartItem[e.id] > 0) {
+            if (cartItem[e._id] > 0) {
                 return (
-                    <div key={e.id} className="cart-mobile">
+                    <div key={e._id} className="cart-mobile">
                         <div className="cartItems-format cartItems-format-main">
                             <img src={e.image} className='cartItems-product-icon' alt="" />
                             <p>{e.name}</p>

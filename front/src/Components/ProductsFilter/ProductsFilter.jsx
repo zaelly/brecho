@@ -16,7 +16,7 @@ const ProductsFilter = () => {
           {products.map((item, i)=>{ 
             return ( 
               <Item key={i} 
-                  id={item.id} 
+                  id={item._id} 
                   name={item.name} 
                   image={item.image} 
                   new_price={item.new_price}

@@ -40,7 +40,7 @@ const Category = (props) => {
           {all_product.map((item, i)=>{
             if(props.category === item.category){
               return <Item key={i} 
-              id={item.id} 
+              id={item._id} 
               name={item.name} 
               image={item.image} 
               new_price={item.new_price}
