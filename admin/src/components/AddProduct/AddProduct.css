@@ -8,18 +8,36 @@
     background-color: white;
 }
 
+.sizeGroup{
+  display: flex;
+  text-align: center;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sizeGroup p{
+  margin: 0;
+}
+
 .warning {
   color: red;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   line-height: 1.1;
   margin-bottom: 5px;
+}
+
+.addproduct-productDetails{
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .group {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .check {
@@ -84,13 +102,27 @@
 }
 
 .addproduct-price{
-    display: flex;
-    gap:40px;
+  display: flex;
+  gap:40px;
+}
+
+.category{
+  margin-right: 1rem;
+  width: 40%;
+}
+
+.category label{
+  color: #7b7b7b;
+  margin-top: 12px;
+}
+
+.size label{
+  margin-top: 0;
 }
 
 .add-product-selector{
     padding: 10px;
-    width:30%;
+    width:80%;
     height: 50px;
     font-size: 14px;
     color: #7b7b7b;
@@ -99,7 +131,8 @@
 }
 
 .addproduct-btn{
-    width: 160px;
+  margin-top: 2rem;
+    width: 195px;
     height: 50px;
     border: none;
     cursor: pointer;

@@ -1,0 +1,80 @@
+.ViewOrder{
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1000px;
+    padding: 30px 50px;
+    margin: 20px 30px;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.inputsInfos{
+    border-radius: 5px;
+    padding: .4rem;
+}
+
+.add-product-selector{
+    padding: 10px;
+    width:20%;
+    height: 50px;
+    font-size: 14px;
+    color: #7b7b7b;
+    border: 1px solid #7b7b7b8d;
+    border-radius: 4px;
+}
+
+.status-order{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.btn{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.img-product{
+    display: flex;
+    justify-content: flex-end;
+    order: 2;
+}
+
+.imgView-content{
+    font-size: 2rem;
+    margin: 1rem 0;
+    color: rgb(216, 216, 216);
+    padding: 5.5rem 5rem;
+    border: 2px dotted #dadada;
+    background-color: rgb(248, 248, 248);
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+.infos{
+    display: flex;
+    flex-direction: column;
+}
+
+.item{
+    display: flex;
+    justify-content: space-between;
+}
+
+h5{
+    margin-top: 1rem;
+}
+
+.warning {
+  color: red;
+  font-size: 0.7rem;
+  line-height: 1.1;
+  margin-bottom: 5px;
+  margin-top: -15px;
+}
+
+span{
+    margin-bottom: .5rem;
+}

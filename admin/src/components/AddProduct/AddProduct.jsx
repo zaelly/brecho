@@ -14,6 +14,7 @@ const AddProduct = () => {
     sellerId: "",
     enable: false,
     inOffer: false,
+    size: ""
   })
 
   const handleImage = (e)=>{
@@ -46,7 +47,8 @@ const AddProduct = () => {
       sellerId: "",
       unit: "",
       enable: false,
-      inOffer: false
+      inOffer: false,
+      size: ""
     })
   }
 
@@ -159,9 +161,9 @@ const AddProduct = () => {
             Se seu produto estiver em oferta adicione esta opção!
           </p> 
           <div className="group">
-          <label htmlFor="checkOffer">
-            Em oferta
-          </label>
+            <label htmlFor="checkOffer">
+              Em oferta
+            </label>
             <input 
               onChange={handleChange} 
               checked={!!productDetails.inOffer} 
@@ -172,16 +174,49 @@ const AddProduct = () => {
           </div>
         </div>
       </div>
-      <div className="add-product-itemfield">
-        <p>Categoria do Produto</p>
-        <select value={productDetails.category} onChange={handleChange} name="category" className='add-product-selector'>
-          <option value="Feminino">Feminino</option>
-          <option value="Masculino">Masculino</option>
-          <option value="kid">Kid</option>
-          <option value="Unissex">Unissex</option>
-        </select>
+      <div className="addproduct-productDetails">
+        <div className="add-product-itemfield category">
+          <label htmlFor="category">Categoria do Produto</label>
+          <select value={productDetails.category} onChange={handleChange} name="category" className='add-product-selector'>
+            <option value="Feminino">Feminino</option>
+            <option value="Masculino">Masculino</option>
+            <option value="kid">Kid</option>
+            <option value="Unissex">Unissex</option>
+          </select>
+        </div>
+        <div className="addproduct-itemfield check size">
+          <label htmlFor="checkSize">
+            Tamanhos
+          </label>
+            <p className="warning" style={{"margin": "0", "padding": '0', "fontSize": "12px"}}>
+              Adicione os tamanhos disponiveis do seu produto!
+            </p>
+          <div className="group" style={{"marginBottom": "1rem"}}>
+            <div className="sizeGroup">
+              <input onChange={handleChange} type="checkbox" name="sizePP" id="sizePP"/>
+              <p>PP</p>
+            </div>
+            <div className="sizeGroup">
+              <input onChange={handleChange} type="checkbox" name="sizeP" id="sizeP"/>
+              <p>P</p>
+            </div>
+            <div className="sizeGroup">
+              <input onChange={handleChange} type="checkbox" name="sizeM" id="sizeM"/>
+              <p>M</p>
+            </div>
+            <div className="sizeGroup">
+              <input onChange={handleChange} type="checkbox" name="sizeG" id="sizeG"/>
+              <p>G</p>
+            </div>
+            <div className="sizeGroup">
+              <input onChange={handleChange} type="checkbox" name="sizeGG" id="sizeGG"/>
+              <p>GG</p>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="addproduct-itemfield">
+        <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione uma imagem!</p>
         <label htmlFor="file-input">
           {image ? (
             <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" alt="Pré-visualização da imagem"/>
