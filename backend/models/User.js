@@ -19,6 +19,16 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  cpf: {
+    type: String,
+    required: true,
+    unique: true, 
+    match: /^\d{11}$/
+  },
+  adress:{
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Users', userSchema);

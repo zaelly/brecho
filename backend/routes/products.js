@@ -50,7 +50,7 @@ router.get('/allproducts', async (req, res) => {
   const skip = (page - 1) * limit;
 
   try {
-    let products = await Product.find({}).skip(skip).limit(limit);
+    let products = await Product.find({});
     console.log("Todos produtos encontrados");
     res.json(products);
   } catch (err) {
@@ -70,10 +70,12 @@ router.post('/seller/addproduct', fetchSeller, async (req,res)=>{
       name: req.body.name,
       image: req.body.image,
       category: req.body.category,
-      new_price: Number(req.body.new_price),
+      current_price: req.body.current_price ? Number(req.body.current_price) : undefined,
+      new_price: req.body.new_price ? Number(req.body.new_price) : undefined,
       old_price: req.body.old_price ? Number(req.body.old_price) : undefined,
       sellerId: req.seller.id,
       unit: Number(req.body.unit),
+      size: Array.isArray(req.body.size) ? req.body.size : [],
       enable: req.body.enable === 'true' || req.body.enable === true,
       inOffer: req.body.inOffer === 'true' || req.body.inOffer === true,
     });
@@ -82,6 +84,7 @@ router.post('/seller/addproduct', fetchSeller, async (req,res)=>{
       success: true,
       name: req.body.name,
     });
+    console.log(product, "produto")
   } catch (err) {
     console.error("Erro ao adicionar produto:", err);
     res.status(500).json({ success: false, message: "Erro interno do servidor" });

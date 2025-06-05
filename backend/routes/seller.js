@@ -32,6 +32,7 @@ const storage = multer.diskStorage({
     return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
   }
 });
+
 const upload = multer({ 
   storage,
   limits: { fileSize: 5 * 1024 * 1024 } 
@@ -39,12 +40,6 @@ const upload = multer({
 
 // Rota para upload de imagens
 router.use("/images", express.static("upload/images"));
-router.post("/upload", upload.single("product"), (req, res) => {
-  res.json({
-    success: 1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`,
-  });
-});
 
 // Rota de signup para vendedor
 router.post("/seller/signup", async (req, res) => {
@@ -105,7 +100,8 @@ router.post("/seller/login", async (req, res) => {
 });
 
 //tras uma imagem carregada pelo usuario no perfil
-router.post("/uploadprofileimage", fetchSeller, upload.single('profile'), (req, res)=>{
+router.post("/uploadprofileimage", fetchSeller, 
+  upload.single('profile'), (req, res)=>{
   res.json({
     success:1,
     image_url: `http://localhost:${port}/images/${req.file.filename}`
@@ -118,13 +114,13 @@ router.post("/updateprofile", fetchSeller, async (req, res) => {
     const { name, email, new_password, image, description } = req.body;
 
     const updateFields = {};
-    if (name) updateFields.name = name;
-    if (email) updateFields.email = email;
-    if (description) updateFields.description = description;
-    if (image) updateFields.image = image;
-    if (new_password) {
-      const hashedPassword = await bcrypt.hash(new_password, 8);
-      updateFields.password = hashedPassword;
+      if (name) updateFields.name = name;
+      if (email) updateFields.email = email;
+      if (description) updateFields.description = description;
+      if (image) updateFields.image = image;
+      if (new_password) {
+        const hashedPassword = await bcrypt.hash(new_password, 8);
+        updateFields.password = hashedPassword;
     }
 
     await Seller.findByIdAndUpdate(req.seller.id, updateFields);
@@ -140,6 +136,7 @@ router.get("/getsellerprofile", fetchSeller, async (req, res) => {
   try {
     const seller = await Seller.findById(req.seller.id).select("-password");
     res.json({ success: true, data: seller });
+    console.log(seller, "seler")
   } catch (err) {
     res.status(500).json({ success: false, message: "Erro ao buscar perfil." });
   }

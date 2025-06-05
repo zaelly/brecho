@@ -53,9 +53,9 @@
         padding-bottom: 0;
     }
     .fa-cart-shopping,
-    .fa-rectangle-list{
+    .fa-rectangle-list
+    .fa-truck{
         margin-top: -17px;
-        color: rgb(161, 0, 0);
         font-size: 20px;
     }
 

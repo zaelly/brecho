@@ -89,12 +89,14 @@ const userRoutes = require('./routes/user');
 const sellerRoutes = require('./routes/seller');
 const cartRoutes = require('./routes/cartRoute');
 const productRoutes = require('./routes/products');
+const orderRoutes = require('./routes/orderRoute');
 
 // Usar as rotas no aplicativo
 app.use('/api/users', userRoutes); 
 app.use('/api/products', productRoutes); 
 app.use('/api/cart', cartRoutes);        
 app.use('/api/sellers', sellerRoutes);   
+app.use('/api/order', orderRoutes);
 
 // Inicia o servidor
 app.listen(port, (err) => {

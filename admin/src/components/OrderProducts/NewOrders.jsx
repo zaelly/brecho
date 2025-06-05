@@ -6,10 +6,11 @@ import {Link} from 'react-router-dom'
 const NewOrders = () => {
      const [allproducts, setAllProducts] = useState([]);
    
-     const fetchInfo = async ()=>{
-        const response = await fetch('http://localhost:4000/api/products/seller/allproducts', {
+     const fetchOrder = async ()=>{
+        const response = await fetch(
+          'http://localhost:4000/api/order/seller/allorders', {
          headers: {
-           'auth-token': localStorage.getItem('auth-token')
+           'auth-token-seller': localStorage.getItem('auth-token')
          }
        })
        const data = await response.json();
@@ -21,7 +22,7 @@ const NewOrders = () => {
    
    
      useEffect(()=>{
-       fetchInfo();
+       fetchOrder();
      },[])
    
   return (
@@ -35,7 +36,7 @@ const NewOrders = () => {
         - status de pacote
         - status de produto*/}
         <h1>Pedidos</h1>
-        <div className="listproduct-format-main">
+        <div className="listproduct-format-main-order">
             <p>Pedido</p>
             <p>Título</p>
             <p>Tamanho</p>
@@ -46,12 +47,12 @@ const NewOrders = () => {
         <div className="listNewOrders">
             <hr />
             {allproducts.map((order)=>(
-                <div className="productOrder listproduct-format">
+                <div className="productOrder listproduct-format-order">
                     <img src={order.image} alt="" className="listproduct-product-img" />
-                    <p>{order.name} a</p>
-                    <p>{order.size}dw</p>
+                    <p>{order.name}</p>
+                    <p>{order.size}</p>
                     <p>{order.unit}</p>
-                    <p className='status'>{order.statusOrder}Em andamento</p>
+                    <p className='status'>{order.statusOrder}</p>
                     <Link to={'/admin/viewOrder'}>
                         <button className='viewBtn'>
                             <i class="fa-solid fa-folder-open"></i>

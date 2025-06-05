@@ -27,7 +27,7 @@
     font-weight: 600;
 }
 
-.listproduct-format-main{
+.listproduct-format-main-order{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     gap: 100px;
@@ -42,7 +42,7 @@
     overflow-y: auto;
 }
 
-.listproduct-format{
+.listproduct-format-order{
     align-items: center;
     font-weight: 500;
 }

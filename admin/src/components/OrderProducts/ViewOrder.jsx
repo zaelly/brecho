@@ -15,23 +15,29 @@ const ViewOrder = () => {
         name: '',
         cpf: '',
         adress: '',
-        valuePayment: '',
         dateOrder: '',
         paymentForm: '',
-        status: ''
+        statusOrder: '',
+        toReceive: '',
+        orderId: ''
     });
 
     const save_order = async () => {
         setIsLoading(true); // Start loading
 
-        await fetch('http://localhost:4000/api/sellers/updateOrder', {
+        await fetch('http://localhost:4000/api/order/updateOrder', {
         method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            'auth-token': localStorage.getItem('auth-token'),
+            'auth-token-seller': localStorage.getItem('auth-token'),
         },
-        body: JSON.stringify(profile),
+        body: JSON.stringify({
+            orderId: orderDetails.orderId,
+            fieldsToUpdate: {
+                statusOrder: orderDetails.statusOrder
+            }
+        }),
         })
         .then((resp) => resp.json())
         .then((data) => {
@@ -41,9 +47,9 @@ const ViewOrder = () => {
     };
 
     const fetchInfo = async ()=>{
-        const response = await fetch('http://localhost:4000/api/products/seller/allproducts', {
+        const response = await fetch('http://localhost:4000/api/products/order/allorders', {
         headers: {
-        'auth-token': localStorage.getItem('auth-token')
+        'auth-token-seller': localStorage.getItem('auth-token')
         }
     })
     const data = await response.json();
@@ -63,40 +69,48 @@ const ViewOrder = () => {
     };
 
     const fetchOrder = async () => {
-        const res = await fetch("http://localhost:4000/api/sellers/getOrder", {
+        const res = await fetch("http://localhost:4000/api/order/getOrder", {
         method: "GET",
         headers: {
-            'auth-token': localStorage.getItem("auth-token"),
+            'auth-token-seller': localStorage.getItem("auth-token"),
         },
         });
         const data = await res.json();
         if (data.success) {
-        const sellerId = data.data._id;
-        setOrder(prev => ({
-            ...prev,
-            name: data.data.name,
-            cfp: data.data.cpf,
-            adress: data.data.adress || '',
-            _id: data.data._id,
-            valuePayment: data.data.valuePayment,
-            paymentForm: data.data.paymentForm,
-            dateOrder: data.data.dateOrder,
-            status: data.data.status
-        }));
-        localStorage.setItem("seller-id", sellerId);
+            const order = data.order;
+            setOrder({
+                name: order.name,
+                cpf: order.cpf,
+                adress: order.adress || '',
+                orderId: order._id,
+                paymentForm: order.paymentForm,
+                dateOrder: order.dateOrder,
+                statusOrder: order.statusOrder,
+                toReceive: order.toReceive
+            });
         } else {
-        alert(data.errors || "Erro ao buscar alterar pedido");
+            alert(data.errors || "Erro ao buscar alterar pedido");
         }
     };
   
     useEffect(()=>{
-        fetchInfo();
-        // relacionar esse pedido ao vendedor correto
+       fetchInfo();
+        fetchOrder();
         const sellerId = localStorage.getItem('seller-id');
         if (sellerId) {
-        setProductDetails(prev => ({ ...prev, sellerId }));
+            setProductDetails(prev => ({ ...prev, sellerId }));
         }
-    },[productDetails.sellerId])
+    },[])
+
+    const getPaymentMethodName = (code) => {
+        const map = {
+            1: "Dinheiro",
+            2: "Cartão",
+            3: "PIX"
+        };
+        return map[code] || "Nenhum";
+    };
+
   return (
     <div className='ViewOrder'>
         <div className="item-field-infos">
@@ -104,10 +118,22 @@ const ViewOrder = () => {
             <hr/>
             <div className="item">
                 <div className="infos">
-                    <p>Nome / Título:</p>
-                    <p>Quantidade:</p>
-                    <p>Tamanho:</p>  
-                    <p>Id produto:</p>  
+                    <div className="orderListInfos">
+                        <p>Nome / Título:</p>
+                        <span>{productDetails.name}</span>
+                    </div>
+                    <div className="orderListInfos">
+                        <p>Quantidade:</p>
+                        <span>{productDetails.unit}</span>
+                    </div>
+                    <div className="orderListInfos">
+                       <p>Tamanho:</p>  
+                       <span>{productDetails.size}</span>
+                    </div>
+                    <div className="orderListInfos">
+                        <p>Id produto:</p> 
+                        <span>{productDetails.id}</span> 
+                    </div>
                 </div>
                 <div className="img-product">
                     <img src={productDetails.image} alt="" className='imgView-content' />
@@ -118,15 +144,15 @@ const ViewOrder = () => {
             <h5>Dados do Destinatário</h5>
             <hr/>
             <div className="infos">
-                <div>
+                <div className='orderListInfos'>
                     <p>Nome do Destinatário:</p>
                     <span>{orderDetails.name}</span>
                 </div>
-                <div>
+                <div className='orderListInfos'>
                     <p>Endereço de Entrega:</p>
                     <span>{orderDetails.adress}</span>
                 </div>
-                <div>
+                <div className='orderListInfos'>
                     <p>CPF:</p>
                     <span>{orderDetails.cpf}</span>
                 </div>
@@ -136,25 +162,24 @@ const ViewOrder = () => {
             <h5>Detalhes do Pedido</h5>
             <hr/>
             <div className="infos">
-                <div>
+                <div className='orderListInfos'>
                     <p>Data da Compra: </p>
                     <span>{orderDetails.dateOrder}</span>
                 </div>
-                <div>
+                <div className='orderListInfos'>
                     <p>Forma de Pagamento:</p>
-                    <span>{orderDetails.paymentForm}</span>
+                    <span>{getPaymentMethodName(orderDetails.paymentForm)}</span>
                 </div>
-                <div>
+                <div className='orderListInfos'>
                     <p>Valor à receber:</p>
                     <p className='warning'>Valor só será recebido após 
                         confirmação de entrega do pedido pelo cliente!</p>
-                    <span>{orderDetails.valuePayment}</span>
+                    <span>{Number(orderDetails.toReceive).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                 </div>
             </div>
-            
-            <div className="status-order">
+            <div className="status-order orderListInfos">
                 <label htmlFor="status">Status do Pedido:</label>
-                <select value={productDetails.status} onChange={handleChange} name="status" className='add-product-selector'>
+                <select value={orderDetails.statusOrder} onChange={handleChange} name="status" className='add-product-selector'>
                     {/* caso o pedido tenha sido finalizado ou cancelado ele vai travar nessa opção */}
                     <option value="1">Processando</option>
                     <option value="2">Em andamento</option>
@@ -164,7 +189,7 @@ const ViewOrder = () => {
                 </select>
             </div>
         </div>
-        <div className="btn">
+        <div className="btn-order">
             <button
                 onClick={() => {
                     if (btn_order && !isLoading) {

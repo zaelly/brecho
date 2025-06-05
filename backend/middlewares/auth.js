@@ -24,7 +24,7 @@ const fetchUser = (req, res, next) => {
 
 // Middleware para autenticação de vendedores
 const fetchSeller = (req, res, next) => {
-  const token = req.header("auth-token");
+  const token = req.header("auth-token-seller");
   if (!token) {
     return res.status(401).json({ errors: "Token de autenticação não fornecido." });
   }

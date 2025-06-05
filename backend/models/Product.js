@@ -14,12 +14,17 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  current_price:{
+    type: Number,
+    required: function () { return !this.inOffer; }
+  },
   new_price:{
     type: Number,
-    required: true,
+    required: function () { return this.inOffer; }
   },
   old_price:{
     type: Number,
+    required: function () { return this.inOffer; }
   },
   date:{
     type: Date,
@@ -31,6 +36,11 @@ const productSchema = new mongoose.Schema({
   },
   sellerId:{
     type: String,
+    required: true,
+  },
+  size:{
+    type: [String],
+    default: [],
     required: true,
   },
   unit: {
@@ -46,7 +56,6 @@ const productSchema = new mongoose.Schema({
   inOffer: {
     type: Boolean,
     default: false,
-    required: true,
   }
 });
 

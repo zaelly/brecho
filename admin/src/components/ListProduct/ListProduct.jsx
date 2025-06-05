@@ -5,18 +5,15 @@ const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
 
   const fetchInfo = async ()=>{
-     const response = await fetch('http://localhost:4000/api/products/seller/allproducts', {
+     const response = await 
+     fetch('http://localhost:4000/api/products/seller/allproducts', {
       headers: {
-        'auth-token': localStorage.getItem('auth-token')
+        'auth-token-seller': localStorage.getItem('auth-token')
       }
     })
-    const data = await response.json();
-
-    console.log(data, "data");
-    
+    const data = await response.json();    
     setAllProducts(data);
   }
-
 
   useEffect(()=>{
     fetchInfo();
@@ -26,11 +23,11 @@ const ListProduct = () => {
     await fetch('http://localhost:4000/api/products/seller/removeproduct', {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'auth-token': localStorage.getItem('auth-token') 
+        Accept:'application/json',
+        'Content-Type':'application/json',
+        'auth-token-seller': localStorage.getItem('auth-token'),
       },
-      body: JSON.stringify({ id: _id })
+      body: JSON.stringify({ id: id })
     });
     await fetchInfo();
   };
@@ -54,7 +51,7 @@ const ListProduct = () => {
             <div className="listproduct-format-main listproduct-format">
               <img src={product.image} alt="" className="listproduct-product-img" />
               <p>{product.name}</p>
-              <p>R${Number(product.old_price).toFixed(2)}</p>
+              <p>R${product.inOffer ? (Number(product.old_price).toFixed(2)) : (Number(product.current_price).toFixed(2))}</p>
               <p>
                 {product.inOffer ? (
                   `R$${Number(product.new_price).toFixed(2)}`
