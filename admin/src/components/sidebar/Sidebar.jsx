@@ -23,6 +23,12 @@ const Sidebar = () => {
                 <p>Novos Pedidos</p>
             </div>
         </Link>
+        <Link to={'/admin/chatseller'} style={{TextDecoderation: "none"}}>
+            <div className="sidebar-item">
+                <i className="fa-solid fa-headset"></i>
+                <p>Chat</p>
+            </div>
+        </Link>
     </div>
   )
 }

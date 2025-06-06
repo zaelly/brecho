@@ -6,7 +6,6 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const dotenv = require("dotenv");
-
 // Carregar variáveis de ambiente
 dotenv.config();
 
@@ -16,6 +15,9 @@ const port = process.env.PORT || 4000;
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+const server = require('http').createServer(app)
+const io = require('socket.io')(server, {cors: {origin: `http://localhost:5174`, methods: ["GET", "POST"]}})
 
 // Conexão com o MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -99,7 +101,7 @@ app.use('/api/sellers', sellerRoutes);
 app.use('/api/order', orderRoutes);
 
 // Inicia o servidor
-app.listen(port, (err) => {
+server.listen(port, (err) => {
   if (err) {
     console.error(`❌ Erro ao iniciar o servidor: ${err}`);
     process.exit(1);
@@ -107,3 +109,5 @@ app.listen(port, (err) => {
     console.log(`✅ Servidor rodando na porta ${port}`);
   }
 });
+
+//chat

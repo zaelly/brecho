@@ -10,7 +10,7 @@ const SellerProfile = () => {
     image: '' || '',
     email: 'email',
     new_password: '',
-    description: '' || '',
+    shopDescription: '' || '',
     produtos_vendidos: '' || 0,
     stars: '' || 0,
   });
@@ -44,7 +44,7 @@ const SellerProfile = () => {
         ...prev,
         name: data.data.name,
         email: data.data.email,
-        description: data.data.description,
+        shopDescription: data.data.shopDescription,
         image: data.data.image,
         produtos_vendidos: data.data.produtos_vendidos,
         stars: data.data.stars,
@@ -107,8 +107,7 @@ const SellerProfile = () => {
         data.success ? successHandle() : alert('Alteração de perfil falhou!');
       })
       .finally(() => setIsLoading(false)); // Stop loading
-            console.log(profile, 'profile')
-
+      console.log(profile, 'profile')
   };
 
   const goOut = () => {
@@ -172,8 +171,8 @@ const SellerProfile = () => {
               rows={5}
               onChange={handleChange}
               cols={40}
-              value={profileDetail.description}
-              name="description"
+              value={profileDetail.shopDescription}
+              name="shopDescription"
               disabled={!btn_profile}
               placeholder="Descreva sua loja!"
             />

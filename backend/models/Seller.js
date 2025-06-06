@@ -17,6 +17,9 @@ const sellerSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+  },
+  shopDescription:{
+    type: String
   }
 });
 

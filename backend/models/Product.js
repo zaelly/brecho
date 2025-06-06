@@ -56,6 +56,10 @@ const productSchema = new mongoose.Schema({
   inOffer: {
     type: Boolean,
     default: false,
+  },
+  descriptionProduct:{
+    type: String,
+    required: true,
   }
 });
 

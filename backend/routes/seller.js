@@ -111,12 +111,12 @@ router.post("/uploadprofileimage", fetchSeller,
 //perfil vendedor
 router.post("/updateprofile", fetchSeller, async (req, res) => {
   try {
-    const { name, email, new_password, image, description } = req.body;
+    const { name, email, new_password, image, shopDescription } = req.body;
 
     const updateFields = {};
       if (name) updateFields.name = name;
       if (email) updateFields.email = email;
-      if (description) updateFields.description = description;
+      if (shopDescription) updateFields.shopDescription = shopDescription;
       if (image) updateFields.image = image;
       if (new_password) {
         const hashedPassword = await bcrypt.hash(new_password, 8);
