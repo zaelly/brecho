@@ -79,7 +79,7 @@
     display: block;
 }
 
-h3, h1{
+.chatsList h3, .chatsList h1{
     color:rgb(255, 17, 128);
     text-align: center;
     margin-top: 2rem;    

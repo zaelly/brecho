@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(cors());
 
 const server = require('http').createServer(app)
-const io = require('socket.io')(server, {cors: {origin: `http://localhost:5174`, methods: ["GET", "POST"]}})
 
 // Conexão com o MongoDB
 mongoose.connect(process.env.MONGO_URI)

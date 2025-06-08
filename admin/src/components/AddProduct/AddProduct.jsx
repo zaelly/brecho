@@ -21,6 +21,7 @@ const AddProduct = () => {
   const handleImage = (e)=>{
     setImage(e.target.files[0]);
   }
+
   const handleChange = (e) =>{
     const {name, value, type, checked} = e.target;
 
@@ -85,6 +86,10 @@ const AddProduct = () => {
       product.current_price = undefined;
       if (!product.old_price || !product.new_price) {
         alert("Preço antigo e preço de oferta são obrigatórios para produtos em oferta.");
+        return;
+      }
+      if(product.new_price > product.old_price){
+        alert("Preço antigo é MENOR que preço de oferta altere o valor!.");
         return;
       }
     } else {
