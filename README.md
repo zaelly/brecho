@@ -1,4 +1,4 @@
-# Reverto Brechó - Site para brechós com Client e Painel Admin
+# Reverto Brechó - Site para brechós e Painel Admin
 O Reverto Brechó é um site em desenvolvimento para brechós sustentaveis criado com o intuito de aprendizagem.
 
 ## Tecnologias que estao sendo usado no desenvolvimento:
