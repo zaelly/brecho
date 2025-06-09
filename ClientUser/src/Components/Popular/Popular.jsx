@@ -8,7 +8,7 @@ const Popular = () => {
   const [popularProducts, setData_product] = useState([]);
 
   useEffect(()=>{
-    fetch('http://localhost:4000/popularinwomen')
+    fetch('http://localhost:4000/api/products/popularinwomen')
     .then((response)=>response.json())
     .then((data)=>setData_product(data));
   },[])
@@ -23,6 +23,7 @@ const Popular = () => {
                     id={item._id} 
                     name={item.name} 
                     image={item.image} 
+                    current_price={item.current_price}
                     new_price={item.new_price}
                     old_price={item.old_price}
                 />

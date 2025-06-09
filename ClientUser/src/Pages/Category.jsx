@@ -44,6 +44,7 @@ const Category = (props) => {
               name={item.name} 
               image={item.image} 
               new_price={item.new_price}
+              current_price={item.current_price}
               old_price={item.old_price} />
             }else{
               return null;

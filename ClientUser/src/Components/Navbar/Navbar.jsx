@@ -24,33 +24,16 @@ const Navbar = () => {
             }
         };
 
-        fetch('http://localhost:4000/allproducts')
+        fetch('http://localhost:4000/api/products/allproducts')
             .then((response) => response.json())
             .then((data) => setAll_products(data));
 
         window.addEventListener("resize", handleResize);
         document.addEventListener("mousedown", handleClickOutside);
 
-        // const delayDebounce = setTimeout(() => {
-        //     if (searchTerm.trim() === "") {
-        //         if (location.pathname === "/search") {
-        //             navigate(-1);
-        //         } else {
-        //             navigate("/");
-        //         }
-        //     } else {
-        //         const search = searchTerm.toLowerCase();
-        //         const result = all_product.filter(product =>
-        //             product.name.toLowerCase().includes(search)
-        //         );
-        //         navigate("/search", { state: { result } });
-        //     }
-        // }, 100);
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
             window.removeEventListener("resize", handleResize);
-            // clearTimeout(delayDebounce);
         };
     }, [searchTerm, all_product, navigate, location]);
 
@@ -166,9 +149,6 @@ const Navbar = () => {
                         </li>
                         <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category" : ""}>
                             <Link to="Unissex">Unissex</Link>
-                        </li>
-                        <li onClick={() => setMenu("TodosOsProdutos")} className={menu === "TodosOsProdutos" ? "category" : ""}>
-                            <Link to="TodosOsProdutos">Achados</Link>
                         </li>
                     </ul>
                 </div>

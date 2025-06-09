@@ -15,6 +15,7 @@ const ProductDisplay = (props) => {
     },[])
     const {product} = props;
     const {addToCart} = useContext(ShopContext)
+    const currentPrice = product.current_price;
    
   return (
     <>
@@ -35,8 +36,15 @@ const ProductDisplay = (props) => {
                     <div className="ProductDisplay-right">
                         <h1>{product.name}</h1>
                         <div className="productDisplay-right-prices">
-                            <div className='productDisplay-old-prices'>R${product.old_price}</div>
-                            <div className='productDisplay-new-prices'>R${product.new_price}</div>
+                            {currentPrice ? (
+                                <div className='productDisplay-old-prices'>R${product.current_price}</div>
+                            ) : (
+                                <>
+                                    <div className='productDisplay-old-prices'>R${product.old_price}</div>
+                                    <div className='productDisplay-new-prices'>R${product.new_price}</div>
+                                </>
+                            )}
+                           
                         </div>    
                         <div className="description">
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit. 

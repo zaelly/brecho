@@ -19,6 +19,7 @@ const CartItems = () => {
         {all_product.map((e) => {
             if (cartItem[e._id] > 0) {
                 return (
+                    // add o current_price nesta logica ou o preço do qual o produto esta sendo vendido
                     <div key={e._id} className="cart-mobile">
                         <div className="cartItems-format cartItems-format-main">
                             <img src={e.image} className='cartItems-product-icon' alt="" />

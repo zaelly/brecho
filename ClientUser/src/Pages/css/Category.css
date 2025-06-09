@@ -1,6 +1,7 @@
-.shopCategory-banner{
-    width: 50%;
+.banner-left img{
+    height: 250px;
     padding-top: 1rem;
+    object-fit: cover;
     display: flex;
 }
 
@@ -36,6 +37,7 @@
     margin-bottom: 1.5rem;
     align-items: center;
     text-align: center;
+    justify-content: space-between;
     background:linear-gradient(to right,#ffa600, 60%, #88888800);
 }
 
