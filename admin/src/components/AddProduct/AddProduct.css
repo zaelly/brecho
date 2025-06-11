@@ -8,6 +8,22 @@
     background-color: white;
 }
 
+.description{
+  width: 50%;
+}
+
+.description textarea{
+  border-radius: 5px;
+  width: 70%;
+  border: 2px solid rgb(255, 144, 17);
+  padding-left: 1rem;
+}
+
+.description::placeholder{
+    width: 100%;
+    color: #d8d8d8;
+}
+
 .sizeGroup{
   display: flex;
   text-align: center;

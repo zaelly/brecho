@@ -9,7 +9,7 @@ const Item = (props) => {
 
   return (
     <div className="item">
-        <Link to={`/products/${props._id}`}>
+        <Link to={`/products/${props.id}`}>
           <img onClick={handleScrollToTop} src={props.image} alt={props.name} />
         </Link>
         <p>{props.name}</p>
@@ -28,7 +28,6 @@ const Item = (props) => {
               </div>
             </>)
           }
-            
         </div>
     </div>
   )

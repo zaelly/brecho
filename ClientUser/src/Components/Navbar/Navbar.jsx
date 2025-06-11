@@ -4,6 +4,7 @@ import { useContext, useState, useEffect, useRef  } from 'react';
 import { Link, useNavigate } from 'react-router-dom';  // Adicionar useNavigate aqui
 import { ShopContext } from '../../Context/ShopContext';
 import { useLocation } from 'react-router-dom';
+import nav_profile from '../Assets/nav_profile.png'
 
 const Navbar = () => {
     const navigate = useNavigate();  // Declare navigate aqui, logo após a importação
@@ -15,6 +16,9 @@ const Navbar = () => {
     const [all_product, setAll_products] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const location = useLocation();
+    const [image_profile, setImage_profile] = useState(nav_profile);
+    const [isLoading, setIsLoading] = useState(false);
+    const [profileFile, setProfileFile] = useState(null);
 
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
@@ -31,9 +35,17 @@ const Navbar = () => {
         window.addEventListener("resize", handleResize);
         document.addEventListener("mousedown", handleClickOutside);
 
+        const handleStoreChange = () =>{
+            const updateImage = localStorage.getItem('seller-image');
+            if(updateImage) setImage_profile(updateImage);
+        }
+
+        window.addEventListener('storage', handleStoreChange);
+
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
             window.removeEventListener("resize", handleResize);
+            window.removeEventListener('storage', handleStoreChange);
         };
     }, [searchTerm, all_product, navigate, location]);
 
@@ -41,14 +53,39 @@ const Navbar = () => {
         setIsMenuOpen(true);
     };
 
+    const save_profile = async () => {
+        setIsLoading(true); // Inicia o carregamento
+        let responseData;
+
+        if (image_profile) {
+        let formData = new FormData();
+        formData.append('profile', profileFile);
+
+        try {
+            const response = await fetch('http://localhost:4000/api/users/uploadprofileimage', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+            },
+            body: formData,
+            });
+
+            const data = await response.json();
+            responseData = data;
+
+            if (responseData.success) {
+            setImage_profile(responseData.image_url);
+            localStorage.setItem('user-image', responseData.image_url);
+            }
+        } catch (error) {
+            console.error('Erro ao salvar o perfil:', error);
+        }
+        }
+        setIsLoading(false); // Finaliza o carregamento
+    };
+
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);    
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('auth-token'));
-
-    const goOut = ()=>{
-        localStorage.removeItem('auth-token'); 
-        window.location.replace("/")
-        setIsLoggedIn(false);
-    }
 
     const searchProducts = (term)=>{
         const search = term.toLowerCase();
@@ -117,9 +154,12 @@ const Navbar = () => {
                 <div className="nav-cart-count">{getTotalCartItems()}</div>
                 {isLoggedIn ? 
                     (
-                        <button onClick={goOut}>
-                            Sair
-                        </button> 
+                        <Link to='/profile' className='prof'>
+                            <div className="profile">
+                                <img src={image_profile} onChange={save_profile}/>
+                            </div>
+                            <p>Perfil</p>
+                        </Link>
                     )
                     : (
                     <button>
@@ -149,6 +189,9 @@ const Navbar = () => {
                         </li>
                         <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category" : ""}>
                             <Link to="Unissex">Unissex</Link>
+                        </li> 
+                        <li onClick={() => setMenu("Imperdiveis")} className={menu === "Imperdiveis" ? "category" : ""}>
+                            <Link to="Imperdiveis">Imperdíveis</Link>
                         </li>
                     </ul>
                 </div>
@@ -196,9 +239,12 @@ const Navbar = () => {
                         </Link>
                         {isLoggedIn ? 
                             (
-                                <button onClick={goOut}>
-                                    Sair
-                                </button> 
+                               <Link to='/profile' className='prof'>
+                                    <div className="profile">
+                                        <img src={image_profile} onChange={save_profile}/>
+                                    </div>
+                                    <p>Perfil</p>
+                                </Link> 
                             )
                             : (
                             <button>

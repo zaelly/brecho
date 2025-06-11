@@ -17,6 +17,10 @@
     text-align: left;
 }
 
+a{
+    color: white;
+}
+
 .offers-left h1{
     color: #171717;
     font-size: 80px;

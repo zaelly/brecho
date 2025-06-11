@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import nav_profile from '../../assets/nav_profile.png'
 
-
 const Navbar = () => {
   const [image_profile, setImage_profile] = useState(nav_profile);
   const [isLoading, setIsLoading] = useState(false);

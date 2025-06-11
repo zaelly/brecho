@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import './DescriptionBox.css'
+import { useContext } from 'react'
+import { ShopContext } from '../../Context/ShopContext'
 
 const DescriptionBox = () => {
     const [widthResize, setWindowWidth] = useState(window.innerWidth)
@@ -11,6 +13,9 @@ const DescriptionBox = () => {
         window.addEventListener("resize", handleSize);
         return ()=> window.removeEventListener("resize", handleSize)
     })
+
+    const {all_product} = useContext(ShopContext);
+    console.log(all_product)
   return (
     <>
         {widthResize <= 800 ? (
@@ -21,16 +26,7 @@ const DescriptionBox = () => {
                 </div>
                 <div className="descriptionbox-description">
                     <p>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                        Sapiente autem non repellendus quos, 
-                        quis provident eligendi enim cum aliquam libero porro molestiae nobis, 
-                        nulla tempore, ut laboriosam. Tempora, necessitatibus libero.
-                        <span>
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-                            Provident totam, ullam, magnam exercitationem quod, dolorem ipsum 
-                            debitis necessitatibus corrupti aperiam corporis aliquid eaque 
-                            numquam tempora quidem adipisci maiores assumenda minima.   
-                        </span>
+                        {all_product.descriptionProduct}
                     </p>
                 </div>
             </div>
@@ -42,16 +38,7 @@ const DescriptionBox = () => {
             </div>
             <div className="descriptionbox-description">
                 <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-                    Sapiente autem non repellendus quos, 
-                    quis provident eligendi enim cum aliquam libero porro molestiae nobis, 
-                    nulla tempore, ut laboriosam. Tempora, necessitatibus libero.
-                    <span>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-                        Provident totam, ullam, magnam exercitationem quod, dolorem ipsum 
-                        debitis necessitatibus corrupti aperiam corporis aliquid eaque 
-                        numquam tempora quidem adipisci maiores assumenda minima.   
-                    </span>
+                    {all_product.descriptionProduct}
                 </p>
             </div>
         </div> 

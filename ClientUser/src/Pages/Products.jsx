@@ -5,15 +5,15 @@ import { ShopContext } from '../Context/ShopContext';
 import Breadcrums from '../Components/Breadcrums/Breadcrums';
 import ProductDisplay from '../Components/ProductDisplay/ProductDisplay';
 import DescriptionBox from '../Components/DescriptionBox/DescriptionBox';
-import RelatedProducts from '../Components/RelatedProducts/RelatedProducts'; // corrigido o nome
+import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
 
 const Products = () => {
   const { all_product } = useContext(ShopContext);
   const { productId } = useParams();
-  const product = all_product.find((e) => e._id === Number(productId));
+  const product = all_product.find((e) =>e._id === productId);
 
   if (!product) {
-    return <div className='looping-products'>Carregando produto...</div>;
+    return <div className='looping-products'>Produto não encontrado!</div>;
   }
 
   return (

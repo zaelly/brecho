@@ -136,7 +136,6 @@ router.get("/getsellerprofile", fetchSeller, async (req, res) => {
   try {
     const seller = await Seller.findById(req.seller.id).select("-password");
     res.json({ success: true, data: seller });
-    console.log(seller, "seler")
   } catch (err) {
     res.status(500).json({ success: false, message: "Erro ao buscar perfil." });
   }

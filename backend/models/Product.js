@@ -59,6 +59,7 @@ const productSchema = new mongoose.Schema({
   },
   descriptionProduct:{
     type: String,
+    required: true
   }
 });
 

@@ -21,13 +21,11 @@ const userSchema = new mongoose.Schema({
   },
   cpf: {
     type: String,
-    required: true,
     unique: true, 
     match: /^\d{11}$/
   },
   adress:{
     type: String,
-    required: true,
   },
 });
 

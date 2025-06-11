@@ -1,0 +1,118 @@
+.userPerfil-container{
+    box-sizing: border-box;
+    width: 100%;
+    padding: 30px 50px;
+    margin: 20px 30px;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.perfil-file{
+    order: 1;
+}
+
+.container-config{
+    display: flex;
+    justify-content: flex-start;
+    gap: 100px;
+}
+
+.arrow-cloud{
+    font-size: 2rem;
+    margin: 1rem 0;
+    color: rgb(216, 216, 216);
+    padding: 5.5rem 5rem;
+    border: 2px dotted #dadada;
+    background-color: rgb(248, 248, 248);
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.inputsConfig{
+    order: 2;
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+}
+.btn{
+    display: flex;
+    justify-content: space-between;
+}
+
+.inputsConfig p{
+    margin-bottom:5px;
+}
+
+.inputsConfig input{
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 1rem;
+    height: 2.4rem;
+    width: 100%;
+    border: 2px solid rgb(255, 144, 17);
+    padding-left: 1rem;
+}
+
+.inputsConfig input::placeholder{
+    color: #c2c2c2;
+}
+
+button{
+    width: 20%;
+    color: #ffffff;
+    background-color: rgb(0, 162, 255);
+    border: none;
+    border-radius: .5rem;
+    font-size: 20px;
+    cursor: pointer;
+}
+.vendidos{
+    width: 100%;
+}
+
+.logout{
+    background-color: red;
+}
+
+.vendidos input{
+    border: 2px solid rgb(255, 144, 17);
+    width: 30%;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.info-empresa{
+    order: 3;
+    padding: 1rem;
+}
+
+.info-empresa p{
+    margin-bottom: 0;
+}
+
+.info-empresa input{
+    margin-bottom: 1rem;
+}
+
+.description textarea{
+    border-radius: 5px;
+    width: 100%;
+    border: 2px solid rgb(255, 144, 17);
+    padding-left: 1rem;
+}
+
+.description::placeholder{
+    width: 100%;
+    color: #d8d8d8;
+}
+
+
+.addprofile-thumbnail-img{
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+    margin: 1rem 0;
+    color: rgb(216, 216, 216);
+    border-radius: 50%;
+    display: block;
+}

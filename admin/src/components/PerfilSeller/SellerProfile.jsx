@@ -132,51 +132,55 @@ const SellerProfile = () => {
           <input disabled={!btn_profile} onChange={handleImage} type="file" name="image" id="file-input" hidden />
         </div>
         <div className="inputsConfig">
-          <div className="name">
-            <p>Nome da Loja</p>
-            <input
-              value={profileDetail.name}
-              onChange={handleChange}
-              type="text"
-              name="name"
-              disabled={!btn_profile}
-              placeholder="adicione aqui o nome da sua loja"
-            />
-          </div>
-          <div className="emailChange">
-            <p>Alterar email Admin</p>
-            <input
-              type="text"
-              name="email"
-              placeholder="vendedor@gmail.com"
-              disabled={!btn_profile}
-              value={profileDetail.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="passwordChange">
-            <p>Alterar senha Admin</p>
-            <input
-              type="password" // Updated to password
-              name="new_password"
-              placeholder="*******"
-              onChange={handleChange}
-              value={profileDetail.new_password}
-              disabled={!btn_profile}
-            />
-          </div>
-          <div className="description">
-            <p>Descrição da loja</p>
-            <textarea
-              rows={5}
-              onChange={handleChange}
-              cols={40}
-              value={profileDetail.shopDescription}
-              name="shopDescription"
-              disabled={!btn_profile}
-              placeholder="Descreva sua loja!"
-            />
-          </div>
+          <form>
+            <div className="form-row">
+              <div className="name form-group col-md-6">
+                <p>Nome da Loja</p>
+                <input
+                  value={profileDetail.name}
+                  onChange={handleChange}
+                  type="text"
+                  name="name"
+                  disabled={!btn_profile}
+                  placeholder="adicione aqui o nome da sua loja"
+                />
+              </div>
+              <div className="emailChange form-group col-md-6">
+                <p>Alterar email Admin</p>
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="vendedor@gmail.com"
+                  disabled={!btn_profile}
+                  value={profileDetail.email}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="passwordChange form-group col-md-6">
+                <p>Alterar senha Admin</p>
+                <input
+                  type="password" // Updated to password
+                  name="new_password"
+                  placeholder="*******"
+                  onChange={handleChange}
+                  value={profileDetail.new_password}
+                  disabled={!btn_profile}
+                />
+              </div>
+              <div className="description form-group col-md-6">
+                <p>Descrição da loja</p>
+                <textarea
+                  rows={5}
+                  onChange={handleChange}
+                  cols={40}
+                  value={profileDetail.shopDescription}
+                  name="shopDescription"
+                  disabled={!btn_profile}
+                  placeholder="Descreva sua loja!"
+                />
+              </div>
+            </div>
+          </form>
         </div>
         <div className="info-empresa">
           <div className="vendidos">

@@ -4,6 +4,7 @@ import { useContext } from 'react';
 
 const CartItems = () => {
     const {getTotalCartAmount, all_product, cartItem, removeFromCart} = useContext(ShopContext);
+
   return (
     <div className='CartItems'>
             <h1>Carrinho</h1>   
@@ -12,6 +13,7 @@ const CartItems = () => {
             <p>Título</p>
             <p>Preço</p>
             <p>Quantidade</p>
+            <p>Tamanho</p>
             <p>Total</p>
             <p>Remover</p>
         </div>
@@ -24,10 +26,11 @@ const CartItems = () => {
                         <div className="cartItems-format cartItems-format-main">
                             <img src={e.image} className='cartItems-product-icon' alt="" />
                             <p>{e.name}</p>
-                            <p>R${e.new_price}</p>
-                            <button className='CartItems-quantity'>{cartItem[e.id]}</button>
-                            <p>R${e.new_price * cartItem[e.id]}</p>
-                            <i className="fa-solid fa-trash" onClick={() => removeFromCart(e.id)}></i>
+                            <p>R${e.inOffer ? e.new_price * cartItem[e._id] : e.current_price * cartItem[e._id]}</p>
+                            <button className='CartItems-quantity'>{cartItem[e._id]}</button>
+                            <button className='CartItems-quantity'>{e.size}</button>
+                            <p>R${e.inOffer ? e.new_price * cartItem[e._id] : e.current_price * cartItem[e._id]}</p>
+                            <i className="fa-solid fa-trash" onClick={() => removeFromCart(e._id)}></i>
                         </div>
                         <hr />
                     </div>
@@ -37,13 +40,13 @@ const CartItems = () => {
         })}
         
        <div className="cartItems-down">
-            <div className="cartItems-promocode">
+            {/* <div className="cartItems-promocode">
                 <p>Cupom de Desconto</p>
                 <div className="cartItem-promoBox">
                     <input type="text" name="" id="" placeholder='Código de desconto' />
                     <button type="submit">Enviar</button>
                 </div>
-            </div>
+            </div> */}
             <div className="cart-items-total">
                 <h1>Total</h1>
                 <div>

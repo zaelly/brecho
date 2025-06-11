@@ -1,5 +1,6 @@
 import './Footer.css'
 import hat from '../Assets/hat.png'
+import {Link} from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 const Footer = () => {
@@ -20,7 +21,11 @@ const Footer = () => {
         <ul className="footer-links">
             <li>Empresa</li>
             <li>Produtos</li>
-            <li>Ofertas</li>
+            <li>
+                <Link to={'/Imperdiveis'}>
+                    Ofertas
+                </Link>
+            </li>
             <li>Sobre Nós</li>
             <li>Contato</li>
         </ul>

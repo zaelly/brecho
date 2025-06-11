@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 export const ShopContext = createContext(null);
 
 const getDefaultCart = ()=>{
@@ -69,9 +69,18 @@ const ShopContextProvider = (props) => {
 
         for(const item in cartItem){
             if(cartItem[item] > 0){
-                let itemInfo = all_product.find(
-                    (product)=>product._id === Number(item));
-                totalAmount += itemInfo.new_price * cartItem[item]
+
+                let inOffer = all_product[6];
+
+                if(inOffer){
+                    let itemInfo = all_product.find(
+                        (product)=>product._id === item);
+                    totalAmount += itemInfo.new_price * cartItem[item]
+                }else{
+                    let itemInfo = all_product.find(
+                        (product)=>product._id === item);
+                    totalAmount += itemInfo.current_price * cartItem[item]
+                }
             }
         }
         return totalAmount;

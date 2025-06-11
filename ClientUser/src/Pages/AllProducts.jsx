@@ -5,7 +5,7 @@ import { ShopContext } from '../Context/ShopContext'
 import Item from '../Components/Item/Item'
 
 
-const AllProducts = (props) => {
+const AllProducts = () => {
 
   const {all_product} = useContext(ShopContext);
 

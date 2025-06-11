@@ -15,8 +15,8 @@ const ProductDisplay = (props) => {
     },[])
     const {product} = props;
     const {addToCart} = useContext(ShopContext)
-    const currentPrice = product.current_price;
-   
+    const inOffer = product.inOffer;
+    const sizes = product.size
   return (
     <>
         {windowWidth <= 1366 ? (
@@ -24,49 +24,41 @@ const ProductDisplay = (props) => {
                 <div className="product-display-mobile">
                     <div className="ProductDisplay-left-mobile">
                         <div className="productDisplay-img">
-                            <img src={product.image} className='productDisplay-main-img' alt="" />
+                            <img src={product.image} className='productDisplay-main-img' />
                         </div>
                         <div className="ProductDisplay-img-list">
-                            <img src={product.image} alt="" />
-                            <img src={product.image} alt="" />
-                            <img src={product.image} alt="" />
-                            <img src={product.image} alt="" />
+                            <img src={product.image} />
+                            <img src={product.image} />
+                            <img src={product.image} />
+                            <img src={product.image} />
                         </div>     
                     </div>
                     <div className="ProductDisplay-right">
                         <h1>{product.name}</h1>
                         <div className="productDisplay-right-prices">
-                            {currentPrice ? (
-                                <div className='productDisplay-old-prices'>R${product.current_price}</div>
-                            ) : (
-                                <>
+                            {inOffer ? (
+                                <> 
                                     <div className='productDisplay-old-prices'>R${product.old_price}</div>
                                     <div className='productDisplay-new-prices'>R${product.new_price}</div>
                                 </>
+                            ) : (
+                                <div className='productDisplay-new-prices'>R${product.current_price}</div> 
                             )}
-                           
                         </div>    
                         <div className="description">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                            Unde ducimus maxime voluptatibus officiis perspiciatis, optio repudiandae, dolor, 
-                            cupiditate eveniet nostrum quaerat odit minus est consequatur distinctio molestiae commodi.
+                           {product.descriptionProduct}
                         </div>
                         <div className="product-display-right-size">
                             <h1>Selecione o tamanho</h1>
                             <div className="productDisplay-sizes">
-                                <div>PP</div>
-                                <div>P</div>
-                                <div>M</div>
-                                <div>G</div> 
-                                <div>GG</div>
+                                {sizes.map((size)=>(
+                                     <div key={size}>{size}</div> 
+                                ))}
                             </div>
                         </div>
                         <button onClick={()=>{addToCart(product._id)}}>Add ao carrinho</button>
                         <p className='productDisplay-category'>
-                            <span>Categoria: </span> Mulher, T-Shirt, Crop Top
-                        </p>
-                        <p className='productDisplay-category'>
-                            <span>Tags: </span> Moderno, Mais recente
+                            <span>Categoria: </span> {product.category}
                         </p>
                     </div>
                 </div>
@@ -76,42 +68,43 @@ const ProductDisplay = (props) => {
                 <div className="product-display">
                     <div className="ProductDisplay-left">
                         <div className="ProductDisplay-img-list">
-                            <img src={product.image} alt="" />
-                            <img src={product.image} alt="" />
-                            <img src={product.image} alt="" />
-                            <img src={product.image} alt="" />
+                            <img src={product.image} />
+                            <img src={product.image} />
+                            <img src={product.image} />
+                            <img src={product.image} />
                         </div>
                         <div className="productDisplay-img">
-                            <img src={product.image} className='productDisplay-main-img' alt="" />
+                            <img src={product.image} className='productDisplay-main-img' />
                         </div>
                     </div>
                     <div className="ProductDisplay-right">
                         <h1>{product.name}</h1>
                         <div className="productDisplay-right-prices">
-                            <div className='productDisplay-old-prices'>R${product.old_price}</div>
-                            <div className='productDisplay-new-prices'>R${product.new_price}</div>
+                            {inOffer ? (
+                                <> 
+                                    <div className='productDisplay-old-prices'>R${product.old_price}</div>
+                                    <div className='productDisplay-new-prices'>R${product.new_price}</div>
+                                </>
+                            ) : (
+                                <div className='productDisplay-new-prices'>R${product.current_price}</div> 
+                            )}
                         </div>    
                         <div className="description">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                            Unde ducimus maxime voluptatibus officiis perspiciatis, optio repudiandae, dolor, 
-                            cupiditate eveniet nostrum quaerat odit minus est consequatur distinctio molestiae commodi.
+                            {product.descriptionProduct}
                         </div>
                         <div className="product-display-right-size">
                             <h1>Selecione o tamanho</h1>
                             <div className="productDisplay-sizes">
-                                <div>PP</div>
-                                <div>P</div>
-                                <div>M</div>
-                                <div>G</div> 
-                                <div>GG</div>
+                                {/* criar um loop que mostra todos os tamanhos */}
+                                {sizes.map((size, index)=>(
+                                    /* criar um id para cada tamanho e o id que for clicado ele vai aparecer no cart */
+                                    <div key={size}>{size}</div> 
+                                ))}
                             </div>
                         </div>
                         <button onClick={()=>{addToCart(product._id)}}>Add ao carrinho</button>
                         <p className='productDisplay-category'>
-                            <span>Categoria: </span> Mulher, T-Shirt, Crop Top
-                        </p>
-                        <p className='productDisplay-category'>
-                            <span>Tags: </span> Moderno, Mais recente
+                            <span>Categoria: </span> {product.category}
                         </p>
                     </div>
                 </div>

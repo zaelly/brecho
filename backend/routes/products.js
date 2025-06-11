@@ -78,6 +78,7 @@ router.post('/seller/addproduct', fetchSeller, async (req,res)=>{
       size: Array.isArray(req.body.size) ? req.body.size : [],
       enable: req.body.enable === 'true' || req.body.enable === true,
       inOffer: req.body.inOffer === 'true' || req.body.inOffer === true,
+      descriptionProduct: req.body.descriptionProduct
     });
     await product.save();
     res.json({
