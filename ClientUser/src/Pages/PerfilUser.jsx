@@ -8,10 +8,11 @@ const PerfilUser = () => {
   const [profileDetail, setProfileDetail] = useState({
     name: '',
     image: '' || '',
-    email: '',
+    email: 'email',
     new_password: '',
     cpf: '',
-    adress: ''
+    adress: '',
+    city: ''
   });
 
   const handleImage = (e) => {
@@ -36,7 +37,7 @@ const PerfilUser = () => {
       },
     });
     const data = await res.json();
-    console.log(data, 'data')
+
     if (data.success) {
       const usersId = data.data._id;
       setProfileDetail(prev => ({
@@ -46,6 +47,7 @@ const PerfilUser = () => {
         image: data.data.image,
         adress: data.data.adress,
         cpf: data.data.cpf,
+        city: data.data.city,
       }));
       localStorage.setItem("users-id", usersId);
       // imagem de cada vendedor setada
@@ -105,7 +107,6 @@ const PerfilUser = () => {
         data.success ? successHandle() : alert('Alteração de perfil falhou!');
       })
       .finally(() => setIsLoading(false)); // Stop loading
-      console.log(profile, 'profile')
   };
 
   const goOut = () => {
@@ -133,7 +134,7 @@ const PerfilUser = () => {
             <form>
               <div className="form-row">
                 <div className="form-group col-md-6">
-                  <label for="inputEmail4">Alterar email</label>
+                  <label htmlFor="inputEmail4">Alterar email</label>
                   <input
                     className="form-control"
                     type="text"
@@ -145,7 +146,7 @@ const PerfilUser = () => {
                   />
                 </div>
                 <div className="form-group col-md-6">
-                  <label for="inputPassword4">Password</label>
+                  <label htmlFor="inputPassword4">Password</label>
                   <input type="password" className="form-control"
                     name="new_password"
                     placeholder="*******"
@@ -154,7 +155,7 @@ const PerfilUser = () => {
                     disabled={!btn_profile}/>
                 </div>
                 <div className="form-group col-md-6">
-                  <p>Nome de Usúario</p>
+                  <label htmlFor="name">Nome de Usúario</label>
                   <input
                     value={profileDetail.name}
                     onChange={handleChange}
@@ -166,34 +167,29 @@ const PerfilUser = () => {
                   />
                 </div>
                 <div className="form-group col-md-6">
-                  <p>CPF</p>
+                  <label htmlFor="CPF">CPF</label>
                   <input
                     value={profileDetail.cpf}
                     onChange={handleChange}
-                    type="text"
+                    type="number"
                     className="form-control"
-                    name="CPF"
+                    name="cpf"
                     disabled={!btn_profile}
                     placeholder="CPF"
                   />
                 </div>
               </div>
               <div className="form-group">
-                <label for="inputAddress">Endereço</label>
-                <input type="text" className="form-control" placeholder="1234 Main St" disabled={!btn_profile} onChange={handleChange} value={profileDetail.adress}/>
+                <label htmlFor="inputAddress">Endereço</label>
+                <input type='text' className="form-control"  name='adress'
+                placeholder="1234 Main St" disabled={!btn_profile} 
+                onChange={handleChange} value={profileDetail.adress}/>
               </div>
               <div className="form-row">
                 <div className="form-group col-md-6">
-                  <label for="inputCity">Cidade</label>
-                  <input type="text" className="form-control" disabled={!btn_profile} onChange={handleChange} value={profileDetail.city}/>
+                  <label htmlFor="inputCity">Cidade</label>
+                  <input type="text" name='city' className="form-control" disabled={!btn_profile} onChange={handleChange} value={profileDetail.city}/>
                 </div>
-                <div className="form-group col-md-4">
-                  <label for="inputState">Estado</label>
-                  <select id="inputState" className="form-control">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                  </select>
-                </div>  
               </div>
           </form>
         </div>

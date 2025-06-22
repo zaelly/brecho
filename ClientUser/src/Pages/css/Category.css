@@ -68,7 +68,7 @@
 .banner button{
     width: 282px;
     height: 70px;
-    border-radius: 35px;
+    border-radius: 20%;
     background-color: #ff5e00;
     border: none; color: white;
     font-size: 22px;

@@ -5,7 +5,6 @@ const Join = (props) => {
 
   const [mensage, setMensage] = useState("")
     const sendMsg = (e)=>{
-      console.log(mensage)
       setMensage("");
     }
   return (

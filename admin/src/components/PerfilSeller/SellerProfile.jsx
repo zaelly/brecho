@@ -37,7 +37,6 @@ const SellerProfile = () => {
       },
     });
     const data = await res.json();
-    console.log(data, 'data')
     if (data.success) {
       const sellerId = data.data._id;
       setProfileDetail(prev => ({
@@ -107,7 +106,6 @@ const SellerProfile = () => {
         data.success ? successHandle() : alert('Alteração de perfil falhou!');
       })
       .finally(() => setIsLoading(false)); // Stop loading
-      console.log(profile, 'profile')
   };
 
   const goOut = () => {

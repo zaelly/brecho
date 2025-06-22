@@ -6,18 +6,18 @@ const NewsLetter = () => {
   const [ takeEmail, setValueEmail] = useState("")
 
   const sendEmail = async()=>{
-    if(!email) return alert("Digite um email valído!")
+    if(!takeEmail) return alert("Digite um email!")
     try{
-      const res = await fetch("/sendemail",{
+      const res = await fetch("http://localhost:4000/sendemail",{
         method: 'POST', 
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({email})
+        body: JSON.stringify({email: takeEmail})
       })
       const data = await res.json();
       alert(data.message);
-      setValueEmail(data);
+      setValueEmail('');
     }catch(err){
       console.error("Erro ao enviar:", err);
       alert("Erro ao enviar e-mail.");

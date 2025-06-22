@@ -27,16 +27,16 @@ const AddProduct = () => {
     const {name, value, type, checked} = e.target;
 
     if (type === "checkbox" && name.startsWith("size")) {
-    const sizeLabel = name.replace("size", ""); // ex: "PP"
-    setProductDetails((prev) => {
-      const updatedSizes = checked
-        ? [...prev.size, sizeLabel]
-        : prev.size.filter((s) => s !== sizeLabel);
+      const sizeLabel = name.replace("size", ""); // ex: "PP"
+      setProductDetails((prev) => {
+        const updatedSizes = checked
+          ? [...prev.size, sizeLabel]
+          : prev.size.filter((s) => s !== sizeLabel);
 
-      return {
-        ...prev,
-        size: updatedSizes,
-      };
+        return {
+          ...prev,
+          size: updatedSizes,
+        };
     });
     } else {
       setProductDetails((prev) => ({
@@ -74,6 +74,7 @@ const AddProduct = () => {
   let offer = productDetails.inOffer;
 
   const Add_product = async ()=>{
+    console.log('testew')
     let responseData;
     let product = { ...productDetails };
 
@@ -290,7 +291,7 @@ const AddProduct = () => {
                   />
                 </div>
             </div>
-            <button onClick={()=>{Add_product()}} className='addproduct-btn'>Adicionar</button>
+            <button onClick={(e)=>{e.preventDefault(); Add_product()}} className='addproduct-btn'>Adicionar</button>
         </div>
       </form>
     </div>

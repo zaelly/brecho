@@ -8,7 +8,7 @@ const Category = (props) => {
   const {all_product} = useContext(ShopContext);
 
   const filteredProducts = useMemo(()=>{
-    if(!all_product && all_product.length === 0) return[]
+    if(!all_product || all_product.length === 0) return[]
     return all_product.filter((product)=>{
       if(props.category === 'Imperdiveis'){
         return product.new_price > 0;
@@ -47,7 +47,7 @@ const Category = (props) => {
         <div className="itens">
           {filteredProducts.map((item) => (
             <Item
-              key={item._id}
+              key={i}
               id={item._id}
               name={item.name}
               image={item.image}

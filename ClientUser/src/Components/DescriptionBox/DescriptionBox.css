@@ -2,15 +2,76 @@
     display: flex;
 }
 
+.stars{
+    margin-bottom: 1rem ;
+}
+
+.comment input[type='text']{
+    border: 1px solid #ff3603;
+    margin-top: 1rem;
+    border-radius: 10px;
+    padding: .5rem;
+    width: 30rem;
+}
+
+.fa-trash{
+    cursor: pointer;   
+    color: #ff3603; 
+    padding-left: 1rem;
+    padding-top: 1rem;
+    font-size: 1.3rem;
+}
+
 .descriptionbox{
     margin: 70px 170px;
     flex-direction: column;
     display: flex;
 }
 
+.liComment{
+    display: flex;
+    justify-content: space-between;
+}
+
+.editReview{
+    width: 4rem;
+    font-size: 1rem;
+    background-color: transparent;
+    color: #555;
+    border-bottom: 1px solid red;
+}
+
+.btnEdit{
+    display: flex;
+    justify-content: flex-end;
+}
+
 .descriptionbox-nav-box .fade{
     background: #FBFBFB;
     color: #555;
+}
+
+.textReview{
+    gap: 10px;
+    justify-content:space-around !important;
+}
+
+.EnterReview{
+    background-color: red !important;
+}
+
+.addReview{
+    border-radius: 5px;
+    width: 70%;
+    border: 2px solid rgb(255, 144, 17);
+    padding-left: 1rem;
+}
+
+.show{
+    display: block;
+}
+.hide{
+    display: none;
 }
 
 .descriptionbox-nav-box{

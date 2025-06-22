@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useMemo } from "react";
 export const ShopContext = createContext(null);
 
 const getDefaultCart = ()=>{
@@ -9,6 +9,7 @@ const ShopContextProvider = (props) => {
 
     const [cartItem, setCartItems] = useState(getDefaultCart());
     const [all_product, setAll_products] = useState([]);
+    const [review, setReview] = useState({})
 
     useEffect(()=>{
         fetch('http://localhost:4000/api/products/allproducts')
@@ -64,40 +65,38 @@ const ShopContextProvider = (props) => {
         }
     };
 
-    const getTotalCartAmount = () =>{
-        let totalAmount = 0;
+const getTotalCartAmount = () =>{
+    let totalAmount = 0;
 
-        for(const item in cartItem){
-            if(cartItem[item] > 0){
+    for(const item in cartItem){
+        const qntd = cartItem[item]            
 
-                let inOffer = all_product[6];
+        if (qntd > 0) {        
+            let inOffer = all_product[6];
+            const itemInfo = all_product.find((product) => product._id === item);
+            if (!itemInfo) continue;
 
-                if(inOffer){
-                    let itemInfo = all_product.find(
-                        (product)=>product._id === item);
-                    totalAmount += itemInfo.new_price * cartItem[item]
-                }else{
-                    let itemInfo = all_product.find(
-                        (product)=>product._id === item);
-                    totalAmount += itemInfo.current_price * cartItem[item]
-                }
-            }
+            const price = inOffer ? itemInfo.new_price : itemInfo.current_price;
+            totalAmount += price * qntd;
         }
-        return totalAmount;
     }
+    return totalAmount;
+}
 
-    const getTotalCartItems = ()=>{
+    const getTotalCartItems = useMemo(()=>{
         let totalItem = 0;
-
-        for(const item in cartItem){
-            if(cartItem[item] > 0){
-                totalItem += cartItem[item]
+        for(const item in cartItem){        
+            const quantity = Number(cartItem[item]);
+            if(quantity > 0){
+                totalItem += quantity
             }
         }
         return totalItem;
-    }
-    const contextValue = {getTotalCartItems, getTotalCartAmount, all_product, cartItem, addToCart, removeFromCart};
+    },[cartItem])
+ 
+    const contextValue = {getTotalCartItems, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart};
 
+    
     return (
         <ShopContext.Provider value={contextValue}>
             {props.children}

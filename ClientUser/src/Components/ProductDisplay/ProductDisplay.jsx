@@ -14,6 +14,8 @@ const ProductDisplay = (props) => {
         return () => window.removeEventListener("resize", handleSize);
     },[])
     const {product} = props;
+
+    console.log(product.descriptionProduct)
     const {addToCart} = useContext(ShopContext)
     const inOffer = product.inOffer;
     const sizes = product.size

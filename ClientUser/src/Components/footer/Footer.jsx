@@ -19,26 +19,25 @@ const Footer = () => {
             <p>Reverto Brechó</p>
         </div>
         <ul className="footer-links">
-            <li>Empresa</li>
-            <li>Produtos</li>
             <li>
-                <Link to={'/Imperdiveis'}>
-                    Ofertas
-                </Link>
+                <Link to={'/allProducts'}>Produtos</Link>
             </li>
-            <li>Sobre Nós</li>
+            <li>
+                <Link to={'/Imperdiveis'}>Ofertas</Link>
+            </li>
             <li>Contato</li>
         </ul>
         <div className="footer-social-icon">
-            <div className="footer-icons-container">
-                <i className="fa-brands fa-instagram"></i>
-            </div>
-            <div className="footer-icons-container">
-                <i className="fa-brands fa-pinterest"></i>
-            </div>
-            <div className="footer-icons-container">
-                <i className="fa-brands fa-whatsapp"></i>
-            </div>
+             <a href="http://">
+                <div className="footer-icons-container">
+                    <i className="fa-brands fa-instagram"></i>
+                </div>
+            </a>
+            <a href="http://">
+                <div className="footer-icons-container">
+                    <i className="fa-brands fa-whatsapp"></i>
+                </div>
+            </a>
         </div>
         <div className="footer-copyright">
             <hr />

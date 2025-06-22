@@ -17,12 +17,12 @@ const Sidebar = () => {
                 <p>Lista de Produtos</p>
             </div>
         </Link>
-        <Link to={'/admin/neworder'} style={{TextDecoderation: "none"}}>
+        {/* <Link to={'/admin/neworder'} style={{TextDecoderation: "none"}}>
             <div className="sidebar-item">
                 <i className="fa-solid fa-truck"></i>
                 <p>Novos Pedidos</p>
             </div>
-        </Link>
+        </Link> */}
         <Link to={'/admin/chatseller'} style={{TextDecoderation: "none"}}>
             <div className="sidebar-item">
                 <i className="fa-solid fa-headset"></i>

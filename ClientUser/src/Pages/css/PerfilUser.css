@@ -11,10 +11,19 @@
     order: 1;
 }
 
+.estado-selector{
+    border: 2px solid rgb(255, 144, 17);
+    font-size: 14px;
+    color: #7b7b7b;
+    border-radius: 4px;
+}
+
 .container-config{
     display: flex;
     justify-content: flex-start;
     gap: 100px;
+    align-items: center;
+    justify-content: center;
 }
 
 .arrow-cloud{
@@ -51,6 +60,12 @@
     width: 100%;
     border: 2px solid rgb(255, 144, 17);
     padding-left: 1rem;
+    outline: none;
+    background-color: #dadada;
+}
+
+.form-control:focus{
+    background-color: white;
 }
 
 .inputsConfig input::placeholder{

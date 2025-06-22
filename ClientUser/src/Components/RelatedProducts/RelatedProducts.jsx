@@ -12,12 +12,13 @@ const RelatedProucts = () => {
         <hr />
         <div className="relatedProducts-item">
           {all_product.map((item, i) => (
-            <Item key={i}
-              id={item.id}
+             <Item
+              key={i}
+              id={item._id}
               name={item.name}
               image={item.image}
-              current_price={item.current_price}
               new_price={item.new_price}
+              current_price={item.current_price}
               old_price={item.old_price}
             />
           ))}

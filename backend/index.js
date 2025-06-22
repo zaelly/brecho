@@ -5,18 +5,17 @@ const path = require("path");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
+const app = express();
 const dotenv = require("dotenv");
 // Carregar variáveis de ambiente
 dotenv.config();
+const server = require('http').createServer(app)
 
-const app = express();
 const port = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json());
 app.use(cors());
-
-const server = require('http').createServer(app)
 
 // Conexão com o MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -53,26 +52,30 @@ app.post("/upload", upload.single("product"), (req, res) => {
 // Rota de envio de e-mail
 app.post("/sendemail", async (req, res) => {
   const { email } = req.body;
+  
   if (!email) {
     return res.status(400).json({ message: "E-mail é obrigatório" });
   }
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Bem-vindo!",
-    text: "Obrigado por se inscrever!",
-  };
-
   try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls:{
+         rejectUnauthorized: false
+      }
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Bem-vindo!",
+      text: "Obrigado por se inscrever!",
+    };
+
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "E-mail enviado com sucesso!" });
   } catch (error) {

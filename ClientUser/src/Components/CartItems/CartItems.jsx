@@ -1,9 +1,10 @@
 import './CartItems.css'
 import { ShopContext } from '../../Context/ShopContext'
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 const CartItems = () => {
     const {getTotalCartAmount, all_product, cartItem, removeFromCart} = useContext(ShopContext);
+    const [finalizarCompra, setFinalizarCompra] = useState(false);
 
   return (
     <div className='CartItems'>
@@ -18,24 +19,32 @@ const CartItems = () => {
             <p>Remover</p>
         </div>
         <hr />
-        {all_product.map((e) => {
-            if (cartItem[e._id] > 0) {
-                return (
-                    // add o current_price nesta logica ou o preço do qual o produto esta sendo vendido
-                    <div key={e._id} className="cart-mobile">
-                        <div className="cartItems-format cartItems-format-main">
-                            <img src={e.image} className='cartItems-product-icon' alt="" />
-                            <p>{e.name}</p>
-                            <p>R${e.inOffer ? e.new_price * cartItem[e._id] : e.current_price * cartItem[e._id]}</p>
-                            <button className='CartItems-quantity'>{cartItem[e._id]}</button>
-                            <button className='CartItems-quantity'>{e.size}</button>
-                            <p>R${e.inOffer ? e.new_price * cartItem[e._id] : e.current_price * cartItem[e._id]}</p>
-                            <i className="fa-solid fa-trash" onClick={() => removeFromCart(e._id)}></i>
-                        </div>
-                        <hr />
-                    </div>
-                );
-            }
+        {all_product.map((product) => {
+            if(cartItem[product._id] > 0){
+
+            const unitPrice = product.inOffer ? product.new_price : product.current_price;
+            const totalPrice = unitPrice * cartItem[product._id];
+
+            //se quantidade for = 0 ou < 0 entao nao vai poder finalizar a venda
+           
+            //se for > 0 e tiver meio de pagamento entao finaliza
+            //se quantidade for > 0 e nao tiver meio de pagamento entao nao deixar finalizar
+
+            return (
+                <div key={product._id} className="cart-mobile">
+                <div className="cartItems-format cartItems-format-main">
+                    <img src={product.image} className="cartItems-product-icon" alt={product.name} />
+                    <p>{product.name}</p>
+                    <p>R${unitPrice.toFixed(2)}</p>
+                    <button className="CartItems-quantity">{cartItem[product._id]}</button>
+                    <p className="CartItems-quantity">{product.size || 'N/A'}</p>
+                    <p>R${totalPrice.toFixed(2)}</p>
+                    <i className="fa-solid fa-trash" onClick={() => removeFromCart(product._id)} role="button" tabIndex="0"></i>
+                </div>
+                <hr />
+                </div>
+            );
+        }
             return null;
         })}
         
@@ -52,7 +61,7 @@ const CartItems = () => {
                 <div>
                     <div className="cartItems-total-item">
                         <p>Subtotal:</p>
-                        <p>R${getTotalCartAmount()}</p>
+                        <p>R${getTotalCartAmount().toFixed(2)}</p>
                     </div>
                     <hr />
                     <div className="cartItems-total-item">
@@ -62,7 +71,7 @@ const CartItems = () => {
                     <hr />
                     <div className="cartItems-total-item">
                         <h3>Total:</h3>
-                        <h3>R${getTotalCartAmount()}</h3>
+                        <h3>R${getTotalCartAmount().toFixed(2)}</h3>
                     </div>
                 </div>
                 <button>FINALIZAR</button>

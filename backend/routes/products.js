@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require('../models/Product.js');
-const { fetchSeller } = require('../middlewares/auth');
+const { fetchSeller, fetchUser } = require('../middlewares/auth');
 const dotenv = require("dotenv");
 
 // Carregar variáveis de ambiente
@@ -12,17 +12,11 @@ const cors = require("cors");
 router.use(express.json());
 router.use(cors());
 
-
-//          //
-//   site   //
-//          //
-
 // Endpoint para novas coleções
 router.get('/newcollections', async (req, res) => {
   try {
     let products = await Product.find({});
     let newCollection = products.slice(1).slice(-8);
-    console.log("Novas coleções fetchadas");
     res.json(newCollection);
   } catch (err) {
     console.error("Erro ao buscar novas coleções:", err);
@@ -35,7 +29,6 @@ router.get('/popularinwomen', async (req, res) => {
   try {
     let products = await Product.find({ category: "Feminino" });
     let popularInWomen = products.slice(0, 4);
-    console.log("Produtos populares para mulheres fetchados");
     res.json(popularInWomen);
   } catch (err) {
     console.error("Erro ao buscar produtos populares para mulheres:", err);
@@ -51,18 +44,12 @@ router.get('/allproducts', async (req, res) => {
 
   try {
     let products = await Product.find({});
-    console.log("Todos produtos encontrados");
     res.json(products);
   } catch (err) {
     console.error("Erro ao buscar produtos:", err);
     res.status(500).json({ success: false, message: "Erro ao buscar produtos." });
   }
 });
-
- //                 //
-//   adm seller   //
-//               //
-
 
 router.post('/seller/addproduct', fetchSeller, async (req,res)=>{
   try {
@@ -115,9 +102,8 @@ router.post('/seller/removeproduct', fetchSeller, async (req, res) => {
 
 // criando api para pegar todos produtos
 router.get('/seller/allproducts', fetchSeller, async(req, res)=>{
-  let products = await Product.find({ sellerId: req.seller.id });
+  let products = await Product.find({ sellerId: req.seller.id }).lean();
 
-  console.log("Todos produtos achados")
   res.json(products);
 })
 
@@ -125,5 +111,82 @@ router.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Erro interno do servidor." });
 });
+
+//comentarios/avaliações
+router.post('/addreviews', fetchUser, async(req,res)=>{
+  const {name, productId, rating, comment } = req.body;
+
+  const review = {
+    name: req.body.name,
+    userId: req.user.id,
+    rating,
+    comment,
+    date: new Date()
+  };
+
+  try{
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { $push: { reviews: review } },
+      { new: true }
+    );
+    res.json({ success: true, product: updatedProduct });
+  }catch(err){
+    console.error('erro ao salvar avaliação!', err)
+    res.status(500).json({ success: false, message: "Erro interno do servidor." });
+  }
+})
+
+router.get('/getreviews/:productId', async(req,res)=>{
+  try {
+
+    const product = await Product.findById(req.params.productId)
+
+    if(!product || !product.reviews){
+      return res.json([])
+    }
+
+    res.json(product.reviews || []);
+  } catch (error) {
+    console.error('Erro ao buscar avaliações!', error);
+    res.status(500).json({ success: false, message: "Erro interno do servidor." });
+  }
+})
+
+router.post('/updatereview', fetchUser, async(req,res)=>{
+  try{
+    const {rating, comment} = req.body
+    const updateReview = {}
+
+    if(rating) updateReview.rating = rating;
+    if(comment) updateReview.comment = comment;
+
+    await Product.findByIdAndUpdate(req.user.id, updateReview)
+    res.json({success: true, message: 'Avaliação editada com sucesso!'})
+  }catch(error){
+    console.error('Edição falhou!:', error);
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+})
+
+router.post('/removefromreview', fetchUser, async(req,res)=>{
+  try {
+      const product = await Product.findById(req,body.productId)
+
+      if (!product) {
+        return res.status(404).json({ success: false, message: "Produto não encontrado" });
+      }
+
+      const updateReview = product.reviews.filter(review => review.userId.toString() !== req.user.id)
+
+      product.reviews = updateReview;
+
+      await product.save();
+      res.json({ success: true, message: "Review removido com sucesso" });
+    } catch (err) {
+      console.error("Erro ao remover review:", err);
+      res.status(500).json({ success: false, message: "Erro interno do servidor" });
+    }
+})
 
 module.exports = router;

@@ -18,8 +18,8 @@ const Hero = () => {
                     <p>coleções</p>
                     <p>para todos</p>
                 </div>
-                <Link to="/allProducts">
-                    <div className="hero-latest-btn" onClick={<NewColletions/>}>
+                <Link to="/allproducts">
+                    <div className="hero-latest-btn">
                         <div>
                             Últimos Lançamentos
                         </div>

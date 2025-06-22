@@ -9,7 +9,7 @@ import nav_profile from '../Assets/nav_profile.png'
 const Navbar = () => {
     const navigate = useNavigate();  // Declare navigate aqui, logo após a importação
     const [menu, setMenu] = useState("home");
-    const {getTotalCartItems} =useContext(ShopContext);
+    const {getTotalCartItems} = useContext(ShopContext);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const menuRef = useRef(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,7 +47,7 @@ const Navbar = () => {
             window.removeEventListener("resize", handleResize);
             window.removeEventListener('storage', handleStoreChange);
         };
-    }, [searchTerm, all_product, navigate, location]);
+    }, [searchTerm, location]);
 
     const handleFocus = () =>{
         setIsMenuOpen(true);
@@ -151,7 +151,7 @@ const Navbar = () => {
             {windowWidth >= 800 &&(
              <div className="nav-login-cart">
                 <Link to="cart"><i className="fa-solid fa-cart-shopping"></i></Link>
-                <div className="nav-cart-count">{getTotalCartItems()}</div>
+                <div className="nav-cart-count">{getTotalCartItems}</div>
                 {isLoggedIn ? 
                     (
                         <Link to='/profile' className='prof'>
@@ -231,11 +231,14 @@ const Navbar = () => {
                         <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category-mobile" : ""}>
                             <Link to="Unissex">Unissex</Link>
                         </li>
+                        <li onClick={() => setMenu("Imperdiveis")} className={menu === "Imperdiveis" ? "category" : ""}>
+                            <Link to="Imperdiveis">Imperdíveis</Link>
+                        </li>
                     </ul>
                     <div className="nav-login-cart-mobile">
                         <Link to="cart">
                             <i className="fa-solid cart-mobile-icon fa-cart-shopping"></i>
-                            <div className="nav-cart-count-mobile">{getTotalCartItems()}</div>
+                            <div className="nav-cart-count-mobile">{getTotalCartItems}</div>
                         </Link>
                         {isLoggedIn ? 
                             (
