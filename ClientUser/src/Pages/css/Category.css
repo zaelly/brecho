@@ -100,6 +100,9 @@
 
 
 @media(max-width:1450px){
+    .banner-left img{
+        width: 10rem;
+    }
     .shopcategory-products {
         justify-content: center;
         margin-left: 0;

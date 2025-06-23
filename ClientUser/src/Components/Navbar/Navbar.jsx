@@ -192,6 +192,8 @@ const Navbar = () => {
                         </li> 
                         <li onClick={() => setMenu("Imperdiveis")} className={menu === "Imperdiveis" ? "category" : ""}>
                             <Link to="Imperdiveis">Imperdíveis</Link>
+                        </li> <li onClick={() => setMenu("Eletronicos")} className={menu === "Eletronicos" ? "category" : ""}>
+                            <Link to="Eletronicos">Eletronicos</Link>
                         </li>
                     </ul>
                 </div>
@@ -233,6 +235,9 @@ const Navbar = () => {
                         </li>
                         <li onClick={() => setMenu("Imperdiveis")} className={menu === "Imperdiveis" ? "category" : ""}>
                             <Link to="Imperdiveis">Imperdíveis</Link>
+                        </li>
+                        <li onClick={() => setMenu("Eletronicos")} className={menu === "Eletronicos" ? "category" : ""}>
+                            <Link to="Eletronicos">Eletrônicos</Link>
                         </li>
                     </ul>
                     <div className="nav-login-cart-mobile">

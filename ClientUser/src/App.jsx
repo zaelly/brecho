@@ -9,6 +9,7 @@ import LoginSignup from './Pages/LoginSignup'
 import Footer from './Components/footer/Footer'
 import men_banner from './Components/Assets/banner_men.png'
 import women_banner from './Components/Assets/banner_women.png'
+import eletronico_banner from './Components/Assets/eletronico_banner.png'
 import kids_banner from './Components/Assets/banner_kids.png'
 import Unissex_banner from './Components/Assets/UNISEXFASHION.png'
 import desconto_banner from './Components/Assets/desconto_banner.png'
@@ -31,6 +32,7 @@ function App() {
             <Route path='/kid' element={<Category banner={kids_banner} category="kid"/>}/>
             <Route path='/Unissex' element={<Category banner={Unissex_banner} category="Unissex"/>}/>
             <Route path='/Imperdiveis' element={<Category banner={desconto_banner} category="Imperdiveis"/>}/>
+            <Route path='/Eletronicos' element={<Category banner={eletronico_banner} category="Eletronicos"/>}/>
             <Route path="/products" element={<Products/>}>
               <Route path=':productId' element={<Products/>}/>
             </Route>

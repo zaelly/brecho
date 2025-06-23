@@ -65,7 +65,9 @@ router.post('/seller/addproduct', fetchSeller, async (req,res)=>{
       size: Array.isArray(req.body.size) ? req.body.size : [],
       enable: req.body.enable === 'true' || req.body.enable === true,
       inOffer: req.body.inOffer === 'true' || req.body.inOffer === true,
-      descriptionProduct: req.body.descriptionProduct
+      descriptionProduct: req.body.descriptionProduct,
+      conditions: req.body.conditions,
+      marca: req.body.marca
     });
     await product.save();
     res.json({

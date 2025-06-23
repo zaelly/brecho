@@ -9,7 +9,7 @@
 }
 
 .description{
-  width: 50%;
+  width: 70%;
 }
 
 .description textarea{
@@ -147,15 +147,15 @@
 
 .addproduct-btn{
   margin-top: 2rem;
-    width: 195px;
-    height: 50px;
-    border: none;
-    cursor: pointer;
-    color: white;
-    border-radius: 6px;
-    background-color:  rgb(255, 86, 19);
-    font-size: 16px;
-    font-weight: 500;
+  width: 195px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  border-radius: 6px;
+  background-color:  rgb(255, 86, 19);
+  font-size: 16px;
+  font-weight: 500;
 }
 
 @media(max-width:800px){

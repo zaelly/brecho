@@ -14,8 +14,20 @@
     gap: 16px;
 }
 
+.info-produtos{
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
 .ProductDisplay-img-list img{
     height: 143px;
+}
+
+.description{
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
 }
 
 .productDisplay-main-img{
@@ -24,6 +36,7 @@
 }
 
 .ProductDisplay-right{
+    text-transform: capitalize;
     margin: 0px 70px;
     display: flex;
     flex-direction: column;
@@ -80,7 +93,7 @@
 
 .productDisplay-sizes{
     display: flex;
-    margin:35px 0;
+    margin:15px 0;
     gap: 15px;
 }
 

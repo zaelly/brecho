@@ -30,6 +30,14 @@ const productSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  marca:{
+    type: String,
+    required: true 
+  },
+  conditions:{
+    type: String,
+    required: true 
+  },
   avaliable:{
     type: Boolean,
     default: true,

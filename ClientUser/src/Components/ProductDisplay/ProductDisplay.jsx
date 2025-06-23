@@ -16,9 +16,12 @@ const ProductDisplay = (props) => {
     const {product} = props;
 
     console.log(product.descriptionProduct)
+
     const {addToCart} = useContext(ShopContext)
     const inOffer = product.inOffer;
     const sizes = product.size
+    const marca = product.marca
+    const conditions = product.conditions
   return (
     <>
         {windowWidth <= 1366 ? (
@@ -46,16 +49,42 @@ const ProductDisplay = (props) => {
                             ) : (
                                 <div className='productDisplay-new-prices'>R${product.current_price}</div> 
                             )}
-                        </div>    
+                        </div> 
                         <div className="description">
-                           {product.descriptionProduct}
+                            <span>Descrição:</span>
+                            <p>{product.descriptionProduct}</p>
+                        </div>   
+                        <div className="info-produtos">
+                            
+                            <div className="marca">
+                                <span>Marca:</span>
+                                {!marca ? (
+                                    <div>N/A</div>
+                                ) :(
+                                    <p>{product.marca}</p>
+                                )}
+                            </div>
+                            <div className="conditions">
+                                <span>Condições do produto:</span>
+                                {!conditions ?(
+                                    <p>
+                                        -
+                                    </p>
+                                ) : (
+                                     <p>{product.conditions}</p>
+                                )}
+                            </div>
                         </div>
                         <div className="product-display-right-size">
-                            <h1>Selecione o tamanho</h1>
+                            <h1>Tamanhos disponíveis</h1>
                             <div className="productDisplay-sizes">
-                                {sizes.map((size)=>(
+                                {!sizes ? (
+                                    sizes.map((size)=>(
                                      <div key={size}>{size}</div> 
-                                ))}
+                                ))
+                                ) : (
+                                    <p>N/A</p>
+                                )}
                             </div>
                         </div>
                         <button onClick={()=>{addToCart(product._id)}}>Add ao carrinho</button>
@@ -90,18 +119,43 @@ const ProductDisplay = (props) => {
                             ) : (
                                 <div className='productDisplay-new-prices'>R${product.current_price}</div> 
                             )}
-                        </div>    
+                        </div>  
                         <div className="description">
+                            <span>Descrição:</span>
                             {product.descriptionProduct}
+                        </div>   
+                        <div className="info-produtos">
+                            <div className="marca">
+                                <span>Marca:</span>
+                                {!marca ? (
+                                    <p>N/A</p>
+                                ) :(
+                                    <p>{product.marca}</p>
+                                )}
+                            </div>
+                            <div className="conditions">
+                                <span>Condições do produto:</span>
+                                {!conditions ?(
+                                    <p>
+                                        -
+                                    </p>
+                                ) : (
+                                     <p>{product.conditions}</p>
+                                )}
+                            </div>
                         </div>
+                        
                         <div className="product-display-right-size">
                             <h1>Selecione o tamanho</h1>
                             <div className="productDisplay-sizes">
                                 {/* criar um loop que mostra todos os tamanhos */}
-                                {sizes.map((size, index)=>(
-                                    /* criar um id para cada tamanho e o id que for clicado ele vai aparecer no cart */
-                                    <div key={size}>{size}</div> 
-                                ))}
+                                 {sizes ? (
+                                    sizes.map((size)=>(
+                                     <div key={size}>{size}</div> 
+                                ))
+                                ) : (
+                                    <p>N/A</p>
+                                )}
                             </div>
                         </div>
                         <button onClick={()=>{addToCart(product._id)}}>Add ao carrinho</button>

@@ -26,12 +26,16 @@ const Category = (props) => {
                 <h1>Produtos Imperdíveis</h1>
                 <p>Com <span>DESCONTOS</span> imperdíveis <br/>aproveite <span>AGORA MESMO!</span></p>
               </>
+            ) : props.category === 'Eletronicos' ? (
+              <>
+                <h1>Produtos Eletrônicos online!</h1>
+                <p>Venha conhecer e <span>aproveitar!</span></p>              </>
             ) : (
               <>
                  <h1>Moda {props.category === 'kid' ? 'Kids' : props.category}</h1>
                 <p>Venha conhecer e <span>aproveitar!</span></p>
               </>
-            )}           
+            )}         
               <button>Confira</button>
           </div>
         <div className='banner-left'>
@@ -45,7 +49,7 @@ const Category = (props) => {
       </div>
       <div className="shopcategory-products">
         <div className="itens">
-          {filteredProducts.map((item) => (
+          {filteredProducts.map((item, i) => (
             <Item
               key={i}
               id={item._id}

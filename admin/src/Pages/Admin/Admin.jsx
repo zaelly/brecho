@@ -6,7 +6,7 @@ import ListProduct from '../../components/ListProduct/ListProduct.jsx'
 import SellerProfile from '../../components/PerfilSeller/SellerProfile.jsx'
 import NewOrders from '../../components/OrderProducts/NewOrders.jsx'
 import ViewOrder from '../../components/OrderProducts/ViewOrder.jsx'
-import ChatSeller from '../../components/ChatSeller/ChatSeller.jsx'
+import Notifications from '../../components/Notifications/Notifications.jsx'
 
 const Admin = () => {
   return (
@@ -18,7 +18,7 @@ const Admin = () => {
         <Route path='profile' element={<SellerProfile/>}/>
         <Route path='neworder' element={<NewOrders/>}/>
         <Route path='vieworder' element={<ViewOrder/>}/>
-        <Route path='chatseller' element={<ChatSeller/>}/>
+        <Route path='notifications' element={<Notifications/>}/>
       </Routes>
     </div>
   )

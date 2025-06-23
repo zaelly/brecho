@@ -187,12 +187,12 @@ const DescriptionBox = ({ product }) => {
    return (
         <div className="descriptionbox">
             <div className="descriptionbox-navigator">
-                <div className="descriptionbox-nav-box">Descrição</div>
+                <div className="descriptionbox-nav-box">Perguntas</div>
                 <div className="descriptionbox-nav-box">Avaliações ({reviews.length})</div>
             </div>
 
             <div className="descriptionbox-description">
-                <p>{"Descrição não disponível."}</p>
+                <p>{"Nenhuma pergunta."}</p>
             </div>
 
             <div className="descriptionbox-description">
