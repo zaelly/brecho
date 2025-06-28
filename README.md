@@ -11,7 +11,7 @@ O Reverto Brechó é um site em desenvolvimento para brechós sustentaveis criad
 ### Back-End:
 - Node.js
 - MongoDb
-- Empress
+- Express
 
 Link de produção: 
 
