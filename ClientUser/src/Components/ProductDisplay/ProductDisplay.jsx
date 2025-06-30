@@ -78,7 +78,7 @@ const ProductDisplay = (props) => {
                         <div className="product-display-right-size">
                             <h1>Tamanhos disponíveis</h1>
                             <div className="productDisplay-sizes">
-                                {!sizes ? (
+                                {sizes ? (
                                     sizes.map((size)=>(
                                      <div key={size}>{size}</div> 
                                 ))

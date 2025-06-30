@@ -38,6 +38,19 @@ a:hover {
     gap: 10px;
 }
 
+.mob-logo{
+    justify-content: center;
+    display: flex;
+    padding-bottom: 1rem; 
+}
+
+.mob-logo img{
+    margin-bottom: -10px; 
+    border-radius: 10rem;
+    background-color: #fff;
+    border: 3px solid #fff
+}
+
 .profile{
     width: 40px;
     height: 40px;
@@ -76,6 +89,7 @@ li{
 }
 
 .form-control{
+    width: 20rem;
     border-radius: 50px;
     border:  rgb(109, 0, 0);
     padding: .3rem 1rem;
@@ -104,6 +118,7 @@ li{
 .input-group-text{
     background-color: rgb(109, 0, 0);
     border: none;
+    padding: .2rem;
     border-radius:0 1rem 1rem 0;
 }
 
@@ -302,6 +317,7 @@ li{
     display: flex;
     justify-content: center;
     margin-bottom: 2rem;
+    align-items: center;
 }
 
 .nav-search-mobile svg{
@@ -316,6 +332,8 @@ li{
 .mobile-menu {
     position: fixed;
     top: 0;
+    align-items: center;
+    justify-content: center;
     right: -100%;
     width: 70%;
     height: 100vh;
@@ -356,9 +374,10 @@ li{
 .nav-login-cart-mobile{
     display: flex;
     color: white;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 25px;
+    margin-bottom: 1rem;
     margin-top: -4px;
 }
 
@@ -418,7 +437,7 @@ li{
 
 .category-mobile a{
     text-decoration: none;
-    color: rgb(255, 152, 152);
+    color: rgb(255, 223, 154);
 }
 
 .cart-mobile-icon{

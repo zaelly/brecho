@@ -199,7 +199,33 @@ const Navbar = () => {
                 </div>
             ) : (
                 <div ref={menuRef} tabIndex={0} className={`mobile-menu ${isMenuOpen ? "active" : ""}`} onFocus={handleFocus}>
-                   <div className="nav-search-mobile">
+                    <div className="nav-logo mob-logo">
+                        <img src={logo} alt="" />
+                    </div>
+                    <div className="nav-login-cart-mobile">
+                        {isLoggedIn ? 
+                            (
+                               <Link to='/profile' className='prof'>
+                                    <div className="profile">
+                                        <img src={image_profile} onChange={save_profile}/>
+                                    </div>
+                                    <p>Perfil</p>
+                                </Link> 
+                            )
+                            : (
+                            <button>
+                                <Link to="/LoginSignup">
+                                    <i className="fa-solid fa-circle-user"></i> Entrar
+                                </Link>
+                            </button>
+                            )
+                        } 
+                        <Link to="cart">
+                            <i className="fa-solid cart-mobile-icon fa-cart-shopping"></i>
+                            <div className="nav-cart-count-mobile">{getTotalCartItems}</div>
+                        </Link>
+                    </div>
+                    <div className="nav-search-mobile">
                        <input 
                         type="text" 
                         onKeyDown={(e) => {if (e.key === 'Enter') {searchProducts(searchTerm)}}}
@@ -214,10 +240,10 @@ const Navbar = () => {
                         />
 
                         <span className="input-group-text" onClick={() => searchProducts(searchTerm)} id="basic-addon1">      
-                        <i className="fa-solid fa-magnifying-glass"></i>      
+                            <i className="fa-solid fa-magnifying-glass"></i>      
                         </span>
                     </div>
-                     <ul className="menu-categorys-mobile">
+                    <ul className="menu-categorys-mobile">
                         <li onClick={() => setMenu("home")} className={menu === "home" ? "category-mobile" : ""}>
                             <Link to="/">Home</Link>
                         </li>
@@ -240,30 +266,6 @@ const Navbar = () => {
                             <Link to="Eletronicos">Eletrônicos</Link>
                         </li>
                     </ul>
-                    <div className="nav-login-cart-mobile">
-                        <Link to="cart">
-                            <i className="fa-solid cart-mobile-icon fa-cart-shopping"></i>
-                            <div className="nav-cart-count-mobile">{getTotalCartItems}</div>
-                        </Link>
-                        {isLoggedIn ? 
-                            (
-                               <Link to='/profile' className='prof'>
-                                    <div className="profile">
-                                        <img src={image_profile} onChange={save_profile}/>
-                                    </div>
-                                    <p>Perfil</p>
-                                </Link> 
-                            )
-                            : (
-                            <button>
-                                <Link to="/LoginSignup">
-                                    <i className="fa-solid fa-circle-user"></i> Entrar
-                                </Link>
-                            </button>
-                            )
-                        }
-                    </div>
-                   
                 </div>
             )}
     </>

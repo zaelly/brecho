@@ -104,7 +104,7 @@ router.post('/seller/removeproduct', fetchSeller, async (req, res) => {
 
 // criando api para pegar todos produtos
 router.get('/seller/allproducts', fetchSeller, async(req, res)=>{
-  let products = await Product.find({ sellerId: req.seller.id }).lean();
+  let products = await Product.find({ sellerId: req.seller.id });
 
   res.json(products);
 })

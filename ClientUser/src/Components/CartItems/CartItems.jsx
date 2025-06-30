@@ -22,6 +22,9 @@ const CartItems = () => {
         {all_product.map((product) => {
             if(cartItem[product._id] > 0){
 
+            console.log(cartItem[product._id])
+            console.log(product.size)
+            
             const unitPrice = product.inOffer ? product.new_price : product.current_price;
             const totalPrice = unitPrice * cartItem[product._id];
 
@@ -35,9 +38,9 @@ const CartItems = () => {
                 <div className="cartItems-format cartItems-format-main">
                     <img src={product.image} className="cartItems-product-icon" alt={product.name} />
                     <p>{product.name}</p>
-                    <p>R${unitPrice.toFixed(2)}</p>
+                    <p>R${unitPrice}</p>
                     <button className="CartItems-quantity">{cartItem[product._id]}</button>
-                    <p className="CartItems-quantity">{product.size || 'N/A'}</p>
+                    <p className="CartItems-quantity">{product.size[0] || 'N/A'}</p>
                     <p>R${totalPrice.toFixed(2)}</p>
                     <i className="fa-solid fa-trash" onClick={() => removeFromCart(product._id)} role="button" tabIndex="0"></i>
                 </div>

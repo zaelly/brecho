@@ -1,13 +1,9 @@
 import { createContext, useState, useEffect, useMemo } from "react";
 export const ShopContext = createContext(null);
 
-const getDefaultCart = ()=>{
-    return {};
-}
-
 const ShopContextProvider = (props) => {
 
-    const [cartItem, setCartItems] = useState(getDefaultCart());
+    const [cartItem, setCartItems] = useState({});
     const [all_product, setAll_products] = useState([]);
     const [review, setReview] = useState({})
 
@@ -27,7 +23,10 @@ const ShopContextProvider = (props) => {
                 body: JSON.stringify({}),
             })
             .then((response)=>response.json())
-            .then((data)=>setCartItems(data))
+            .then((data)=>{
+                setCartItems(data)
+            })
+            
         }
     },[])
 
