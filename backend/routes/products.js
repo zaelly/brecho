@@ -126,6 +126,24 @@ router.post('/addreviews', fetchUser, async(req,res)=>{
     date: new Date()
   };
 
+  //verificar se o usuario esta logado pra add avaliação
+
+  const userLog =  await Users.findOne({ email });
+
+  if (userLog) {
+    const data = {
+      user: {
+        id: userLog._id
+      }
+    };
+    const verifyUser = review.userId
+    if(verifyUser == data){
+      return res.json({ success: true, token });
+    }else{
+      return res.status(401).json({ success: false, errors: "Faça login para adicionar um review!" });
+    }
+  }
+
   try{
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,

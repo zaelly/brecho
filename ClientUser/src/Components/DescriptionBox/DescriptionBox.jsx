@@ -17,11 +17,11 @@ const DescriptionBox = ({ product }) => {
         comment: ''
     })
 
-    const verifyLogUser = ()=>{
-        const logId = localStorage.getItem('auth-token');
-        const logAuth = localStorage.getItem('users-id');
-        return !!(logId || logAuth);
-    }
+    // const verifyLogUser = ()=>{
+    //     const logId = localStorage.getItem('auth-token');
+    //     const logAuth = localStorage.getItem('users-id');
+    //     return !!(logId || logAuth);
+    // }
 
     const toggleReview = () => setExistReview(prev => !prev)
 
@@ -132,10 +132,10 @@ const DescriptionBox = ({ product }) => {
         const handleSize = () => setWindowWidth(window.innerWidth);
         window.addEventListener("resize", handleSize);
 
-        setUserLog(verifyLogUser());
-        const interval = setInterval(() => {
-            setUserLog(verifyLogUser());
-        }, 1000);
+        // setUserLog(verifyLogUser());
+        // const interval = setInterval(() => {
+        //     setUserLog(verifyLogUser());
+        // }, 1000);
 
 
         if (product && product._id) {
@@ -233,52 +233,46 @@ const DescriptionBox = ({ product }) => {
                                     )}
                                 </div>
                                 <div className="btnEdit">
-                                    {userLog  && (
-                                        <>
-                                            <button
-                                                className="editReview"
-                                                onClick={() => {
-                                                    if (editingReviewId === review._id) {
-                                                        saveEditedReview(review._id);
-                                                    } else {
-                                                        setEditingReviewId(review._id);
-                                                        setEditedReview(prev => ({
-                                                            ...prev,
-                                                            [review._id]: {
-                                                                rating: review.rating,
-                                                                comment: review.comment
-                                                            }
-                                                        }));
+                                    <button
+                                        className="editReview"
+                                        onClick={() => {
+                                            if (editingReviewId === review._id) {
+                                                saveEditedReview(review._id);
+                                            } else {
+                                                setEditingReviewId(review._id);
+                                                setEditedReview(prev => ({
+                                                    ...prev,
+                                                    [review._id]: {
+                                                        rating: review.rating,
+                                                        comment: review.comment
                                                     }
-                                                }}
-                                                disabled={isLoading}
-                                            >
-                                                {isLoading
-                                                    ? 'Salvando...'
-                                                    : editingReviewId === review._id
-                                                    ? 'Salvar'
-                                                    : 'Editar'}
-                                            </button>
-                                            <i className="fa-solid fa-trash" onClick={() => removeFromReview(product._id)} role="button" tabIndex="0"></i>
-                                        </>
-                                    )}
+                                                }));
+                                            }
+                                        }}
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading
+                                            ? 'Salvando...'
+                                            : editingReviewId === review._id
+                                            ? 'Salvar'
+                                            : 'Editar'}
+                                    </button>
+                                    <i className="fa-solid fa-trash" onClick={() => removeFromReview(product._id)} role="button" tabIndex="0"></i>
                                 </div>
                             </li>
                         ))}
                     </ul>
                 )}
 
-                {userLog  && (  
                     <button
                         className={`textReview ${existReview ? 'hide' : 'show'}`}
                         onClick={toggleReview}
                     >
                         Adicionar avaliação
                     </button>
-                )}
 
                 <hr />
-                { userLog && (
+                {/* { userLog && (
                     <div className={`textReview ${existReview ? 'show' : 'hide'}`}>
                         <div className="stars">
                             <p>Adicione uma nota!</p>
@@ -309,7 +303,7 @@ const DescriptionBox = ({ product }) => {
                             Enviar Review
                         </button>
                     </div>
-                )}
+                )} */}
             </div>
         </div>
     );
