@@ -16,12 +16,14 @@ import desconto_banner from './Components/Assets/desconto_banner.png'
 import AllProducts from './Pages/AllProducts'
 import ProductsFilter from './Components/ProductsFilter/ProductsFilter'
 import PerfilUser from './Pages/PerfilUser'
+import { ToastContainer } from 'react-toastify';
 
 function App() {
 
   return (
     <>
     <div className="app-container">
+      <ToastContainer position="top-right" autoClose={4000} />
       <BrowserRouter>
         <Navbar/>
         <main className="main-content">

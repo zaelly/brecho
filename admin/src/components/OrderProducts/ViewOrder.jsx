@@ -1,5 +1,7 @@
 import './ViewOrder.css'
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const ViewOrder = () => {
     const [productDetails, setProductDetails] = useState({

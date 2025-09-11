@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import './SellerProfile.css';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const SellerProfile = () => {
   const [image, setImage] = useState(null);
@@ -20,7 +22,7 @@ const SellerProfile = () => {
   };
 
   const successHandle = () => {
-    alert('Perfil Alterado!');
+    toast.success('Perfil Alterado!');
     fetchProfile();
   };
 
@@ -52,7 +54,7 @@ const SellerProfile = () => {
       // imagem de cada vendedor setada
       localStorage.setItem(`seller-image-${sellerId}`, data.data.image);
     } else {
-      alert(data.errors || "Erro ao buscar perfil");
+      toast.error(data.errors || "Erro ao buscar perfil");
     }
   };
   
@@ -85,7 +87,7 @@ const SellerProfile = () => {
         localStorage.setItem('seller-image', responseData.image_url);
       }
       if (!responseData || !responseData.success) {
-        alert('Falha ao fazer upload da imagem');
+        toast.error('Falha ao fazer upload da imagem');
         setIsLoading(false);
         return;
       }
@@ -103,7 +105,7 @@ const SellerProfile = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        data.success ? successHandle() : alert('Alteração de perfil falhou!');
+        data.success ? successHandle() : toast.error('Alteração de perfil falhou!');
       })
       .finally(() => setIsLoading(false)); // Stop loading
   };

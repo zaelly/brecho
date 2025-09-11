@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import './NewsLetter.css'
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const NewsLetter = () => {
 
   const [ takeEmail, setValueEmail] = useState("")
 
   const sendEmail = async()=>{
-    if(!takeEmail) return alert("Digite um email!")
+    if(!takeEmail) return toast.warn("Digite um email!")
     try{
       const res = await fetch("http://localhost:4000/sendemail",{
         method: 'POST', 
@@ -16,11 +18,11 @@ const NewsLetter = () => {
         body: JSON.stringify({email: takeEmail})
       })
       const data = await res.json();
-      alert(data.message);
+      toast(data.message);
       setValueEmail('');
     }catch(err){
       console.error("Erro ao enviar:", err);
-      alert("Erro ao enviar e-mail.");
+      toast.error("Erro ao enviar e-mail.");
     }
     
   }

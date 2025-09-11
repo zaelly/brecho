@@ -1,5 +1,7 @@
 import './AddProduct.css'
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
 
@@ -56,7 +58,7 @@ const AddProduct = () => {
   },[productDetails.sellerId])
 
   const successHandle = ()=>{
-    alert("Produto Adicionado!");
+    toast.success("Produto Adicionado!");
     setProductDetails({
       name:"",
       image:"",
@@ -92,18 +94,18 @@ const AddProduct = () => {
     if (product.inOffer) {
       product.current_price = undefined;
       if (!product.old_price || !product.new_price) {
-        alert("Preço antigo e preço de oferta são obrigatórios para produtos em oferta.");
+        toast.warn("Preço antigo e preço de oferta são obrigatórios para produtos em oferta.");
         return;
       }
       if(product.new_price > product.old_price){
-        alert("Preço antigo é MENOR que preço de oferta altere o valor!.");
+        toast.warn("Preço antigo é MENOR que preço de oferta altere o valor!.");
         return;
       }
     } else {
       product.old_price = undefined;
       product.new_price = undefined;
       if (!product.current_price) {
-        alert("Preço atual é obrigatório para produtos sem oferta.");
+        toast.warn("Preço atual é obrigatório para produtos sem oferta.");
         return;
       }
     }
@@ -131,7 +133,7 @@ const AddProduct = () => {
         },
         body: JSON.stringify(product),
       }).then((resp)=>resp.json()).then((data)=>{
-        data.success ? successHandle() : alert("Adição de produto falhou!")
+        data.success ? successHandle() : toast.error("Adição de produto falhou!")
       })
     }
   }

@@ -112,5 +112,3 @@ server.listen(port, (err) => {
     console.log(`✅ Servidor rodando na porta ${port}`);
   }
 });
-
-//chat

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './css/loginSignup.css'
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginSignup = () => {
 
@@ -31,7 +33,7 @@ const LoginSignup = () => {
       localStorage.setItem('auth-token', responseData.token);
       window.location.replace("/");
     }else{
-      alert(responseData.errors)
+      toast.error(responseData.errors)
     }
   }
 
@@ -52,7 +54,7 @@ const LoginSignup = () => {
       localStorage.setItem('auth-token', responseData.token);
       window.location.replace("/");
     }else{
-      alert(responseData.errors)
+      toast.error(responseData.errors)
     }
   }
 

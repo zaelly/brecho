@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import './DescriptionBox.css'
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const DescriptionBox = ({ product }) => {
     const [widthResize, setWindowWidth] = useState(window.innerWidth);
@@ -34,7 +36,7 @@ const DescriptionBox = ({ product }) => {
     }
 
     const successHandle =()=>{
-        alert("Avaliação Adicionada!");
+        toast.success("Avaliação Adicionada!");
         setSendReview({
             name: '',
             productId: product._id || '',
@@ -48,12 +50,12 @@ const DescriptionBox = ({ product }) => {
         setIsLoading(true); 
 
         if (!productId || productId.trim() === '') {
-            alert("ID do produto está ausente. Tente novamente.");
+            toast.error("ID do produto está ausente. Tente novamente.");
             return;
         }
 
         if (!comment.trim()) {
-            alert("Comentário não pode estar vazio.");
+            toast.warn("Comentário não pode estar vazio.");
             return;
         }
 
@@ -73,7 +75,7 @@ const DescriptionBox = ({ product }) => {
                 successHandle();
                 setReviews(data.product.reviews || []);
             }else {
-                alert(data.message || "Erro ao adicionar review.");
+                toast.error(data.message || "Erro ao adicionar review.");
             }
         } catch (err) {
             console.error("Erro:", err);
@@ -115,11 +117,11 @@ const DescriptionBox = ({ product }) => {
 
             const data = await response.json();
             if (data.success) {
-                alert("Avaliação atualizada!");
+                toast.success("Avaliação atualizada!");
                 setEditingReviewId(null);
                 setReviews(data.product.reviews || []);
             } else {
-                alert("Erro ao editar avaliação");
+                toast.error("Erro ao editar avaliação");
             }
         } catch (err) {
             console.error(err);
@@ -177,7 +179,7 @@ const DescriptionBox = ({ product }) => {
                 if (data.success) {
                    setReviews(prev => prev.filter(r => r._id !== itemId));
                 } else {
-                    alert("Erro ao remover avaliação.");
+                    toast.error("Erro ao remover avaliação.");
                 }
             })
             .catch(err => console.error(err));
