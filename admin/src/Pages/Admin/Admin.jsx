@@ -7,10 +7,12 @@ import SellerProfile from '../../components/PerfilSeller/SellerProfile.jsx'
 import NewOrders from '../../components/OrderProducts/NewOrders.jsx'
 import ViewOrder from '../../components/OrderProducts/ViewOrder.jsx'
 import Notifications from '../../components/Notifications/Notifications.jsx'
+import { ToastContainer } from 'react-toastify';
 
 const Admin = () => {
   return (
     <div className="Admin">
+      <ToastContainer position="top-right" autoClose={4000} />
       <Sidebar/>
       <Routes>
         <Route path='addproduct' element={<AddProduct/>}/>

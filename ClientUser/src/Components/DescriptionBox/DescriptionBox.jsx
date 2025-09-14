@@ -19,11 +19,11 @@ const DescriptionBox = ({ product }) => {
         comment: ''
     })
 
-    // const verifyLogUser = ()=>{
-    //     const logId = localStorage.getItem('auth-token');
-    //     const logAuth = localStorage.getItem('users-id');
-    //     return !!(logId || logAuth);
-    // }
+    const verifyLogUser = ()=>{
+        const logId = localStorage.getItem('auth-token');
+        const logAuth = localStorage.getItem('users-id');
+        return !!(logId || logAuth);
+    }
 
     const toggleReview = () => setExistReview(prev => !prev)
 
@@ -134,10 +134,10 @@ const DescriptionBox = ({ product }) => {
         const handleSize = () => setWindowWidth(window.innerWidth);
         window.addEventListener("resize", handleSize);
 
-        // setUserLog(verifyLogUser());
-        // const interval = setInterval(() => {
-        //     setUserLog(verifyLogUser());
-        // }, 1000);
+        setUserLog(verifyLogUser());
+        const interval = setInterval(() => {
+            setUserLog(verifyLogUser());
+        }, 1000);
 
 
         if (product && product._id) {

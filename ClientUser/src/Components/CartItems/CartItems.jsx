@@ -19,38 +19,42 @@ const CartItems = () => {
             <p>Remover</p>
         </div>
         <hr />
-        {all_product.map((product) => {
-            if(cartItem[product._id] > 0){
+        {Object.entries(cartItem).map(([key, quantity]) => {
+            if (quantity > 0) {
+                const [itemId, size] = key.split("_");
+                if(size.length > 1){
+                    size.split(", ");
+                }
+                const product = all_product.find(p => p._id === itemId);
 
-            console.log(cartItem[product._id])
-            console.log(product.size)
-            
-            const unitPrice = product.inOffer ? product.new_price : product.current_price;
-            const totalPrice = unitPrice * cartItem[product._id];
+                if (!product) return null;
 
-            //se quantidade for = 0 ou < 0 entao nao vai poder finalizar a venda
-           
-            //se for > 0 e tiver meio de pagamento entao finaliza
-            //se quantidade for > 0 e nao tiver meio de pagamento entao nao deixar finalizar
+                const unitPrice = product.inOffer ? product.new_price : product.current_price;
+                const totalPrice = unitPrice * quantity;
 
-            return (
-                <div key={product._id} className="cart-mobile">
-                <div className="cartItems-format cartItems-format-main">
-                    <img src={product.image} className="cartItems-product-icon" alt={product.name} />
-                    <p>{product.name}</p>
-                    <p>R${unitPrice}</p>
-                    <button className="CartItems-quantity">{cartItem[product._id]}</button>
-                    <p className="CartItems-quantity">{product.size[0] || 'N/A'}</p>
-                    <p>R${totalPrice.toFixed(2)}</p>
-                    <i className="fa-solid fa-trash" onClick={() => removeFromCart(product._id)} role="button" tabIndex="0"></i>
-                </div>
-                <hr />
-                </div>
-            );
-        }
+                return (
+                    <div key={key} className="cart-mobile">
+                        <div className="cartItems-format cartItems-format-main">
+                            <img src={product.image} className="cartItems-product-icon" alt={product.name} />
+                            <p>{product.name}</p>
+                            <p>R${unitPrice}</p>
+                            <button className="CartItems-quantity">{quantity}</button>
+                            <p className="CartItems-quantity">{size}</p>
+                            <p>R${totalPrice.toFixed(2)}</p>
+                            <i 
+                            className="fa-solid fa-trash" 
+                            onClick={() => removeFromCart(key)} 
+                            role="button" 
+                            tabIndex="0"
+                            ></i>
+                        </div>
+                        <hr />
+                    </div>
+                );
+            }
             return null;
         })}
-        
+
        <div className="cartItems-down">
             {/* <div className="cartItems-promocode">
                 <p>Cupom de Desconto</p>
@@ -64,7 +68,7 @@ const CartItems = () => {
                 <div>
                     <div className="cartItems-total-item">
                         <p>Subtotal:</p>
-                        <p>R${getTotalCartAmount().toFixed(2)}</p>
+                        <p>R${getTotalCartAmount.toFixed(2)}</p>
                     </div>
                     <hr />
                     <div className="cartItems-total-item">
@@ -74,7 +78,7 @@ const CartItems = () => {
                     <hr />
                     <div className="cartItems-total-item">
                         <h3>Total:</h3>
-                        <h3>R${getTotalCartAmount().toFixed(2)}</h3>
+                        <h3>R${getTotalCartAmount.toFixed(2)}</h3>
                     </div>
                 </div>
                 <button>FINALIZAR</button>

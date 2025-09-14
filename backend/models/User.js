@@ -3,13 +3,16 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
+    required : true
   },
   email: {
     type: String,
     unique: true,
+    required : true
   },
   password: {
     type: String,
+    required : true
   },
   cartData: {
     type: Object,
@@ -21,8 +24,7 @@ const userSchema = new mongoose.Schema({
   },
   cpf: {
     type: String,
-    unique: true, 
-    match: /^\d{11}$/
+    match: /^\d{11}$/,
   },
   adress:{
     type: String,
@@ -31,5 +33,9 @@ const userSchema = new mongoose.Schema({
     type: String
   }
 });
+
+userSchema.index(
+  {cpf: 1}, {unique:true, partialFilterExpression: {cpf: {$exist:true, $ne: null}}}
+);
 
 module.exports = mongoose.model('Users', userSchema);

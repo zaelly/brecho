@@ -24,6 +24,9 @@
     height: 143px;
 }
 
+.selected{
+    background-color: #3d3d3d;
+}
 .description{
     display: flex;
     gap: 10px;

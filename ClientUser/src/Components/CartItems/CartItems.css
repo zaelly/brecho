@@ -3,6 +3,11 @@
     height: 50px;
     border: 1px solid #e7e7e7;
     color: black;
+    border-radius: 1rem;
+    align-items: center;
+    display: flex;
+    padding: 0 2rem;
+    justify-content: center;
     background-color: transparent;
 }
 

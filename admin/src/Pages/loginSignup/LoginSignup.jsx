@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import './LoginSignup.css';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
 
 const LoginSignup = () => {
   const [signup, setSignup] = useState(false);
@@ -10,7 +13,6 @@ const LoginSignup = () => {
     password: '',
   });
   const [loading, setLoading] = useState(false);  // Estado de carregamento
-  const [error, setError] = useState(null);  // Estado para mensagens de erro
 
   const navigate = useNavigate();
 
@@ -37,11 +39,12 @@ const LoginSignup = () => {
       if (data.success) {
         localStorage.setItem("auth-token", data.token);
         navigate("/admin");
+        toast.success("Login feito com sucesso!")
       } else {
-        setError("Login falhou: " + data.message);
+        toast.error("Login falhou, tente novamente");
       }
     } catch (err) {
-      setError("Ocorreu um erro. Tente novamente.");
+      toast.error("Ocorreu um erro. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -60,11 +63,12 @@ const LoginSignup = () => {
       if (data.success) {
         localStorage.setItem("auth-token", data.token);
         navigate("/admin");
+        toast.success("Cadastro feito com sucesso!")
       } else {
-        setError("Cadastro falhou: " + data.message);
+        toast.error("Cadastro falhou: " + data.message);
       }
     } catch (err) {
-      setError("Ocorreu um erro. Tente novamente.");
+      toast.error("Ocorreu um erro. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -72,11 +76,9 @@ const LoginSignup = () => {
 
   return (
     <div className="LoginSignup">
+      <ToastContainer position="top-right" autoClose={4000} />
       <div className={`loginSignup-container ${signup ? "active" : ""}`}>
         <h1>{signup ? "Sign Up Seller" : "Login Seller"}</h1>
-
-        {error && <div className="error-message">{error}</div>} {/* Mensagem de erro */}
-
         {signup ? (
           <>
             <div className="login-fields">

@@ -9,7 +9,7 @@ import nav_profile from '../Assets/nav_profile.png'
 const Navbar = () => {
     const navigate = useNavigate();  // Declare navigate aqui, logo após a importação
     const [menu, setMenu] = useState("home");
-    const {getTotalCartItems} = useContext(ShopContext);
+    const {totalCartItems} = useContext(ShopContext);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const menuRef = useRef(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -151,7 +151,7 @@ const Navbar = () => {
             {windowWidth >= 800 &&(
              <div className="nav-login-cart">
                 <Link to="cart"><i className="fa-solid fa-cart-shopping"></i></Link>
-                <div className="nav-cart-count">{getTotalCartItems}</div>
+                <div className="nav-cart-count">{totalCartItems}</div>
                 {isLoggedIn ? 
                     (
                         <Link to='/profile' className='prof'>
@@ -222,7 +222,7 @@ const Navbar = () => {
                         } 
                         <Link to="cart">
                             <i className="fa-solid cart-mobile-icon fa-cart-shopping"></i>
-                            <div className="nav-cart-count-mobile">{getTotalCartItems}</div>
+                            <div className="nav-cart-count-mobile">{totalCartItems}</div>
                         </Link>
                     </div>
                     <div className="nav-search-mobile">

@@ -1,9 +1,7 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from './components/navbar/Navbar'
 import Admin from './Pages/Admin/Admin.jsx'
 import LoginSignup from './Pages/loginSignup/LoginSignup.jsx'
-import { ToastContainer } from 'react-toastify';
 
 // Componente de rota protegida
 const PrivateRoute = ({ children }) => {
@@ -19,7 +17,6 @@ const AppContent = () => {
     <>
       {!isLoginPage && <Navbar />}
       <Routes>
-        <ToastContainer position="top-right" autoClose={4000} />
         <Route path="/login" element={<LoginSignup />} />
         <Route path="/admin/*" element={
           <PrivateRoute>

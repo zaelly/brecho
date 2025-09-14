@@ -49,7 +49,7 @@ router.post('/user/signup', async (req, res) => {
       name: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-      cartData: {},  // Inicializando o carrinho como vazio
+      cartData: {},  
       cpf: req.body.cpf,
       adress: req.body.adress
     });
