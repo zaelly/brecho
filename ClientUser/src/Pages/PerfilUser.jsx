@@ -52,6 +52,7 @@ const PerfilUser = () => {
         city: data.data.city,
       }));
       localStorage.setItem("users-id", usersId);
+      localStorage.setItem("users-name", data.data.name);
       // imagem de cada vendedor setada
       localStorage.setItem(`users-image-${usersId}`, data.data.image);
     } else {

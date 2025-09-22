@@ -76,17 +76,22 @@ const ShopContextProvider = (props) => {
         }
     };
 
-    const removeFromCart = (itemId) => {
-        setCartItems((prev) => ({...prev,[itemId]: prev[itemId] - 1}));
+    const removeFromCart = (itemId, size) => {
+        const key = `${itemId}_${size}`
+        setCartItems(prev => ({
+            ...prev,
+            [key]: (prev[key] || 0) - 1
+        }));        
+
         if(localStorage.getItem('auth-token')){
             fetch('http://localhost:4000/api/cart/removefromcart',{
                 method: 'POST',
                 headers: {
-                    Accept:'application/form-data',
+                    Accept:'application/json',
                     'auth-token': `${localStorage.getItem('auth-token')}`,
                     'Content-Type': 'application/json' 
                 },
-                body:JSON.stringify({"itemId":itemId}),
+                body:JSON.stringify({itemId, size}),
             })
             .then((response)=>response.json())
             .then((data)=>{
@@ -100,15 +105,16 @@ const ShopContextProvider = (props) => {
     const getTotalCartAmount = useMemo(()=>{
         let totalAmount = 0;
 
-        for(const item in cartItem){
-            const qntd = cartItem[item]            
+        for(const key in cartItem){
+            const qtd = cartItem[key]
+            if(qtd > 0){
+                const [itemId, size] = key.split("_")
 
-            if (qntd > 0) {                        
-                const itemInfo = all_product.find((product) => product._id === item);
+                const itemInfo = all_product.find(p => p._id === itemId)
                 if (!itemInfo) continue;
 
                 const price = itemInfo.inOffer ? itemInfo.new_price : itemInfo.current_price;
-                totalAmount += price * qntd;
+                totalAmount += price * qtd;
             }
         }
         return totalAmount;
@@ -125,18 +131,7 @@ const ShopContextProvider = (props) => {
         return totalItem;
     },[cartItem])
 
-    const groupedCart = Object.entries(cartItem).reduce((acc, [key, quantity]) => {
-        if (quantity <= 0) return acc;
-
-        const [itemId, size] = key.split("_");
-        if (!acc[itemId]) acc[itemId] = { sizes: [], quantity: 0 };
-
-        acc[itemId].sizes.push(size);
-        acc[itemId].quantity += quantity;
-        return acc;
-    }, {});
- 
-    const contextValue = {totalCartItems, groupedCart, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart};
+    const contextValue = {totalCartItems, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart};
     
     return (
         <ShopContext.Provider value={contextValue}>

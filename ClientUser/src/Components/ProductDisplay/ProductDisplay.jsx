@@ -18,8 +18,6 @@ const ProductDisplay = (props) => {
     },[])
     const {product} = props;
 
-    console.log(product.size)
-
     const {addToCart} = useContext(ShopContext)
     const inOffer = product.inOffer;
     const sizes = product.size
@@ -80,6 +78,7 @@ const ProductDisplay = (props) => {
                         </div>
                         <div className="product-display-right-size">
                             <h1>Tamanhos disponíveis</h1>
+                            <p>Adicione um por vez</p>
                             <div className="productDisplay-sizes">
                                 {sizes.map(size => (
                                     <div 

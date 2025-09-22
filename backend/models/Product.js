@@ -70,6 +70,9 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   reviews: [{
+    name: {
+      type: String,
+    },
     userId: {
       type: String,
     },

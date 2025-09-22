@@ -9,8 +9,9 @@ import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
 
 const Products = () => {
   const { all_product } = useContext(ShopContext);
-  const { productId } = useParams();
+  const { productId, reviewId } = useParams();
   const product = all_product.find((e) =>e._id === productId);
+  const review = product?.review?.find((e)=> e._id === reviewId)
 
   if (!product) {
     return <div className='looping-products'>Produto não encontrado!</div>;
@@ -20,7 +21,7 @@ const Products = () => {
     <div className="products">
       <Breadcrums product={product} />
       <ProductDisplay product={product} />
-      <DescriptionBox product={product}/>
+      <DescriptionBox product={product} review={review}/>
       <RelatedProducts />
     </div>
   );

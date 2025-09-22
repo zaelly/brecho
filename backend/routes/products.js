@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require('../models/Product.js');
 const { fetchSeller, fetchUser } = require('../middlewares/auth');
 const dotenv = require("dotenv");
+const jwt = require("jsonwebtoken");
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -117,32 +118,17 @@ router.use((err, req, res, next) => {
 //comentarios/avaliações
 router.post('/addreviews', fetchUser, async(req,res)=>{
   const {name, productId, rating, comment } = req.body;
+  console.log(productId, "add reviews")
 
   const review = {
-    name: req.body.name,
+    name: req.user.name || `Usuário-${req.user.id.slice(0,3)}`,
     userId: req.user.id,
-    rating,
+    rating: rating || 1,
     comment,
     date: new Date()
   };
 
-  //verificar se o usuario esta logado pra add avaliação
-
-  const userLog =  await Users.findOne({ email });
-
-  if (userLog) {
-    const data = {
-      user: {
-        id: userLog._id
-      }
-    };
-    const verifyUser = review.userId
-    if(verifyUser == data){
-      return res.json({ success: true, token });
-    }else{
-      return res.status(401).json({ success: false, errors: "Faça login para adicionar um review!" });
-    }
-  }
+  console.log(review)
 
   try{
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -175,14 +161,28 @@ router.get('/getreviews/:productId', async(req,res)=>{
 
 router.post('/updatereview', fetchUser, async(req,res)=>{
   try{
-    const {rating, comment} = req.body
-    const updateReview = {}
+    const {rating, comment, reviewId, productId} = req.body
 
-    if(rating) updateReview.rating = rating;
-    if(comment) updateReview.comment = comment;
+    const product = await Product.findById(productId)
+    if(!product){
+      return res.status(400).json({success: false, message: "Produto não encontrado!"})
+    }
 
-    await Product.findByIdAndUpdate(req.user.id, updateReview)
-    res.json({success: true, message: 'Avaliação editada com sucesso!'})
+    const review = product.reviews.id(reviewId)
+    if(!review){
+      return res.status(400).json({success: false, message: "Review não encontrada!"})
+    }
+
+    if (review.userId.toString() !== req.user.id.toString()) {
+      return res.status(403).json({ success: false, message: "Você não pode editar esta review" });
+    }
+
+    // atualiza comentario e estrelas
+    review.comment = comment;
+    review.rating = rating;
+
+    await product.save()
+    return res.json({success: true, message: "Review editada com sucesso!", product})
   }catch(error){
     console.error('Edição falhou!:', error);
     res.status(500).json({ success: false, message: "Erro interno do servidor" });
@@ -191,18 +191,29 @@ router.post('/updatereview', fetchUser, async(req,res)=>{
 
 router.post('/removefromreview', fetchUser, async(req,res)=>{
   try {
-      const product = await Product.findById(req,body.productId)
+      const {productId, reviewId} = req.body;
 
-      if (!product) {
-        return res.status(404).json({ success: false, message: "Produto não encontrado" });
+      const product = await Product.findById(productId)
+
+      if(!product){
+        return res.status(400).json({success: false, message: "Produto não encontrado!"})
       }
 
-      const updateReview = product.reviews.filter(review => review.userId.toString() !== req.user.id)
+      const review = product.reviews.id(reviewId)
+      if(!review){
+        return res.status(400).json({success: false, message: "Review não encontrada!"})
+      }
 
-      product.reviews = updateReview;
+      if (review.userId.toString() !== req.user.id.toString()) {
+        return res.status(403).json({ success: false, message: "Você não pode excluir esta review" });
+      }
+      review.deleteOne();
 
-      await product.save();
-      res.json({ success: true, message: "Review removido com sucesso" });
+      product.reviews = product.reviews.filter((e)=> e.rating != null)
+
+      await product.save()
+      res.json({ success: true, product});
+
     } catch (err) {
       console.error("Erro ao remover review:", err);
       res.status(500).json({ success: false, message: "Erro interno do servidor" });

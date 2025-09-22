@@ -6,13 +6,17 @@ const { fetchUser } = require("../middlewares/auth");
 
 router.post('/addtocart', fetchUser, async (req, res) => {
   try {
-    const { itemId } = req.body;
-    if (!itemId) return res.status(400).json({ success: false, message: "itemId é obrigatório." });
+    const { itemId, size } = req.body;
+    if (!itemId || !size) return res.status(400).json({ success: false, message: "itemId e size são obrigatórios." });
 
     let user = await Users.findById(req.user.id);
     let cart = { ...user.cartData };
 
-    cart[itemId] = (cart[itemId] || 0) + 1;
+    if (!cart[itemId]) {
+      cart[itemId] = {};
+    }
+
+    cart[itemId][size] = (cart[itemId][size] || 0) + 1;
 
     await Users.findByIdAndUpdate(req.user.id, { cartData: cart });
     res.json({ success: true, message: "Produto adicionado ao carrinho!" });
@@ -24,16 +28,20 @@ router.post('/addtocart', fetchUser, async (req, res) => {
 
 router.post('/removefromcart', fetchUser, async (req, res) => {
   try {
-    const { itemId } = req.body;
-    if (!itemId) return res.status(400).json({ success: false, message: "itemId é obrigatório." });
+    const { itemId, size } = req.body;
+    if (!itemId || !size) return res.status(400).json({ success: false, message: "itemId e size são obrigatórios." });
 
     let user = await Users.findById(req.user.id);
     let cart = { ...user.cartData };
 
-    if (cart[itemId]) {
-      if (cart[itemId] > 1) {
-        cart[itemId] -= 1;
+    if (cart[itemId][size]) {
+      if (cart[itemId][size] > 1) {
+        cart[itemId][size] -= 1;
       } else {
+        delete cart[itemId][size];
+      }
+
+      if (Object.keys(cart[itemId]).length === 0) {
         delete cart[itemId];
       }
     }

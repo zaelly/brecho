@@ -1,12 +1,13 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const Users = require('../models/User.js')
 dotenv.config();
 
 const USER_SECRET = process.env.JWT_SECRET;
 const SELLER_SECRET = process.env.JWT_SECRET_SELLER;
 
 // Middleware para autenticação de usuários
-const fetchUser = (req, res, next) => {
+const fetchUser = async (req, res, next) => {
   const token = req.header("auth-token");
   if (!token) {
     return res.status(401).json({ errors: "Token de autenticação não fornecido." });
@@ -14,7 +15,17 @@ const fetchUser = (req, res, next) => {
 
   try {
     const data = jwt.verify(token, USER_SECRET);
-    req.user = data.user;
+    const user = await Users.findById(data.user.id);
+    if(!user){
+      return res.status(400).json({success: false, message: "Usúario não encontrado!"})
+    }
+    
+    req.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email
+    };
+
     next();
   } catch (error) {
     console.error("Erro ao verificar token do usuário:", error);

@@ -9,11 +9,12 @@ const Offers = () => {
             <h1>Ofertas</h1>
             <h1>Exclusivas para você</h1>
             <p>OS PRODUTOS MAIS VENDIDOS</p>
-            <button>
-              <Link to="Imperdiveis">
+            
+            <Link to="Imperdiveis" className='btnConfira'>
+              <button>
                 Confira Agora
-              </Link>
-            </button>
+              </button>
+            </Link>
         </div>
         <div className="offers-right">
             <img src={exclusive_img}/>

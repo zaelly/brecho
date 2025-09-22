@@ -74,6 +74,11 @@
     font-weight: 600;
 }
 
+.product-display-right-size p{
+    font-size: .8rem;
+    color: red;
+}
+
 .ProductDisplay-right button{
     padding: 20px 40px;
     width: 200px;
