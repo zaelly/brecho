@@ -21,10 +21,12 @@ const fetchUser = async (req, res, next) => {
     }
     
     req.user = {
-      id: user._id,
+      id: String(user._id),
       name: user.name,
       email: user.email
     };
+
+    console.log("Usuário autenticado:", req.user);
 
     next();
   } catch (error) {

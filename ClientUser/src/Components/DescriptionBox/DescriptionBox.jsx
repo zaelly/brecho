@@ -213,7 +213,8 @@ const DescriptionBox = ({ product }) => {
                 ) : (
                     <ul className='container-review'>
                         {reviews.map((review) => {
-                            const userOwner = userLog && review.userId === localStorage.getItem("users-id");
+                            const userOwner = userLog && String(review.userId) === String(localStorage.getItem("users-id"));
+
                             return (
                                 <li key={review._id} className="liComment">
                                     <div className="comment">

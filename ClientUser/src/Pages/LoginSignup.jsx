@@ -99,7 +99,7 @@ const LoginSignup = () => {
             </p>
 
             <div className="agree-terms">
-              <input type="checkbox" name="" id="" />
+              <input type="checkbox" name="" id="" required />
               <p>Concordo com os termos de uso e privacidade.</p>
             </div>
           </>

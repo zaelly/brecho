@@ -118,7 +118,6 @@ router.use((err, req, res, next) => {
 //comentarios/avaliações
 router.post('/addreviews', fetchUser, async(req,res)=>{
   const {name, productId, rating, comment } = req.body;
-  console.log(productId, "add reviews")
 
   const review = {
     name: req.user.name || `Usuário-${req.user.id.slice(0,3)}`,
