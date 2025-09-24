@@ -26,6 +26,9 @@ Link de produção:
 ### Lista de Produtos -
 ![listCartClient](https://github.com/user-attachments/assets/46afb936-251e-42f4-b0b4-8d857b9acbec)
 
+### Reviews dos Produtos - 
+![reviewSeller](https://github.com/user-attachments/assets/9b23493b-f8d1-4fe2-a57d-f7588d70c768)
+
 ## Imagens da Área do Cliente:
 
 ### Carrinho de Produtos do Cliente -
