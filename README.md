@@ -26,8 +26,13 @@ Link de produção:
 ### Lista de Produtos -
 ![listCartClient](https://github.com/user-attachments/assets/46afb936-251e-42f4-b0b4-8d857b9acbec)
 
+## Imagens da Área do Cliente:
+
 ### Carrinho de Produtos do Cliente -
 ![listProductPainelAdm](https://github.com/user-attachments/assets/b3b72343-9e5f-4c4d-a8e6-cad018122b2a)
+
+### Perfil do Cliente -
+![perfilUser](https://github.com/user-attachments/assets/e6642170-e80b-4894-b48c-e9f4f372e630)
 
 ## Imagens Site:
 
@@ -37,3 +42,4 @@ Link de produção:
 ![areaLogin](https://github.com/user-attachments/assets/fa5f7c33-72c7-40c5-9586-6b488c8ec9d7)
 ![reviewSeller](https://github.com/user-attachments/assets/9b23493b-f8d1-4fe2-a57d-f7588d70c768)
 ![reviewClient](https://github.com/user-attachments/assets/abdb13b0-6b7b-4413-a163-05eaf15d8c72)
+![showProduct](https://github.com/user-attachments/assets/4b9593a2-e7e7-4dde-a3de-88a2b32c75ca)
