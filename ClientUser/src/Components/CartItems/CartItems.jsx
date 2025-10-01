@@ -1,6 +1,6 @@
 import './CartItems.css'
 import { ShopContext } from '../../Context/ShopContext'
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Checkout from '../checkout/Checkout';
@@ -112,12 +112,12 @@ const CartItems = () => {
                     <button 
                         onClick={finalizarCompra} 
                         className={`${isDisabled ? 'disabledBtn' : ''}`} 
+                        disabled={isDisabled}
                     >
                         FINALIZAR
                     </button>
-                    {checkout &&(
-                        <Checkout/>
-                    )}
+
+                    {checkout && <Checkout closeModal={()=>setCheckout(false)}/>}
                 </div>
             </div>
         </div>
