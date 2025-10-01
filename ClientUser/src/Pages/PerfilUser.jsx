@@ -14,7 +14,8 @@ const PerfilUser = () => {
     new_password: '',
     cpf: '',
     adress: '',
-    city: ''
+    city: '',
+    gateways: [],
   });
 
   const handleImage = (e) => {
@@ -50,6 +51,7 @@ const PerfilUser = () => {
         adress: data.data.adress,
         cpf: data.data.cpf,
         city: data.data.city,
+        gateways: data.data.gateways || [],
       }));
       localStorage.setItem("users-id", usersId);
       localStorage.setItem("users-name", data.data.name);

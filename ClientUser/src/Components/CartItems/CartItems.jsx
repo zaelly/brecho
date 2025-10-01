@@ -1,11 +1,27 @@
 import './CartItems.css'
 import { ShopContext } from '../../Context/ShopContext'
 import { useContext, useState } from 'react';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import Checkout from '../checkout/Checkout';
 
 const CartItems = () => {
     const {getTotalCartAmount, all_product, cartItem, removeFromCart} = useContext(ShopContext);
-    const [finalizarCompra, setFinalizarCompra] = useState(false);
+    const [selectedPayment, setSelectedPayment] = useState(null);
+    const isDisabled = !selectedPayment || getTotalCartAmount <= 0;
+    const [checkout, setCheckout] = useState(false);
 
+    const finalizarCompra = () => {
+        if(!selectedPayment){
+            toast.warn('Nenhuma forma de pagamento selecionada');
+            return;
+        }else{
+            toast.success(`Forma de pagamento selecionada: ${selectedPayment}`);
+        }
+
+        // chama a API para finalizar a compra
+        setCheckout(true);
+    }
   return (
     <div className='CartItems'>
             <h1>Carrinho</h1>   
@@ -36,10 +52,10 @@ const CartItems = () => {
                             <div className="cartItems-format cartItems-format-main">
                                 <img src={product.image} className="cartItems-product-icon" alt={product.name} />
                                 <p>{product.name}</p>
-                                <p>R${unitPrice}</p>
+                                <p>R${unitPrice.toFixed(2).replace(".", ",")}</p>
                                 <button className="CartItems-quantity">{quantity}</button>
                                 <p className="CartItems-quantity">{size}</p>
-                                <p>R${totalPrice.toFixed(2)}</p>
+                                <p>R${totalPrice.toFixed(2).replace(".", ",")}</p>
                                 <i 
                                 className="fa-solid fa-trash" 
                                 onClick={() => removeFromCart(itemId, size)} 
@@ -55,35 +71,56 @@ const CartItems = () => {
             })}
         </div>
 
-       <div className="cartItems-down">
-            {/* <div className="cartItems-promocode">
-                <p>Cupom de Desconto</p>
-                <div className="cartItem-promoBox">
-                    <input type="text" name="" id="" placeholder='Código de desconto' />
-                    <button type="submit">Enviar</button>
-                </div>
-            </div> */}
-            <div className="cart-items-total">
-                <h1>Total</h1>
-                <div>
-                    <div className="cartItems-total-item">
-                        <p>Subtotal:</p>
-                        <p>R${getTotalCartAmount.toFixed(2)}</p>
-                    </div>
-                    <hr />
-                    <div className="cartItems-total-item">
-                        <p>Frete:</p>
-                        <p>Grátis</p>
-                    </div>
-                    <hr />
-                    <div className="cartItems-total-item">
-                        <h3>Total:</h3>
-                        <h3>R${getTotalCartAmount.toFixed(2)}</h3>
+        <div className="containerPayment">
+            <div className='container-payment-up'>
+                <h2>Selecione uma forma de pagamento para finalizar a compra!</h2>
+                <hr />
+                <div className="group-content">
+                    <div className="optionsPayments">
+                        <div className="optionPayment">
+                            {/* quando selecionado e clicado em gerar ele gera um qrcode */}
+                            <h3>Formas de pagamentos:</h3>
+                            <div className={`optionCard ${selectedPayment === "pix" ? 'selectedPayment' : ''}`} 
+                                onClick={() => setSelectedPayment(selectedPayment === "pix" ? null : "pix")}>
+                                <i className="fa-brands fa-pix"></i>
+                                <p>Pix</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button>FINALIZAR</button>
             </div>
-       </div>
+
+            <div className="cartItems-down">
+                <div className="cart-items-total">
+                    <h1>Resumo</h1>
+                    <div>
+                        <div className="cartItems-total-item">
+                            <p>Subtotal:</p>
+                            <p>R${getTotalCartAmount.toFixed(2).replace(".", ",")}</p>
+                        </div>
+                        <hr />
+                        <div className="cartItems-total-item">
+                            <p>Frete:</p>
+                            <p>Grátis</p>
+                        </div>
+                        <hr />
+                        <div className="cartItems-total-item">
+                            <h3>Total:</h3>
+                            <h3>R${getTotalCartAmount.toFixed(2).replace(".", ",")}</h3>
+                        </div>
+                    </div> 
+                    <button 
+                        onClick={finalizarCompra} 
+                        className={`${isDisabled ? 'disabledBtn' : ''}`} 
+                    >
+                        FINALIZAR
+                    </button>
+                    {checkout &&(
+                        <Checkout/>
+                    )}
+                </div>
+            </div>
+        </div>
     </div>
   )
 }

@@ -20,7 +20,10 @@ const sellerSchema = new mongoose.Schema({
   },
   shopDescription:{
     type: String
-  }
+  },
+  gateways:{
+    type: String
+  },
 });
 
 module.exports = mongoose.model('Seller', sellerSchema);

@@ -35,6 +35,8 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } 
  });
 
+router.use("/images", express.static("upload/images"));
+
 // Endpoint para registrar usuário
 router.post('/user/signup', async (req, res) => {
   try {
@@ -99,6 +101,8 @@ router.post("/user/login", async (req, res) => {
 router.get('/getuserprofile', fetchUser, async(req,res)=>{
   try{
     const getUser = await Users.findById(req.user.id).select("-password");
+
+    console.log(getUser);
     res.json({success: true, data: getUser});
   }catch(err){
     console.error("Erro ao buscar informações do perfil!", err);

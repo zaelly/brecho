@@ -15,6 +15,7 @@ const SellerProfile = () => {
     shopDescription: '' || '',
     produtos_vendidos: '' || 0,
     stars: '' || 0,
+    gateways: '' || ''
   });
 
   const handleImage = (e) => {
@@ -49,6 +50,7 @@ const SellerProfile = () => {
         image: data.data.image,
         produtos_vendidos: data.data.produtos_vendidos,
         stars: data.data.stars,
+        gateways: data.data.gateways
       }));
       localStorage.setItem("seller-id", sellerId);
       // imagem de cada vendedor setada
@@ -177,6 +179,23 @@ const SellerProfile = () => {
                   name="shopDescription"
                   disabled={!btn_profile}
                   placeholder="Descreva sua loja!"
+                />
+              </div>
+              <div className="gateways form-group col-md-6">
+                <div className="detailsgateway">
+                    <p>
+                      <i className="fa-solid fa-circle-info"></i>  Faça seu cadastro no <a href="http://">AbacatePay</a>, gere suas chaves e 
+                      insira-as aqui para receber pagamentos via PIX e 
+                      Cartão de Crédito.
+                    </p>
+                </div>
+                <p>Gateway de pagamento</p>
+                <input
+                  onChange={handleChange}
+                  value={profileDetail.gatways}
+                  name="gateways"
+                  disabled={!btn_profile}
+                  placeholder="*********************"
                 />
               </div>
             </div>

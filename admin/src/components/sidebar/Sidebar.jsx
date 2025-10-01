@@ -20,7 +20,7 @@ const Sidebar = () => {
         <Link to={'/admin/neworder'} style={{TextDecoderation: "none"}}>
             <div className="sidebar-item">
                 <i className="fa-solid fa-truck"></i>
-                <p>Novos Pedidos</p>
+                <p>Pedidos</p>
             </div>
         </Link>
         <Link to={'/admin/notifications'} style={{TextDecoderation: "none"}}>

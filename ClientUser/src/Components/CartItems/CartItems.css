@@ -15,6 +15,14 @@
     height: 62px;
 }
 
+.active{
+    display: block;
+}
+
+.hidden{
+    display: none;
+}
+
 .cartItems-format{
     font-size:17px ;
     font-weight: 500;
@@ -32,7 +40,17 @@
 }
 
 .CartItems{
-    margin: 100px 170px
+    margin: 100px 170px;
+    display: flex;
+    flex-direction: column;
+}
+
+.containerPayment{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .listcart{
@@ -48,11 +66,6 @@
 
 .fa-trash{
     cursor: pointer;
-}
-
-.cartItems-down{
-    display: flex;
-    margin: 100px 0;
 }
 
 .cart-items-total{
@@ -269,4 +282,92 @@
     width:15px ;
     margin: 0px;
     cursor: pointer;
+}
+
+.container-payment-up{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    z-index: 100;
+    border: 2px solid #cacaca7a;
+}
+
+.optionsPayments{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.amountTotal{
+    margin: 1rem 0;
+    font-weight: 700;
+    color: #ff0000;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.group-content{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.optionPayment h3{
+    font-size: 1rem;
+    font-weight: 500;
+    color: #8e9091;
+}
+
+.container-payment-up hr{
+  margin-top: 0;
+  height: 6px;
+  border-radius: 10px;
+  background-color: #252525;
+}
+
+.container-payment-up h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #00b7ff;
+    margin: 1rem 0 0 0;
+}
+
+.optionCard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #000;
+    border-radius: 1rem;
+    padding: .5rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.optionCard:hover{
+    background-color: #00b7ff;
+    border: 1px solid #00b7ff;
+    color: #fff;
+    transform: scale(1.10) rotate(0deg);
+}
+
+.selectedPayment{
+    background-color: #00b7ff;
+    border: 1px solid #00b7ff;
+    color: #fff;
+}
+
+button.disabledBtn{
+    background-color: rgb(255, 74, 74);
+    cursor: not-allowed;
+}
+
+button.disabledBtn:hover{
+    background-color: rgb(255, 74, 74);
+    cursor: not-allowed;
 }

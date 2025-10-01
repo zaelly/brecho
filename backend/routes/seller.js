@@ -141,5 +141,50 @@ router.get("/getsellerprofile", fetchSeller, async (req, res) => {
   }
 });
 
+// traz metodos de pagamentos
+router.get("/getgatewaysseller", fetchSeller, async (req, res) => {
+  try {
+    const seller = await Seller.findById(req.seller.id).select("gateways");
+    res.json({ success: true, data: seller.gateways });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Erro ao buscar gateways." });
+  }
+});
+
+// atualiza metodos de pagamentos
+router.post("/updategateways", fetchSeller, async (req, res) => {
+  try {
+    const { gateways } = req.body;
+    await Seller.findByIdAndUpdate(req.seller.id, { gateways });
+    res.json({ success: true, message: "Gateway atualizado com sucesso." });
+  }
+  catch (err) {
+    console.error("Erro ao atualizar gateways:", err);
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+});
+
+// checkout
+
+router.post("/checkout", fetchSeller, async (req, res) => {
+  try{
+
+    const { orderId, paymentMethod, amount } = req.body;
+
+    if(!orderId || !paymentMethod || !amount){
+      return res.status(400).json({ success: false, message: "Todos os campos são obrigatórios." });
+    }
+
+    // tras os gateways do vendedor
+    const seller = await Seller.findById(req.seller.id).select("gateways");
+    if(!seller){
+      return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
+    }
+
+  }catch(err){
+    console.error("Erro no checkout:", err);
+    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+});
 
 module.exports = router;

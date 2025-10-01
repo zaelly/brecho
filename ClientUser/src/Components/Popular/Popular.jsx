@@ -11,6 +11,7 @@ const Popular = () => {
     fetch('http://localhost:4000/api/products/popularinwomen')
     .then((response)=>response.json())
     .then((data)=>setData_product(data));
+    console.log(popularProducts)
   },[])
 
   return (

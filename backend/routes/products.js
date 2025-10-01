@@ -28,7 +28,7 @@ router.get('/newcollections', async (req, res) => {
 // Endpoint para produtos populares para mulheres
 router.get('/popularinwomen', async (req, res) => {
   try {
-    let products = await Product.find({ category: "Feminino" });
+    let products = await Product.find({ category: "Feminina" });
     let popularInWomen = products.slice(0, 4);
     res.json(popularInWomen);
   } catch (err) {

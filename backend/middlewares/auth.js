@@ -19,14 +19,13 @@ const fetchUser = async (req, res, next) => {
     if(!user){
       return res.status(400).json({success: false, message: "Usúario não encontrado!"})
     }
-    
+    req.user = data.user;
     req.user = {
       id: String(user._id),
       name: user.name,
-      email: user.email
+      email: user.email,
+      image: user.image
     };
-
-    console.log("Usuário autenticado:", req.user);
 
     next();
   } catch (error) {
