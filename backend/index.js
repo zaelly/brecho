@@ -11,8 +11,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const server = require('http').createServer(app)
 
-const port = process.env.PORT || 4000;
-
+const port = process.env.PORT || 4000 ;
+const url = process.env.VITE_API_URL || `http://localhost:${port}`
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -46,7 +46,7 @@ app.use("/images", express.static("upload/images"));
 app.post("/upload", upload.single("product"), (req, res) => {
   res.json({
     success: 1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`,
+    image_url: `${url}/images/${req.file.filename}`,
   });
 });
 

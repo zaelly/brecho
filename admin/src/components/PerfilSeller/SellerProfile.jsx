@@ -17,7 +17,7 @@ const SellerProfile = () => {
     stars: '' || 0,
     gateways: '' || ''
   });
-
+  const url = import.meta.env.VITE_API_URL;
   const handleImage = (e) => {
     setImage(e.target.files[0]);
   };
@@ -32,7 +32,7 @@ const SellerProfile = () => {
   };
 
   const fetchProfile = async () => {
-    const res = await fetch("http://localhost:4000/api/sellers/getsellerprofile", {
+    const res = await fetch(`${url}/api/sellers/getsellerprofile`, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const SellerProfile = () => {
       let formData = new FormData();
       formData.append('profile', image);
 
-      await fetch('http://localhost:4000/api/sellers/uploadprofileimage', {
+      await fetch(`${url}/api/sellers/uploadprofileimage`, {
         method: 'POST',
         headers: {
           'auth-token-seller': localStorage.getItem("auth-token")
@@ -96,7 +96,7 @@ const SellerProfile = () => {
 
     }
 
-    await fetch('http://localhost:4000/api/sellers/updateprofile', {
+    await fetch(`${url}/api/sellers/updateprofile`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

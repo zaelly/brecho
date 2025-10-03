@@ -22,6 +22,7 @@ const AddProduct = () => {
     marca: '',
     conditions: ''
   })
+  const url = import.meta.env.VITE_API_URL;
 
   const handleImage = (e)=>{
     setImage(e.target.files[0]);
@@ -112,7 +113,7 @@ const AddProduct = () => {
 
     formData.append('product', image);
 
-    await fetch('http://localhost:4000/upload',{
+    await fetch(`${url}/upload`,{
       method:'POST',
       headers:{
         Accept:'application/json',
@@ -124,7 +125,7 @@ const AddProduct = () => {
     if(responseData.success){
       product.image = responseData.image_url;
 
-      await fetch('http://localhost:4000/api/products/seller/addproduct' ,{
+      await fetch(`${url}/api/products/seller/addproduct` ,{
         method:'POST',
         headers:{
           Accept:'application/json',

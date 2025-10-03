@@ -8,14 +8,15 @@ const ShopContextProvider = (props) => {
     const [cartItem, setCartItems] = useState({});
     const [all_product, setAll_products] = useState([]);
     const [review, setReview] = useState({})
+    const url = import.meta.env.VITE_API_URL;
 
     useEffect(()=>{
-        fetch('http://localhost:4000/api/products/allproducts')
+        fetch(`${url}/api/products/allproducts`)
             .then((response)=>response.json())
             .then((data)=>setAll_products(data))
 
         if(localStorage.getItem('auth-token')){
-            fetch('http://localhost:4000/api/cart/getcart',{
+            fetch(`${url}/api/cart/getcart`,{
                 method: 'POST',
                 headers: {
                     Accept:'application/form-data',
@@ -58,7 +59,7 @@ const ShopContextProvider = (props) => {
         }));
 
         if(localStorage.getItem('auth-token')){
-            fetch('http://localhost:4000/api/cart/addtocart',{
+            fetch(`${url}/api/cart/addtocart`,{
                 method: 'POST',
                 headers: {
                     Accept:'application/form-data',
@@ -84,7 +85,7 @@ const ShopContextProvider = (props) => {
         }));        
 
         if(localStorage.getItem('auth-token')){
-            fetch('http://localhost:4000/api/cart/removefromcart',{
+            fetch(`${url}/api/cart/removefromcart`,{
                 method: 'POST',
                 headers: {
                     Accept:'application/json',

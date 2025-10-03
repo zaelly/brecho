@@ -3,10 +3,11 @@ import './ListProduct.css'
 
 const ListProduct = () => {
   const [allproducts, setAllProducts] = useState([]);
-
+  const url = import.meta.env.VITE_API_URL;
+  
   const fetchInfo = async ()=>{
      const response = await 
-     fetch('http://localhost:4000/api/products/seller/allproducts', {
+     fetch(`${url}/api/products/seller/allproducts`, {
       headers: {
         'auth-token-seller': localStorage.getItem('auth-token')
       }
@@ -20,7 +21,7 @@ const ListProduct = () => {
   },[])
 
   const remove_product = async(id) => {
-    await fetch('http://localhost:4000/api/products/seller/removeproduct', {
+    await fetch(`${url}/api/products/seller/removeproduct`, {
       method: 'POST',
       headers: {
         Accept:'application/json',

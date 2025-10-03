@@ -19,7 +19,8 @@ const Navbar = () => {
     const [image_profile, setImage_profile] = useState(nav_profile);
     const [isLoading, setIsLoading] = useState(false);
     const [profileFile, setProfileFile] = useState(null);
-
+    const url = import.meta.env.VITE_API_URL
+    
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
         const handleClickOutside = (e) => {
@@ -28,7 +29,7 @@ const Navbar = () => {
             }
         };
 
-        fetch('http://localhost:4000/api/products/allproducts')
+        fetch(`${url}/api/products/allproducts`)
             .then((response) => response.json())
             .then((data) => setAll_products(data));
 
@@ -62,7 +63,7 @@ const Navbar = () => {
         formData.append('profile', profileFile);
 
         try {
-            const response = await fetch('http://localhost:4000/api/users/uploadprofileimage', {
+            const response = await fetch(`${url}/api/users/uploadprofileimage`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',

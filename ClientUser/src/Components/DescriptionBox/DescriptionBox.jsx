@@ -11,6 +11,7 @@ const DescriptionBox = ({ product }) => {
     const [editingReviewId, setEditingReviewId] = useState(null);
     const [editedReview, setEditedReview] = useState({});
     const [userLog, setUserLog] = useState(false);
+    const url = import.meta.env.VITE_API_URL;
 
     const [sendReview, setSendReview] = useState({
         productId: product?._id,
@@ -62,7 +63,7 @@ const DescriptionBox = ({ product }) => {
         }
 
         try{
-            const response = await fetch(`http://localhost:4000/api/products/addreviews`, {
+            const response = await fetch(`${url}/api/products/addreviews`, {
                 method: 'POST',
                 headers: {
                 Accept: 'application/json',
@@ -105,7 +106,7 @@ const DescriptionBox = ({ product }) => {
 
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:4000/api/products/updatereview', {
+            const response = await fetch(`${url}/api/products/updatereview`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -154,7 +155,7 @@ const DescriptionBox = ({ product }) => {
         if (product && product._id) {
             setSendReview(prev => ({ ...prev, productId: product._id }));
 
-            fetch(`http://localhost:4000/api/products/getreviews/${product._id}`, {
+            fetch(`${url}/api/products/getreviews/${product._id}`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -176,7 +177,7 @@ const DescriptionBox = ({ product }) => {
 
     const removeFromReview = (productId, reviewId)=>{
         if(localStorage.getItem('auth-token')){
-            fetch('http://localhost:4000/api/products/removefromreview',{
+            fetch(`${url}/api/products/removefromreview`,{
                 method: 'POST',
                 headers: {
                     Accept:'application/json',

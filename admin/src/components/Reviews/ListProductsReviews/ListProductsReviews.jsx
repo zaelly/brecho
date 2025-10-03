@@ -6,7 +6,7 @@ const ListProductsReviews = () => {
 
   useEffect(() => {
     const fetchInfo = async () => {
-      const response = await fetch('http://localhost:4000/api/products/seller/allproducts', {
+      const response = await fetch(`${url}/api/products/seller/allproducts`, {
         headers: {
           'auth-token-seller': localStorage.getItem('auth-token')
         }

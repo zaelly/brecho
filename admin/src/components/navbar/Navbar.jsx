@@ -8,7 +8,7 @@ const Navbar = () => {
   const [image_profile, setImage_profile] = useState(nav_profile);
   const [isLoading, setIsLoading] = useState(false);
   const [profileFile, setProfileFile] = useState(null);
-
+  const url = import.meta.env.VITE_API_URL;
  const save_profile = async () => {
     setIsLoading(true); // Inicia o carregamento
     let responseData;
@@ -18,7 +18,7 @@ const Navbar = () => {
       formData.append('profile', profileFile);
 
       try {
-        const response = await fetch('http://localhost:4000/api/sellers/uploadprofileimage', {
+        const response = await fetch(`${url}/api/sellers/uploadprofileimage`, {
           method: 'POST',
           headers: {
             Accept: 'application/json',

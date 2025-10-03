@@ -16,11 +16,11 @@ const LoginSignup = () => {
   const changeHandle = (e) =>{
     setFormData({...formData, [e.target.name]:e.target.value})
   }
-
+  const url = import.meta.env.VITE_API_URL;
   const login = async() =>{
 
     let responseData;
-    await fetch('http://localhost:4000/api/users/user/login',{
+    await fetch(`${url}/api/users/user/login`,{
       method:'POST',
       headers:{
         Accept:'application/form-data',
@@ -40,7 +40,7 @@ const LoginSignup = () => {
   const signup = async() =>{
 
     let responseData;
-    await fetch('http://localhost:4000/api/users/user/signup',{
+    await fetch(`${url}/api/users/user/signup`,{
       method:'POST',
       headers:{
         Accept:'application/form-data',
@@ -59,7 +59,7 @@ const LoginSignup = () => {
   }
 
   const handleClick = () => {
-    window.location.href = 'http://localhost:5174'
+    window.location.href = 'https://revertoclient.vercel.app'
   };
 
   const handleLogin = ()=>{

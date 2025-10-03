@@ -17,6 +17,7 @@ const PerfilUser = () => {
     city: '',
     gateways: [],
   });
+  const url = import.meta.env.VITE_API_URL;
 
   const handleImage = (e) => {
     setImage(e.target.files[0]);
@@ -32,7 +33,7 @@ const PerfilUser = () => {
   };
 
   const fetchProfile = async () => {
-    const res = await fetch("http://localhost:4000/api/users/getuserprofile", {
+    const res = await fetch(`${url}/api/users/getuserprofile`, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
@@ -74,7 +75,7 @@ const PerfilUser = () => {
       let formData = new FormData();
       formData.append('profile', image);
 
-      await fetch('http://localhost:4000/api/users/uploadprofileimage', {
+      await fetch(`${url}/api/users/uploadprofileimage`, {
         method: 'POST',
         headers: {
           'auth-token': localStorage.getItem("auth-token")
@@ -98,7 +99,7 @@ const PerfilUser = () => {
 
     }
 
-    await fetch('http://localhost:4000/api/users/updateprofile', {
+    await fetch(`${url}/api/users/updateprofile`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

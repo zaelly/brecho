@@ -104,7 +104,7 @@ router.post("/uploadprofileimage", fetchSeller,
   upload.single('profile'), (req, res)=>{
   res.json({
     success:1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`
+    image_url: `${url}/images/${req.file.filename}`
   })
 })
 

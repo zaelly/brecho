@@ -5,10 +5,10 @@ import {Link} from 'react-router-dom'
 
 const NewOrders = () => {
      const [allproducts, setAllProducts] = useState([]);
-   
+    const url = import.meta.env.VITE_API_URL;
      const fetchOrder = async ()=>{
         const response = await fetch(
-          'http://localhost:4000/api/order/seller/allorders', {
+          `${url}/api/order/seller/allorders`, {
          headers: {
            'auth-token-seller': localStorage.getItem('auth-token')
          }

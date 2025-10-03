@@ -23,11 +23,12 @@ const ViewOrder = () => {
         toReceive: '',
         orderId: ''
     });
+    const url = import.meta.env.VITE_API_URL;
 
     const save_order = async () => {
         setIsLoading(true); // Start loading
 
-        await fetch('http://localhost:4000/api/order/updateOrder', {
+        await fetch(`${url}/api/order/updateOrder`, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -49,7 +50,7 @@ const ViewOrder = () => {
     };
 
     const fetchInfo = async ()=>{
-        const response = await fetch('http://localhost:4000/api/products/order/allorders', {
+        const response = await fetch(`${url}/api/products/order/allorders`, {
         headers: {
         'auth-token-seller': localStorage.getItem('auth-token')
         }
@@ -69,7 +70,7 @@ const ViewOrder = () => {
     };
 
     const fetchOrder = async () => {
-        const res = await fetch("http://localhost:4000/api/order/getOrder", {
+        const res = await fetch(`${url}/api/order/getOrder`, {
         method: "GET",
         headers: {
             'auth-token-seller': localStorage.getItem("auth-token"),

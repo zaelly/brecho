@@ -3,10 +3,11 @@ import Item from '../Item/Item'
 import { useState, useEffect } from 'react'
 
 const NewColletions = () => {
-
+  const url = import.meta.env.VITE_API_URL;
   const [new_colletions, setNew_collection] = useState([]);
+  
   useEffect(()=>{
-    fetch('http://localhost:4000/api/products/newcollections')
+    fetch(`${url}/api/products/newcollections`)
     .then((response)=>response.json())
     .then((data)=>setNew_collection(data))
   },[])
