@@ -28,7 +28,7 @@ const Category = (props) => {
               </>
             ) : props.category === 'Eletronicos' ? (
               <>
-                <h1>Produtos Eletrônicos online!</h1>
+                <h1>Eletrônicos online!</h1>
                 <p>Venha conhecer e <span>aproveitar!</span></p>              </>
             ) : (
               <>

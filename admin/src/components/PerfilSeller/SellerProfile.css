@@ -17,6 +17,13 @@
     gap: 100px;
 }
 
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+textarea{
+    font-size: .9rem;
+}
+
 .arrow-cloud{
     font-size: 2rem;
     margin: 1rem 0;

@@ -184,7 +184,7 @@ const SellerProfile = () => {
               <div className="gateways form-group col-md-6">
                 <div className="detailsgateway">
                     <p>
-                      <i className="fa-solid fa-circle-info"></i>  Faça seu cadastro no <a href="http://">AbacatePay</a>, gere suas chaves e 
+                      <i className="fa-solid fa-circle-info"></i>  Faça seu cadastro no <a href="http://https://www.abacatepay.com">AbacatePay</a>, gere suas chaves e 
                       insira-as aqui para receber pagamentos via PIX e 
                       Cartão de Crédito.
                     </p>
@@ -195,7 +195,7 @@ const SellerProfile = () => {
                   value={profileDetail.gatways}
                   name="gateways"
                   disabled={!btn_profile}
-                  placeholder="*********************"
+                  placeholder="Cole aqui suas chaves do AbacatePay"
                 />
               </div>
             </div>

@@ -1,0 +1,25 @@
+{
+  "projects": [
+    {
+      "name": "admin-frontend",
+      "rootDirectory": "admin",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    },
+    {
+      "name": "clientuser-frontend",
+      "rootDirectory": "clientuser",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    },
+    {
+      "name": "backend-server",
+      "rootDirectory": "backend",
+      "buildCommand": "npm install",
+      "outputDirectory": "",
+      "routes": [
+        { "src": "/(.*)", "dest": "/index.js" }
+      ]
+    }
+  ]
+}

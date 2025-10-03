@@ -38,20 +38,20 @@
     align-items: center;
     text-align: center;
     justify-content: space-between;
-    background:linear-gradient(to right,#ffa600, 60%, #88888800);
+    background:linear-gradient(to right,rgb(184, 0, 0), 60%, #88888800);
 }
 
 .banner-right h1{
     font-weight: 800;
-    color: #ff5e00;
+    color: #ffffff;
     font-size: 4rem;
 }
 .banner-right p{
-    color: black;
+    color: rgb(255, 255, 255);
     font-size: 35px;
 }
 .banner-right span{
-    color: #ff5e00;
+    color: #ffffff;
     font-weight: 700;
 }
 
@@ -74,7 +74,6 @@
     font-size: 22px;
     font-weight: 500;
 }
-
 
 .shopcategory-indexSort p span{
     font-weight: 600;
