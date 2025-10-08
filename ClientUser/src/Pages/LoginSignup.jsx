@@ -16,7 +16,7 @@ const LoginSignup = () => {
   const changeHandle = (e) =>{
     setFormData({...formData, [e.target.name]:e.target.value})
   }
-  const url = import.meta.env.VITE_API_URL;
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const login = async() =>{
 
     let responseData;

@@ -8,7 +8,7 @@ const ShopContextProvider = (props) => {
     const [cartItem, setCartItems] = useState({});
     const [all_product, setAll_products] = useState([]);
     const [review, setReview] = useState({})
-    const url = import.meta.env.VITE_API_URL;
+    const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
     useEffect(()=>{
         fetch(`${url}/api/products/allproducts`)

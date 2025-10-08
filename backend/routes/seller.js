@@ -17,8 +17,8 @@ router.use(cors());
 // -------------------------
 // Endpoints para VENDEDORES
 // -------------------------
-
 const port = process.env.PORT || 4000;
+const url = process.env.VITE_API_URL || `http://localhost:${port}`;
 
 const dir = "./upload/images";
 if (!fs.existsSync(dir)) {

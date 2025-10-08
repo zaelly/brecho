@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 const Popular = () => {
 
   const [popularProducts, setData_product] = useState([]);
-  const url = import.meta.env.VITE_API_URL;
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   
   useEffect(()=>{
     fetch(`${url}/api/products/popularinwomen`)

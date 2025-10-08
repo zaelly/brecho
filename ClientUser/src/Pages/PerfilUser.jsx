@@ -17,7 +17,7 @@ const PerfilUser = () => {
     city: '',
     gateways: [],
   });
-  const url = import.meta.env.VITE_API_URL;
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
   const handleImage = (e) => {
     setImage(e.target.files[0]);

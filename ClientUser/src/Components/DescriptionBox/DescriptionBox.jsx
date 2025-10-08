@@ -11,7 +11,7 @@ const DescriptionBox = ({ product }) => {
     const [editingReviewId, setEditingReviewId] = useState(null);
     const [editedReview, setEditedReview] = useState({});
     const [userLog, setUserLog] = useState(false);
-    const url = import.meta.env.VITE_API_URL;
+    const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
     const [sendReview, setSendReview] = useState({
         productId: product?._id,

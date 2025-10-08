@@ -11,7 +11,8 @@ const LoginSignup = () => {
     username: '',
     email: '',
     password: '',
-  });
+  })
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const [loading, setLoading] = useState(false);  // Estado de carregamento
 
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const LoginSignup = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${url}0/api/sellers/seller/login`, {
+      const response = await fetch(`${url}/api/sellers/seller/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

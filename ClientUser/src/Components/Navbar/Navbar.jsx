@@ -19,7 +19,7 @@ const Navbar = () => {
     const [image_profile, setImage_profile] = useState(nav_profile);
     const [isLoading, setIsLoading] = useState(false);
     const [profileFile, setProfileFile] = useState(null);
-    const url = import.meta.env.VITE_API_URL
+    const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
     
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
