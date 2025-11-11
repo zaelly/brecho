@@ -1,0 +1,143 @@
+.container-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px;
+    background-color: #7e0000;
+    color: white;
+}
+.container-header p{
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.main-container-chat{
+    position: fixed;
+    right: 5px;
+    bottom: 0px;
+    overflow: hidden;
+    width: 25%;
+    flex-direction: column;
+    height: 500px;
+    border: 1px solid #7e0000;
+    border-radius: 15px 15px 0 0;
+    z-index: 10000;
+    background-color: white;
+    overflow: hidden;
+
+    /* efeito de subir levemente */
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.main-container-chat.active{
+    opacity: 1;
+    transform: translateY(0%);
+}
+
+.container-input-chat{
+    display: flex;
+    height: 15%;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    justify-content: flex-end;
+}
+
+.container-chat{
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.messages .received{
+    align-self: flex-start;
+    border-radius: 20px;
+    background-color: #494949;
+    padding: 10px;
+    word-wrap: break-word;
+    margin-bottom: 10px;
+    max-width: 80%;
+    justify-content: flex-start;
+    color: white;
+}
+
+.messages .sent{
+    border-radius: 20px;
+    background-color: #005e05;
+    padding: 10px;
+    word-wrap: break-word;
+    align-self: flex-end;
+    margin-bottom: 10px;
+    max-width: 80%;
+    justify-content: flex-end;
+    color: white;
+}
+
+.message-active{
+    display: flex;
+}
+
+.messages{
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    padding: 10px;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.container-input-chat {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    gap: 10px;
+}
+
+.container-input-chat input{
+    flex-grow: 1;
+    padding: 0 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+}
+
+.container-input-chat button{
+    border: none;
+    background-color: #7e0000;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.received input, .sent input{
+    border: none;
+    background: transparent;
+    color: white;
+    outline: none;
+}
+
+.fa-xmark{
+    cursor: pointer;
+}
+
+.fa-xmark:hover{
+    transition: transform 0.3s ease;
+    transform: scale(1.1);
+}
+
+.no-messages{
+    text-align: center;
+    color: #777;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.fa-comments{
+    font-size: 2rem;
+    margin-right: 1rem;
+}

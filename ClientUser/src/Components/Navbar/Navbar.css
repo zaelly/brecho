@@ -237,6 +237,7 @@ li{
 
 .fa-magnifying-glass{
     color: white;
+    padding-right: .9rem;
 }
 
 @media(max-width:1280px){

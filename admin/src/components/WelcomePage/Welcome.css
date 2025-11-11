@@ -6,7 +6,7 @@
 }
 
 .welcome h1{
-    margin-top: 2rem;
+    padding-top: 2rem;
     color: brown;
     text-shadow: 1px 1px 1px #000;
 }

@@ -3,6 +3,7 @@ const router = express.Router();
 const Seller = require('../models/Seller.js');
 const { fetchSeller } = require('../middlewares/auth.js');
 const jwt = require("jsonwebtoken");
+const Product = require('../models/Product.js');
 
 const multer = require("multer");
 const path = require("path");
@@ -138,6 +139,34 @@ router.get("/getsellerprofile", fetchSeller, async (req, res) => {
     const seller = await Seller.findById(req.seller.id).select("-password");
     res.json({ success: true, data: seller });
   } catch (err) {
+    res.status(500).json({ success: false, message: "Erro ao buscar perfil." });
+  }
+});
+
+//tras dados do vendedor pro client
+router.get("/getseller/:id", async (req, res) => {
+  try {
+    const sellerId = req.params.id;
+    const seller = await Seller.findById(sellerId);
+
+    if (!seller) {
+      return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
+    }
+
+    const products = await Product.find({ sellerId: seller._id });
+
+    res.json({
+      success: true,
+      data: {
+        _id: seller._id,
+        name: seller.name,
+        image: seller.image,
+        shopDescription: seller.shopDescription,
+        products,
+      },
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ success: false, message: "Erro ao buscar perfil." });
   }
 });

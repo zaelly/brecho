@@ -203,7 +203,12 @@ const DescriptionBox = ({ product }) => {
    return (
         <div className="descriptionbox">
             <div className="descriptionbox-navigator">
-                <div className="descriptionbox-nav-box">{reviews.length} Avaliações</div>
+                <div className="descriptionbox-nav-box"> 
+                    {reviews && reviews.length > 0
+                        ? `${reviews.length} ${reviews.length === 1 ? 'Avaliação' : 'Avaliações'}`
+                        : "Sem avaliações"
+                    }
+                </div>
             </div>
 
             <div className="descriptionbox-description">
@@ -313,7 +318,7 @@ const DescriptionBox = ({ product }) => {
                     </ul>
                 )}
 
-                { userLog && (
+                {userLog && (
                     <>
                         <button type='button'
                             className={`reviewButton ${existReview ? 'hide' : 'show'}`}

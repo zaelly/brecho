@@ -23,7 +23,7 @@ const sellerSchema = new mongoose.Schema({
   },
   gateways:{
     type: String
-  },
+  }
 });
 
 module.exports = mongoose.model('Seller', sellerSchema);

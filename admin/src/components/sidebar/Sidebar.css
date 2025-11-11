@@ -15,17 +15,17 @@
     width: 100%;
     max-width: 250px;
     height: 100vh;
-    background-color: white;
+    background-color: rgb(24, 24, 24);
 }
 
 .sidebar-item{
     display: flex;
-    color: black;
+    color: rgb(255, 255, 255);
     align-items: center;
     justify-content: center;
     margin: 0 25px;
     border-radius: 6px;
-    background-color: #f6f6f6;
+    background-color:rgb(43, 42, 42);
     gap: 10px;
     text-align: center;
     padding-top: 1rem;

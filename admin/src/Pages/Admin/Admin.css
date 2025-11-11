@@ -1,12 +1,16 @@
 .Admin{
     display: flex;
+    background-color: rgb(43, 42, 42);
+    color: white;
 }
+
 .welcome{
     order: 2;
 }
 
 @media(max-width:800px){
     .Admin{
+        height: auto;
         flex-direction: column;
     }
     

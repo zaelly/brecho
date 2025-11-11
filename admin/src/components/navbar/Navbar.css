@@ -1,3 +1,19 @@
+.Navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px -2px black;
+    background-color:rgb(24, 24, 24);
+    color: white;
+    padding: 0px 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    border-bottom: 0.5px solid rgb(44, 44, 44);
+}
+
 .nav-logo {
     display: flex;
     gap: 10px;
@@ -14,7 +30,7 @@
 
 .nav-logo p{
     margin-top: -10px;
-    color: rgb(78, 0, 0);
+    color: rgb(255, 255, 255);
     font-size: 25px;
     font-weight: 600;
     text-decoration: none;
@@ -22,45 +38,50 @@
     line-height: 1;
 }
 .nav-logo span{
-    color: rgb(161, 0, 0);
+    color: rgb(156, 156, 156);
     font-size: 15px;
     font-weight: 600;
     text-decoration: none;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.Navbar{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 1px 3px -2px black;
-    background-color: rgb(255, 255, 255);
-    color: white;
-    padding: 0px 50px;
-    margin-bottom: 1px;
-}
-
 .profile img {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    background-color: rgb(255, 255, 255);
+    height: 35px;
     object-fit: cover;
     border-radius: 50%;
     display: block;
 }
 
 .profile{
-    border-radius: 50%;
-    padding: 0;
+    border-radius: .5rem;
     display: flex;
+    padding: .3rem .6rem;
+    border: 1px solid rgb(255, 101, 40);
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     cursor: pointer;
-    background-color: white;
+}
+
+.profile a{
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+    align-items: center;
+    text-decoration: none;
+    justify-content: center;
+    display: flex;
+    gap: .5rem;
+}
+
+.profile:hover{
+
+    color: rgb(255, 101, 40);
 }
 
 .profile p{
-    margin-top: 1rem;
-    margin-left: .6rem;
+    margin: 0;
 }
 
 @media(max-width:800px){
@@ -77,4 +98,86 @@
     .nav-logo span{
         font-size: 12px;
     }
+}
+
+/* mobile menu */
+.mobile{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.SidebarMobile{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(24, 24, 24);
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    padding-top: 7rem;
+    gap: 2rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.fa-bars .btn-hamburger{
+    flex: 1;
+}
+
+.logo-close{
+    display: none;
+}
+
+.menu-logo{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    z-index: 10000;
+}
+
+.menu-logo p{
+    color: rgb(255, 255, 255);
+    font-size: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    line-height: 1;
+    margin-bottom: 0; padding-bottom: 0%;
+}
+
+.menu-logo span{
+    color: rgb(156, 156, 156);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.fa-xmark{
+    z-index: 10000;
+    font-size: 1.2rem;
+}
+
+.sidebar-item-mobile{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border-bottom: 1px solid rgb(44, 44, 44);
+    width: 100%;
+    text-decoration: none;
+    color: white;
+}
+
+.itens{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
 }

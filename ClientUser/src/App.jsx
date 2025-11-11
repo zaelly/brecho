@@ -17,8 +17,13 @@ import AllProducts from './Pages/AllProducts'
 import ProductsFilter from './Components/ProductsFilter/ProductsFilter'
 import PerfilUser from './Pages/PerfilUser'
 import { ToastContainer } from 'react-toastify';
+import ClientChat from './Components/chatClient/ClientChat'
+import { useState } from 'react'
+import ProductDisplay from './Components/ProductDisplay/ProductDisplay'
 
 function App() {
+  const [isOpen, setIsOpen] = useState(false)
+  const openChat = () => setIsOpen(true);
 
   return (
     <>
@@ -35,8 +40,8 @@ function App() {
             <Route path='/Unissex' element={<Category banner={Unissex_banner} category="Unissex"/>}/>
             <Route path='/Imperdiveis' element={<Category banner={desconto_banner} category="Imperdiveis"/>}/>
             <Route path='/Eletronicos' element={<Category banner={eletronico_banner} category="Eletronicos"/>}/>
-            <Route path="/products" element={<Products/>}>
-              <Route path=':productId' element={<Products/>}/>
+            <Route path="/products" element={<Products openChat={openChat}/>}>
+              <Route path=':productId' element={<Products openChat={openChat}/>} />
             </Route>
             <Route path="/search" element={<ProductsFilter/>}/>
             <Route path="/profile" element={<PerfilUser/>}/>
@@ -45,6 +50,7 @@ function App() {
             <Route path='/allProducts' element={<AllProducts/>}/>
           </Routes>
         </main>
+        <ClientChat isOpen={isOpen} setIsOpen={setIsOpen}/>
         <Footer/>
       </BrowserRouter>
     </div>
