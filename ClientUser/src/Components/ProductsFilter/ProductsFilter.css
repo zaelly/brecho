@@ -1,14 +1,23 @@
 .filterList{
     display: flex;
+    flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     margin: 5rem;
 }
 
-.products p{
-    padding-bottom: 1rem;
-}
-
 .products span{
     font-weight: 700;
+}
+
+.products{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: row;
+}
+
+.result{
+    margin-bottom: 2rem;
 }

@@ -144,7 +144,7 @@ const Navbar = () => {
                         />
 
                         <span className="input-group-text" onClick={() => searchProducts(searchTerm)} id="basic-addon1">      
-                        <i className="fa-solid fa-magnifying-glass"></i>      
+                            <i className="fa-solid fa-magnifying-glass"></i>      
                         </span>
                     </div>
                 </div>
@@ -159,7 +159,6 @@ const Navbar = () => {
                             <div className="profile">
                                 <img src={image_profile} onChange={save_profile}/>
                             </div>
-                            <p>Perfil</p>
                         </Link>
                     )
                     : (

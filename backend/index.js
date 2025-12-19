@@ -95,6 +95,7 @@ const sellerRoutes = require('./routes/seller');
 const cartRoutes = require('./routes/cartRoute');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orderRoute');
+const chatRoutes = require('./routes/chatRoute');
 
 // Usar as rotas no aplicativo
 app.use('/api/users', userRoutes); 
@@ -102,6 +103,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);        
 app.use('/api/sellers', sellerRoutes);   
 app.use('/api/order', orderRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Inicia o servidor
 server.listen(port, (err) => {

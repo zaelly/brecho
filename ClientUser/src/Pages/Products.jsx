@@ -21,11 +21,13 @@ const Products = ({ openChat }) => {
 
   return (
     <div className="products">
-      <Breadcrums product={product} />
-      {/* Passa o openChat para o botão do ProductDisplay */}
-      <ProductDisplay product={product} openChat={openChat} />
-      <DescriptionBox product={product} review={review} />
-      <RelatedProducts />
+      <div className='container_product'>
+        <Breadcrums product={product} />
+        {/* Passa o openChat para o botão do ProductDisplay */}
+        <ProductDisplay product={product} openChat={openChat} />
+        <DescriptionBox product={product} review={review} />
+        <RelatedProducts />
+      </div>
     </div>
   );
 };

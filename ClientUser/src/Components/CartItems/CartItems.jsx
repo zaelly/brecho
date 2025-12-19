@@ -6,12 +6,18 @@ import "react-toastify/dist/ReactToastify.css";
 import Checkout from '../checkout/Checkout';
 
 const CartItems = () => {
-    const {getTotalCartAmount, all_product, cartItem, removeFromCart} = useContext(ShopContext);
+    const {getTotalCartAmount, all_product, addToCart, cartItem, removeFromCart, profileDetail, fetchProfile} = useContext(ShopContext);
     const [selectedPayment, setSelectedPayment] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState([])
     const isDisabled = !selectedPayment || getTotalCartAmount <= 0;
     const [checkout, setCheckout] = useState(false);
 
+    console.log(profileDetail)
     const finalizarCompra = () => {
+        if(!profileDetail.adress || !profileDetail.cpf || !profileDetail.city){
+            toast.warn(`Endereço não encontrado. Adicione um endereço para entrega!`);
+            return;
+        }
         if(!selectedPayment){
             toast.warn('Nenhuma forma de pagamento selecionada');
             return;
@@ -22,17 +28,20 @@ const CartItems = () => {
         // chama a API para finalizar a compra
         setCheckout(true);
     }
+
+    useEffect(()=>{
+        fetchProfile()
+    }, [])
   return (
     <div className='CartItems'>
-            <h1>Carrinho</h1>   
+        <h1>Carrinho</h1>  
         <div className="cartItems-format-main">
             <p>Produtos</p>
-            <p>Título</p>
-            <p>Preço</p>
+            <p>Título</p>            
+            <p>Tamanho</p>            
             <p>Quantidade</p>
-            <p>Tamanho</p>
+            <p>Preço</p>
             <p>Total</p>
-            <p>Remover</p>
         </div>
         <hr />
         <div className="listcart">
@@ -52,22 +61,19 @@ const CartItems = () => {
                             <div className="cartItems-format cartItems-format-main">
                                 <img src={product.image} className="cartItems-product-icon" alt={product.name} />
                                 <p>{product.name}</p>
+                                <p className="CartItems-size">{size}</p>
+                                <div className="CartItems-quantity">
+                                    <button onClick={() => removeFromCart(itemId, size)}><i className="fa-solid fa-minus"></i></button>
+                                    {quantity}
+                                    <button onClick={()=> addToCart(itemId, size)}><i className="fa-solid fa-plus"></i></button>
+                                </div>
                                 <p>R${unitPrice.toFixed(2).replace(".", ",")}</p>
-                                <button className="CartItems-quantity">{quantity}</button>
-                                <p className="CartItems-quantity">{size}</p>
                                 <p>R${totalPrice.toFixed(2).replace(".", ",")}</p>
-                                <i 
-                                className="fa-solid fa-trash" 
-                                onClick={() => removeFromCart(itemId, size)} 
-                                role="button" 
-                                tabIndex="0"
-                                ></i>
                             </div>
                             <hr />
                         </div>
                     );
-                }
-                return null;
+                } return null;
             })}
         </div>
 
@@ -82,8 +88,7 @@ const CartItems = () => {
                             <h3>Formas de pagamentos:</h3>
                             <div className={`optionCard ${selectedPayment === "pix" ? 'selectedPayment' : ''}`} 
                                 onClick={() => setSelectedPayment(selectedPayment === "pix" ? null : "pix")}>
-                                <i className="fa-brands fa-pix"></i>
-                                <p>Pix</p>
+                                <p><i className="fa-brands fa-pix"></i> Pix</p>
                             </div>
                         </div>
                     </div>
@@ -109,6 +114,7 @@ const CartItems = () => {
                             <h3>R${getTotalCartAmount.toFixed(2).replace(".", ",")}</h3>
                         </div>
                     </div> 
+                    {/* antes de finalizar verificar se o cliente tem endereço */}
                     <button 
                         onClick={finalizarCompra} 
                         className={`${isDisabled ? 'disabledBtn' : ''}`} 

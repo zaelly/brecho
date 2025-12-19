@@ -9,6 +9,16 @@ const ShopContextProvider = (props) => {
     const [all_product, setAll_products] = useState([]);
     const [review, setReview] = useState({})
     const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    const [profileDetail, setProfileDetail] = useState({
+        name: '',
+        image: '',
+        email: 'email',
+        new_password: '',
+        cpf: '',
+        adress: '',
+        city: '',
+        gateways: [],
+    });
 
     useEffect(()=>{
         fetch(`${url}/api/products/allproducts`)
@@ -45,6 +55,38 @@ const ShopContextProvider = (props) => {
             })    
         }
     },[])
+
+    const fetchProfile = async () => {
+        const res = await fetch(`${url}/api/users/getuserprofile`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'auth-token': localStorage.getItem("auth-token"),
+        },
+        });
+        const data = await res.json();
+
+        if (data.success) {
+        const usersId = data.data._id;
+        setProfileDetail(prev => ({
+            ...prev,
+            _id: data.data._id,
+            name: data.data.name,
+            email: data.data.email,
+            image: data.data.image,
+            adress: data.data.adress,
+            cpf: data.data.cpf,
+            city: data.data.city,
+            gateways: data.data.gateways || [],
+        }));
+        localStorage.setItem("users-id", usersId);
+        localStorage.setItem("users-name", data.data.name);
+        // imagem de cada vendedor setada
+        localStorage.setItem(`users-image-${usersId}`, data.data.image);
+        } else {
+        toast.error(data.errors || "Erro ao buscar perfil");
+        }
+    };
 
     const addToCart = (itemId, size) => {
         if(!size) {
@@ -132,7 +174,7 @@ const ShopContextProvider = (props) => {
         return totalItem;
     },[cartItem])
 
-    const contextValue = {totalCartItems, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart};
+    const contextValue = {profileDetail, setProfileDetail, fetchProfile, totalCartItems, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart};
     
     return (
         <ShopContext.Provider value={contextValue}>

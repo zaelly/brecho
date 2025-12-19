@@ -1,14 +1,15 @@
 .breadcrum{
     display: flex;
-    align-items: center;
     gap: 8px;
-    color: #5e5e5e;
+    justify-content: flex-start;
+    color: hsl(0, 0%, 37%);
     align-items: center;
     font-size: 16px;
     font-weight: 600;
-    margin:20px 70px;
+    margin:20px 40px;
     text-transform: capitalize;
 }
+
 @media( max-width:1000px){
     .breadcrum{
         gap: 8px;

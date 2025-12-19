@@ -1,6 +1,6 @@
 .hero{
-    height: 100vh;
-    background: linear-gradient(180deg, #ffff, rgb(255, 126, 126) 80%);
+    height: 90vh;
+    background: linear-gradient(rgb(255, 255, 255), rgb(255, 186, 186));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,13 +20,11 @@
 }
 
 .hero-left h2{
-    color: #090909;
     font-size: 26px;
     font-weight: 600;
 }
 
 .hero-left p{
-    color: #171717;
     font-size: 100px;
     font-weight: 700;
 }
@@ -35,6 +33,11 @@
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.hand-hand-icon p{
+    font-size: 6rem;
+    font-weight: 500;
 }
 
 .hand-hand-icon img{
@@ -46,13 +49,13 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
-    width: 350px;
-    height: 70px;
+    width: 300px;
+    height: 55px;
     border-radius: 75px;
     margin-top: 30px;
-    background-color: #ff4141;
-    color: white;
-    font-size: 22px;
+    background-color: #ff0000;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
     font-weight: 500;
     cursor: pointer;
 }
@@ -64,12 +67,14 @@
 
 .hero-right {
     flex: 1;
+    display: flex;
+    justify-content: center;
 }
 
 /* melhorar a ft da modelo */
 .iconModel{
-    margin-top: 3.9rem;
-    width: 70%;
+    margin-top: 1rem;
+    width: 60%;
 }
 
 @media(max-width:1282px) and (min-width: 1025px){

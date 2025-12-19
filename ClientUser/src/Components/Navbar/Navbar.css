@@ -17,7 +17,6 @@ a:hover {
   }
 
 .nav-logo p{
-    margin-top: -10px;
     color: white;
     font-size: 22px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
@@ -64,67 +63,63 @@ a:hover {
     background-color: white;
 }
 
-.profile p{
-    margin-top: 1rem;
-    margin-left: .6rem;
-}
-
 .btn-hamburger{
     position: absolute !important
 }
 
 .navbar{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
+    text-align: center;
     box-shadow: 0 1px 3px -2px black;
-    background-color: rgb(158, 0, 0);
+    background-color: rgb(131, 0, 0);
     color: white;
-    padding: 12px 50px;
-}
-
-li{
-    list-style: none;
-    font-weight: 600;
-    cursor: pointer;
 }
 
 .nav-search svg{
     width: 20px;
 }
 
-.form-control{
-    width: 20rem;
-    border-radius: 50px;
-    border:  rgb(109, 0, 0);
-    padding: .3rem 1rem;
-    background-color: rgb(109, 0, 0);
+.form-control:focus {
+  border-color: rgb(207, 0, 0);
+  box-shadow: 0 0 0 2px rgba(207,0,0,.2);
+}
+
+.form-control {
+  width: 20rem;
+  border-radius: 5px 0 0 5px;
+  padding: .4rem 1rem;
+  border: 1px solid #ccc;
+  outline: none;
 }
 
 .form-control::placeholder, 
 .form-control-mobile::placeholder{
-    color: white;
+    color: rgb(41, 41, 41);
     padding-left: .7rem;
 }
 
-.form-control:focus,
-.form-control-mobile:focus{
-    background-color: rgb(109, 0, 0);
-    border: none;
-}
-
-.nav-search{
+.nav-search {
+    flex: 1;
     display: flex;
-    align-items: center;
-    align-content: center;
-    justify-content: space-around;
+    justify-content: center;
 }
 
-.input-group-text{
-    background-color: rgb(109, 0, 0);
-    border: none;
-    padding: .2rem;
-    border-radius:0 1rem 1rem 0;
+.input-group {
+    max-width: 420px;
+    width: 100%;
+}
+
+.input-group-text {
+  background-color: rgb(165, 0, 0);
+  border: 1px solid rgb(160, 0, 0);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 5px 5px 0;
 }
 
 .menu-categorys {
@@ -186,18 +181,17 @@ li{
 }
 
 .nav-cart-count{
-    width: 19px;
-    height: 19px;
+    margin-top: -1.2rem;
+    margin-left: -55px;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    border-radius: 50%;
+    background-color: #0e0e0e;
+    color: #fff;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-top: -25px;
-    margin-left: -35px;
-    border-radius: 11px;
-    font-size: 12px;
-    text-align: center;
-    background-color: rgb(14, 14, 14);
-    color: white;
+    justify-content: center;
 }
 
 .nav-categorys{
@@ -237,7 +231,6 @@ li{
 
 .fa-magnifying-glass{
     color: white;
-    padding-right: .9rem;
 }
 
 @media(max-width:1280px){
@@ -452,12 +445,5 @@ li{
 
 .cart-mobile-icon{
     font-size: 1.8rem;
-}
-
-@media(max-width: 800px){
-    .input-group-text{
-        margin-left: -2rem;
-    }
-
 }
 

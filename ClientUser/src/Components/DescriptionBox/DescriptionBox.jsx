@@ -212,158 +212,161 @@ const DescriptionBox = ({ product }) => {
             </div>
 
             <div className="descriptionbox-description">
-                <h2>Avaliações</h2>
-                <hr className='traco'/>
-                {Array.isArray(reviews) && reviews.length === 0 ? (
-                    <p>Sem avaliações ainda.</p>
-                ) : (
-                    <ul className='container-review'>
-                        {reviews.map((review) => {
-                            const userOwner = userLog && String(review.userId) === String(localStorage.getItem("users-id"));
+                    <h2>Avaliações</h2>
+                    <hr className='traco'/>
+                <div className="container-description">
+                    <div className="review">  
+                        {Array.isArray(reviews) && reviews.length === 0 ? (
+                            <p>Sem avaliações ainda.</p>
+                        ) : (
+                            <ul className='container-review'>
+                                {reviews.map((review) => {
+                                    const userOwner = userLog && String(review.userId) === String(localStorage.getItem("users-id"));
 
-                            return (
-                                <li key={review._id} className="liComment">
-                                    <div className="comment">
-                                        <div className="headerAll">
-                                            <div className="headerStar">
-                                                <strong className='nameUser'>{review.name}</strong>-
+                                    return (
+                                        <li key={review._id} className="liComment">
+                                            <div className="comment">
+                                                <div className="headerAll">
+                                                    <div className="headerStar">
+                                                        <strong className='nameUser'>{review.name}</strong>-
+                                                        {editingReviewId === review._id ? (
+                                                            <select
+                                                                name="rating"
+                                                                value={editedReview[review._id]?.rating || review.rating}
+                                                                onChange={(e) => handleEditChange(e, review._id)}
+                                                            >
+                                                                <option value="1">⭐</option>
+                                                                <option value="2">⭐⭐</option>
+                                                                <option value="3">⭐⭐⭐</option>
+                                                                <option value="4">⭐⭐⭐⭐</option>
+                                                                <option value="5">⭐⭐⭐⭐⭐</option>
+                                                            </select>
+                                                        ) : (
+                                                            <span>{'⭐'.repeat(review.rating)}</span>
+                                                        )}
+                                                    </div>
+
+                                                    {userOwner && (
+                                                        <div className="btnEdit">
+                                                            <div className="btns">
+                                                                <button
+                                                                    className="editReview"
+                                                                    onClick={() => {
+                                                                        if (editingReviewId === review._id) {
+                                                                            saveEditedReview(product._id, review._id);
+                                                                        } else {
+                                                                            setEditingReviewId(review._id);
+                                                                            setEditedReview(prev => ({
+                                                                                ...prev,
+                                                                                [review._id]: {
+                                                                                    rating: review.rating,
+                                                                                    comment: review.comment
+                                                                                }
+                                                                            }));
+                                                                        }
+                                                                    }}
+                                                                    disabled={isLoading}
+                                                                >
+                                                                    {isLoading
+                                                                        ? 'Salvando...'
+                                                                        : editingReviewId === review._id
+                                                                        ? 'Salvar'
+                                                                        : 'Editar'}
+                                                                </button>
+
+                                                                {editingReviewId === review._id && (
+                                                                    <button
+                                                                        className='cancelEditReview'
+                                                                        onClick={() => {
+                                                                            setEditingReviewId(null);
+                                                                            setEditedReview(prev => ({
+                                                                                ...prev,
+                                                                                [review._id]: undefined
+                                                                            }));
+                                                                        }}
+                                                                    >
+                                                                        Cancelar
+                                                                    </button>
+                                                                )}
+
+                                                                <i
+                                                                    className="fa-solid fa-trash"
+                                                                    onClick={() => removeFromReview(product._id, review._id)}
+                                                                    role="button"
+                                                                    tabIndex="0"
+                                                                ></i>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <br />
                                                 {editingReviewId === review._id ? (
-                                                    <select
-                                                        name="rating"
-                                                        value={editedReview[review._id]?.rating || review.rating}
+                                                    <input
+                                                        className='editReviewInput'
+                                                        type="text"
+                                                        name="comment"
+                                                        value={editedReview[review._id]?.comment || review.comment}
                                                         onChange={(e) => handleEditChange(e, review._id)}
-                                                    >
-                                                        <option value="1">⭐</option>
-                                                        <option value="2">⭐⭐</option>
-                                                        <option value="3">⭐⭐⭐</option>
-                                                        <option value="4">⭐⭐⭐⭐</option>
-                                                        <option value="5">⭐⭐⭐⭐⭐</option>
-                                                    </select>
+                                                    />
                                                 ) : (
-                                                    <span>{'⭐'.repeat(review.rating)}</span>
+                                                    <em className='textReviewUx'>{review.comment}</em>
                                                 )}
                                             </div>
-
-                                            {userOwner && (
-                                                <div className="btnEdit">
-                                                    <div className="btns">
-                                                        <button
-                                                            className="editReview"
-                                                            onClick={() => {
-                                                                if (editingReviewId === review._id) {
-                                                                    saveEditedReview(product._id, review._id);
-                                                                } else {
-                                                                    setEditingReviewId(review._id);
-                                                                    setEditedReview(prev => ({
-                                                                        ...prev,
-                                                                        [review._id]: {
-                                                                            rating: review.rating,
-                                                                            comment: review.comment
-                                                                        }
-                                                                    }));
-                                                                }
-                                                            }}
-                                                            disabled={isLoading}
-                                                        >
-                                                            {isLoading
-                                                                ? 'Salvando...'
-                                                                : editingReviewId === review._id
-                                                                ? 'Salvar'
-                                                                : 'Editar'}
-                                                        </button>
-
-                                                        {editingReviewId === review._id && (
-                                                            <button
-                                                                className='cancelEditReview'
-                                                                onClick={() => {
-                                                                    setEditingReviewId(null);
-                                                                    setEditedReview(prev => ({
-                                                                        ...prev,
-                                                                        [review._id]: undefined
-                                                                    }));
-                                                                }}
-                                                            >
-                                                                Cancelar
-                                                            </button>
-                                                        )}
-
-                                                        <i
-                                                            className="fa-solid fa-trash"
-                                                            onClick={() => removeFromReview(product._id, review._id)}
-                                                            role="button"
-                                                            tabIndex="0"
-                                                        ></i>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <br />
-                                        {editingReviewId === review._id ? (
-                                            <input
-                                                className='editReviewInput'
-                                                type="text"
-                                                name="comment"
-                                                value={editedReview[review._id]?.comment || review.comment}
-                                                onChange={(e) => handleEditChange(e, review._id)}
-                                            />
-                                        ) : (
-                                            <em className='textReviewUx'>{review.comment}</em>
-                                        )}
-                                    </div>
-                                    <hr/>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                )}
-
-                {userLog && (
-                    <>
-                        <button type='button'
-                            className={`reviewButton ${existReview ? 'hide' : 'show'}`}
-                            onClick={toggleReview}
-                        >
-                            Adicionar avaliação
-                        </button>
+                                            <hr/>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        )}
                     
-                        <hr className='traco'/>
-
-                        <div className={`textReview ${existReview ? 'show' : 'hide'}`}>
-                            <div className="stars">
-                                <p>Adicione sua avaliação abaixo!</p>
-                                <select
-                                    name="rating"
-                                    className="stars_select"
-                                    value={sendReview.rating}
-                                    onChange={addReviewText}
+                        {userLog && (
+                            <>
+                                <button type='button'
+                                    className={`reviewButton ${existReview ? 'hide' : 'show'}`}
+                                    onClick={toggleReview}
                                 >
-                                    <option value="1">⭐</option>
-                                    <option value="2">⭐⭐</option>
-                                    <option value="3">⭐⭐⭐</option>
-                                    <option value="4">⭐⭐⭐⭐</option>
-                                    <option value="5">⭐⭐⭐⭐⭐</option>
-                                </select>
-                            </div>
-                            <textarea
-                                name="comment"
-                                className="addReview"
-                                value={sendReview.comment}
-                                onChange={addReviewText}
-                            ></textarea>
-                            <div className="btnEnviar">
-                                <button className="EnterReview" onClick={add_review}>
-                                    Enviar Review
+                                    Adicionar avaliação
                                 </button>
-                                <button className="cancelReview" onClick={
-                                    ()=>setExistReview(false)
-                                }>
-                                    Cancelar Review
-                                </button>
-                            </div>
-                        </div>
-                    </>
-                )}
+
+                                <div className={`textReview ${existReview ? 'show' : 'hide'}`}>
+                                    <div className="stars">
+                                        <p>Adicione sua avaliação abaixo!</p>
+                                        <select
+                                            name="rating"
+                                            className="stars_select"
+                                            value={sendReview.rating}
+                                            onChange={addReviewText}
+                                        >
+                                            <option value="5">⭐⭐⭐⭐⭐</option>
+                                            <option value="4">⭐⭐⭐⭐</option>
+                                            <option value="3">⭐⭐⭐</option>
+                                            <option value="2">⭐⭐</option>
+                                            <option value="1">⭐</option>
+                                        </select>
+                                    </div>
+                                    <textarea
+                                        name="comment"
+                                        className="addReview"
+                                        value={sendReview.comment}
+                                        placeholder='Escreva sua avaliação...'
+                                        onChange={addReviewText}
+                                    ></textarea>
+                                    <div className="btnEnviar">
+                                        <button className="EnterReview" onClick={add_review}>
+                                            Enviar Review
+                                        </button>
+                                        <button className="cancelReview" onClick={
+                                            ()=>setExistReview(false)
+                                        }>
+                                            Cancelar Review
+                                        </button>
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,22 +1,14 @@
 import './css/PerfilUser.css'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { ShopContext } from '../Context/ShopContext';
 
 const PerfilUser = () => {
   const [image, setImage] = useState(null);
   const [btn_profile, setBtn_profile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [profileDetail, setProfileDetail] = useState({
-    name: '',
-    image: '' || '',
-    email: 'email',
-    new_password: '',
-    cpf: '',
-    adress: '',
-    city: '',
-    gateways: [],
-  });
+  const {fetchProfile, profileDetail, setProfileDetail} = useContext(ShopContext);
   const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
   const handleImage = (e) => {
@@ -30,37 +22,6 @@ const PerfilUser = () => {
 
   const handleChange = (e) => {
     setProfileDetail({ ...profileDetail, [e.target.name]: e.target.value });
-  };
-
-  const fetchProfile = async () => {
-    const res = await fetch(`${url}/api/users/getuserprofile`, {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-        'auth-token': localStorage.getItem("auth-token"),
-      },
-    });
-    const data = await res.json();
-
-    if (data.success) {
-      const usersId = data.data._id;
-      setProfileDetail(prev => ({
-        ...prev,
-        name: data.data.name,
-        email: data.data.email,
-        image: data.data.image,
-        adress: data.data.adress,
-        cpf: data.data.cpf,
-        city: data.data.city,
-        gateways: data.data.gateways || [],
-      }));
-      localStorage.setItem("users-id", usersId);
-      localStorage.setItem("users-name", data.data.name);
-      // imagem de cada vendedor setada
-      localStorage.setItem(`users-image-${usersId}`, data.data.image);
-    } else {
-      toast.error(data.errors || "Erro ao buscar perfil");
-    }
   };
   
   useEffect(() => {
@@ -135,6 +96,17 @@ const PerfilUser = () => {
               )}
           </label>
           <input disabled={!btn_profile} onChange={handleImage} type="file" name="image" id="file-input" hidden />
+          <button
+            onClick={() => {
+              if (btn_profile && !isLoading) {
+                save_profile();
+              }
+              setBtn_profile(!btn_profile);
+            }}
+            disabled={isLoading} // Disable the button while saving
+          >
+            {isLoading ? 'Salvando...' : btn_profile ? 'Salvar' : 'Editar'}
+          </button>
         </div>
         <div className="inputsConfig">
             <form>
@@ -198,24 +170,12 @@ const PerfilUser = () => {
                 </div>
               </div>
           </form>
+          <div className="btn">
+            <button className="logout" onClick={goOut}>
+              Logout
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="btn">
-        <button
-          onClick={() => {
-            if (btn_profile && !isLoading) {
-              save_profile();
-            }
-            setBtn_profile(!btn_profile);
-          }}
-          disabled={isLoading} // Disable the button while saving
-        >
-          {isLoading ? 'Salvando...' : btn_profile ? 'Salvar' : 'Editar'}
-        </button>
-
-        <button className="logout" onClick={goOut}>
-          Logout
-        </button>
       </div>
     </div>
   )

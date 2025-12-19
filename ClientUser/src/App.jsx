@@ -19,11 +19,15 @@ import PerfilUser from './Pages/PerfilUser'
 import { ToastContainer } from 'react-toastify';
 import ClientChat from './Components/chatClient/ClientChat'
 import { useState } from 'react'
-import ProductDisplay from './Components/ProductDisplay/ProductDisplay'
 
 function App() {
   const [isOpen, setIsOpen] = useState(false)
-  const openChat = () => setIsOpen(true);
+  const [currentSellerId, setCurrentSellerId] = useState(null);
+
+  const openChat = (sellerId) => {
+    setCurrentSellerId(sellerId);
+    setIsOpen(true);
+  };
 
   return (
     <>
@@ -50,7 +54,7 @@ function App() {
             <Route path='/allProducts' element={<AllProducts/>}/>
           </Routes>
         </main>
-        <ClientChat isOpen={isOpen} setIsOpen={setIsOpen}/>
+        <ClientChat isOpen={isOpen} setIsOpen={setIsOpen} sellerId={currentSellerId}/>
         <Footer/>
       </BrowserRouter>
     </div>

@@ -6,8 +6,7 @@ const Offers = () => {
   return (
     <div className='offers'>
         <div className="offers-left">
-            <h1>Ofertas</h1>
-            <h1>Exclusivas para você</h1>
+            <h1>Ofertas Exclusivas para você</h1>
             <p>OS PRODUTOS MAIS VENDIDOS</p>
             
             <Link to="Imperdiveis" className='btnConfira'>

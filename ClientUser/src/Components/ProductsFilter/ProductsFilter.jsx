@@ -7,12 +7,12 @@ const ProductsFilter = () => {
   const products = location.state?.result || [];
 
   return (
-    <div className="filterList">
+    <div className="filterList">          
+      <p className='result'><span>{products.length}</span> Resultado!</p>
       {products.length === 0 ? (
         <p>Nenhum produto encontrado.</p>
       ) : (
         <div className='products'>
-          <p><span>{products.length}</span> Resultado!</p>
           {products.map((item, i)=>{ 
             return ( 
               <Item key={i} 

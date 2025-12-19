@@ -38,12 +38,12 @@
     align-items: center;
     text-align: center;
     justify-content: space-between;
-    background:linear-gradient(to right,rgb(184, 0, 0), 60%, #88888800);
+    background-color: rgb(131, 0, 0);
 }
 
 .banner-right h1{
     font-weight: 800;
-    color: #ffffff;
+    color: #ff9100;
     font-size: 4rem;
 }
 .banner-right p{
@@ -66,10 +66,10 @@
 }
 
 .banner button{
-    width: 282px;
-    height: 70px;
-    border-radius: 20%;
-    background-color: #ff5e00;
+    width: 170px;
+    height: 50px;
+    border-radius: 2rem;
+    background-color: #ff7300;
     border: none; color: white;
     font-size: 22px;
     font-weight: 500;
