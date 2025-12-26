@@ -8,8 +8,10 @@ const SellerProfile = () => {
   const [image, setImage] = useState(null);
   const [btn_profile, setBtn_profile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {fetchProfile, profileDetail, setProfileDetail} = useContext(AdminContext)
+  const {fetchProfile, profileDetail, setProfileDetail, allproducts} = useContext(AdminContext)
   const url = import.meta.env.VITE_API_URL;
+  const allProducts = allproducts.length;
+  const [width, setWidth] = useState(window.innerWidth);
 
   const handleImage = (e) => {
     setImage(e.target.files[0]);
@@ -26,6 +28,12 @@ const SellerProfile = () => {
   
   useEffect(() => {
     fetchProfile();
+    const resize = ()=> setWidth(window.innerWidth)
+    window.addEventListener("resize", resize)
+
+    return ()=>{
+      window.removeEventListener("resize", resize);
+    }
   }, []);
 
   const save_profile = async () => {
@@ -76,15 +84,10 @@ const SellerProfile = () => {
       .finally(() => setIsLoading(false)); // Stop loading
   };
 
-  const goOut = () => {
-    localStorage.removeItem('auth-token-seller');
-    localStorage.removeItem('seller-image');
-    window.location.replace('/');
-  };
-
   return (
     <div className="container-geral">
       <div className="container-config">
+        <h3>Informações do Perfil</h3>
         <div className="container-group">
           <div className="left-side">
             <div className="perfil-file">
@@ -99,6 +102,85 @@ const SellerProfile = () => {
               </label>
               <input disabled={!btn_profile} onChange={handleImage} type="file" name="image" id="file-input" hidden />
             </div>
+            {width > 1200 && (
+              <button className='btn-save'
+                onClick={() => {
+                  if (btn_profile && !isLoading) {
+                    save_profile();
+                  }
+                  setBtn_profile(!btn_profile);
+                }}
+                disabled={isLoading}
+              >
+                {isLoading ? 'Salvando...' : btn_profile ? 'Salvar' : 'Editar'}
+            </button>
+            )}
+          </div>
+          <form className="inputsConfig">
+            <div className="name">
+              <label>Nome da Loja</label>
+              <input
+                value={profileDetail.name}
+                onChange={handleChange}
+                type="text"
+                name="name"
+                disabled={!btn_profile}
+                placeholder="adicione aqui o nome da sua loja"
+              />
+            </div>
+            <div className="emailChange">
+              <label>Alterar email Admin</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="vendedor@gmail.com"
+                disabled={!btn_profile}
+                value={profileDetail.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="passwordChange">
+              <label>Alterar senha Admin</label>
+              <input
+                type="password" // Updated to password
+                name="new_password"
+                placeholder="*******"
+                onChange={handleChange}
+                value={profileDetail.new_password}
+                disabled={!btn_profile}
+              />
+            </div>
+            <div className="gateways">
+              <label><i className="fa-solid fa-circle-info"></i> Gateway de pagamento</label>
+              <input
+                onChange={handleChange}
+                value={profileDetail.gatways}
+                name="gateways"
+                type='text'
+                disabled={!btn_profile}
+                placeholder="Cole aqui suas chaves do AbacatePay"
+              />
+              <div className="detailsgateway">
+                Faça seu cadastro no <a href="http://https://www.abacatepay.com">AbacatePay</a>, gere suas chaves e
+                insira-as aqui para receber pagamentos via PIX e 
+                Cartão de Crédito.
+              </div>
+            </div>
+            <div className="description-box">
+              <label>Descrição da loja</label>
+              <textarea
+                rows={5}
+                className='textarea-description'
+                onChange={handleChange}
+                cols={40}
+                value={profileDetail.shopDescription}
+                name="shopDescription"
+                disabled={!btn_profile}
+                placeholder="Descreva sua loja!"
+              />
+            </div>
+          </form>
+          {width < 1200 && (
             <button className='btn-save'
               onClick={() => {
                 if (btn_profile && !isLoading) {
@@ -110,89 +192,49 @@ const SellerProfile = () => {
             >
               {isLoading ? 'Salvando...' : btn_profile ? 'Salvar' : 'Editar'}
           </button>
-          </div>
-          <form className="inputsConfig">
-            <div className="formInputs">
-              <div className="name">
-                <label>Nome da Loja</label>
-                <input
-                  value={profileDetail.name}
-                  onChange={handleChange}
-                  type="text"
-                  name="name"
-                  disabled={!btn_profile}
-                  placeholder="adicione aqui o nome da sua loja"
-                />
-              </div>
-              <div className="emailChange">
-                <label>Alterar email Admin</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="vendedor@gmail.com"
-                  disabled={!btn_profile}
-                  value={profileDetail.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="passwordChange">
-                <label>Alterar senha Admin</label>
-                <input
-                  type="password" // Updated to password
-                  name="new_password"
-                  placeholder="*******"
-                  onChange={handleChange}
-                  value={profileDetail.new_password}
-                  disabled={!btn_profile}
-                />
-              </div>
-              <div className="gateways">
-                <label><i className="fa-solid fa-circle-info"></i> Gateway de pagamento</label>
-                <input
-                  onChange={handleChange}
-                  value={profileDetail.gatways}
-                  name="gateways"
-                  type='text'
-                  disabled={!btn_profile}
-                  placeholder="Cole aqui suas chaves do AbacatePay"
-                />
-                <div className="detailsgateway">
-                  Faça seu cadastro no <a href="http://https://www.abacatepay.com">AbacatePay</a>, gere suas chaves e <br/>
-                  insira-as aqui para receber pagamentos via PIX e 
-                  Cartão de Crédito.
-                </div>
-              </div>
-              <div className="description">
-                <label>Descrição da loja</label>
-                <textarea
-                  rows={5}
-                  onChange={handleChange}
-                  cols={40}
-                  value={profileDetail.shopDescription}
-                  name="shopDescription"
-                  disabled={!btn_profile}
-                  placeholder="Descreva sua loja!"
-                />
+          )}
+        </div>
+      </div>  
+      <div className="container-infos mb-4">
+        <h3>Informações adicionais</h3>
+        <div className="info-empresa">
+          <div className="container-group-info">
+            <div className="vendidos box">
+              <p>Produtos vendidos:</p>
+              <hr className='hr'></hr>
+              <i className="fa-solid fa-cart-flatbed icon"></i>
+              <div className='group-box'>
+                <span>{profileDetail.produtos_vendidos || 0}</span>
               </div>
             </div>
-          </form>
-          <div className="info-empresa">
-            <div className="vendidos">
-              <label>Produtos vendidos:</label>
-              <span>{profileDetail.produtos_vendidos || 0}</span>
+            <div className="stars box">
+              <p>Popularidade:</p>
+              <hr className='hr'></hr>
+              <div className='group-box'>
+                <span>{profileDetail.stars || 0} </span>
+                <i className="fa-solid fa-star icon"></i>
+              </div>
             </div>
-            <div className="stars">
-              <label>Popularidade:</label>
-              <span>{profileDetail.stars || 0} ⭐</span>
+            <div className="estoque box">
+              <p>Produtos no Estoque:</p>
+              <hr className='hr'></hr>
+              <div className='group-box'>
+                <span>{allProducts || 0}</span>
+                <i className="fa-solid fa-boxes-stacked icon"></i>
+              </div>
+            </div>
+            <div className="vendas box">
+              <p>Vendas Completas:</p>
+              <hr className='hr'></hr>
+              <div className='group-box'>
+                {/* trocar para adicionar vendas */}
+                <span>{allProducts || 0}</span>
+                <i className="fa-solid fa-cash-register icon"></i>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="btn">
-        <button className="logout" onClick={goOut}>
-          Logout
-        </button>
-      </div>
+      </div>    
     </div>
   );
 };

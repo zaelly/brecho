@@ -112,7 +112,10 @@ router.post("/uploadprofileimage", fetchSeller,
 //perfil vendedor
 router.post("/updateprofile", fetchSeller, async (req, res) => {
   try {
-    const { name, email, new_password, image, shopDescription, gateways } = req.body;
+    const { 
+      name, email, new_password, 
+      image, shopDescription, gateways 
+    } = req.body;
 
     const updateFields = {};
       if (name) updateFields.name = name;

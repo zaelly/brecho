@@ -47,12 +47,6 @@ const Sidebar = () => {
                         <p>Pedidos</p>
                     </div>
                 </Link>
-                <Link to={'/admin/notifications'} style={{TextDecoderation: "none"}}>
-                    <div className="sidebar-item">
-                        <i className="fa-solid fa-bell"></i>
-                        <p>Notificações</p>
-                    </div>
-                </Link>
                 <Link to={'/admin/reviewsproducts'} style={{TextDecoderation: "none"}}>
                     <div className="sidebar-item">
                         <i className="fa-solid fa-star"></i>

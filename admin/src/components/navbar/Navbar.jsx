@@ -8,7 +8,14 @@ const Navbar = () => {
   const [image_profile, setImage_profile] = useState(nav_profile);
   const [width, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);    
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen); 
+  const [isHoverGoOut, setHoverGoOut] = useState(false);
+
+  const goOut = () => {
+    localStorage.removeItem('auth-token-seller');
+    localStorage.removeItem('seller-image');
+    window.location.replace('/');
+  };
 
   useEffect(() => {
     const handleSize = () => setWindowWidth(window.innerWidth)
@@ -21,7 +28,6 @@ const Navbar = () => {
     window.addEventListener('storage', handleStoreChange);
 
     return ()=>{
-      window.removeEventListener('storage', handleStoreChange);
       window.removeEventListener('resize', handleSize);
       window.removeEventListener('storage', handleStoreChange);
     };
@@ -42,11 +48,30 @@ const Navbar = () => {
               onClick={toggleMenu}
             ></i>
         ):(
-          <div className="profile">
-            <Link to='/admin/profile'>
-              <img src={image_profile} alt=""/>
-              <p>Seu Perfil</p>
+          <div className='container-nav-box'>
+            <Link to={'/admin/notifications'} style={{TextDecoderation: "none"}}>
+              <div className="">
+                  <i className="fa-solid fa-bell"></i>
+              </div>
             </Link>
+            <div
+              className="profile-wrapper"
+              onMouseEnter={() => setHoverGoOut(true)}
+              onMouseLeave={() => setHoverGoOut(false)}
+            >
+              <div className="profile">
+                <Link to="/admin/profile">
+                  <img src={image_profile} alt="" />
+                  <p>Seu Perfil</p>
+                </Link>
+              </div>
+
+              <div className={`btnGoOut ${isHoverGoOut ? "active" : ""}`}>
+                <div className="logout" onClick={goOut}>
+                  Logout
+                </div>
+              </div>
+            </div>
           </div>
         )}
           {/* menu mobile */}
@@ -88,6 +113,12 @@ const Navbar = () => {
                       <p>Reviews</p>
                   </div>
                 </Link>
+                <div className="profile">
+                  <Link to='/admin/profile'>
+                    <img src={image_profile} alt=""/>
+                    <p>Seu Perfil</p>
+                  </Link>
+                </div>
                 <div className="profile">
                   <Link to='/admin/profile'>
                     <img src={image_profile} alt=""/>

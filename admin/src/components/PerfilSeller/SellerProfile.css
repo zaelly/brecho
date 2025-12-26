@@ -1,12 +1,14 @@
+/* info do perfil */
 .arrow-cloud{
     font-size: 2rem;
     margin: 1rem 0;
     color: rgb(216, 216, 216);
-    padding: 5.5rem 5rem;
+    padding: 10rem 10rem;
     border: 2px dotted #dadada;
     background-color:rgb(32, 32, 32);
     border-radius: 50%;
     object-fit: contain;
+    cursor: pointer;
 }
 
 .detailsgateway a{
@@ -20,17 +22,19 @@
 }
 
 .addprofile-thumbnail-img{
-    height: 200px;
-    width: 200px;
+    height: 350px;
+    width: 350px;
     object-fit: cover;
     margin: 1rem 0;
     color: rgb(32, 32, 32);
     border-radius: 50%;
+    cursor: pointer;
     display: block;
 }
 
 .inputsConfig{
     display: flex;
+    flex-direction: column;
     text-align: left;
     padding: 1rem;
 }
@@ -42,7 +46,7 @@
 
 button{
     border-radius: 7px;
-    padding:.2rem 2rem;
+    padding:.6rem 6rem;
     border: none;
 }
 
@@ -62,20 +66,143 @@ input{
     flex-direction: column;
 }
 
-.formInputs label{
+.inputsConfig label{
     margin-top: 1rem
+}
+
+.inputsConfig input, 
+.textarea-description{
+    width: 100%;
+    padding: .3rem;
+    padding-left: 15px;
+}
+
+.textarea-description{
+    border-radius: 9px;
+    border: 2px solid #ff9900;
+}
+
+.left-side{
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* info adicionais */
+.left-side, .container-config,
+.inputsConfig,
+.info-empresa{
+    width: 100%;
 }
 
 .info-empresa{
     display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 10px;
-    border: 1px solid #ff9900;
-    flex-direction: column;
+    justify-content: center;
 }
 
-.stars, .vendidos{
+.container-infos h3, 
+.container-config h3{
+    padding: 1rem;
+    text-align: left;
+}
+
+.container-infos{
+    width: 100%;
+}
+
+.container-group-info{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    width: 100%;
+}
+
+.box {
     display: flex;
-    gap: 1rem;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.2rem;
+    border-radius: 15px;
+    border: 1px solid #ff9900;
+    background-color: #ff9900;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.box span{
+    margin-top: 10px;
+    padding-bottom: 0;
+    font-size:3rem;    
+}
+
+.box p{
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.box:hover{
+    transform: scale(1.1);
+    color: white;
+}
+
+.hr{
+    border: none ;
+    width: 100%;
+    height: 1px;
+    margin: .5rem 0 1rem;
+    background-color: #363636;
+}
+
+.icon{
+    position: absolute;
+    right: -25px;
+    bottom: 0px;
+    font-size: 6.5rem;
+    opacity: 0.12;
+    pointer-events: none;
+    color: #000;
+    z-index: 0;
+}
+
+.group-box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.group-box span{
+    font-weight: 600;
+}
+
+/* responsivo */
+
+@media(max-width:1200px){
+    .container-group{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    } 
+}
+
+@media(max-width:600px){
+    .container-group{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    } 
+
+    .arrow-cloud{
+        padding: 8rem 8rem;
+    }
+
+    .addprofile-thumbnail-img{
+        height: 300px;
+        width: 300px;
+    }
 }

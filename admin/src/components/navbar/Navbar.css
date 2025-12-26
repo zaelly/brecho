@@ -36,6 +36,7 @@
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     line-height: 1;
 }
+
 .nav-logo span{
     color: rgb(156, 156, 156);
     font-size: 15px;
@@ -56,6 +57,7 @@
 .profile{
     border-radius: .5rem;
     display: flex;
+    margin:0 2rem;
     padding: .2rem .6rem;
     border: 1px solid rgb(255, 101, 40);
     align-items: center;
@@ -75,7 +77,6 @@
 }
 
 .profile:hover{
-
     color: rgb(255, 101, 40);
 }
 
@@ -179,4 +180,44 @@
     flex-direction: column;
     justify-content: center;
     gap: 1.5rem;
+}
+
+.container-nav-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.btnGoOut {
+    position: absolute;
+    top: 100%;
+    right: 28px;
+    margin-top: 1px;
+
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+
+    transition: all 0.25s ease;
+}
+
+.btnGoOut.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.logout {
+    background: #ff9900;
+    color: #000;
+    font-weight: 600;
+    padding: 10px 35px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
 }
