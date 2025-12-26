@@ -140,7 +140,7 @@ const AddProduct = () => {
   }
 
   return (
-    <div className='add-product'>
+    <div className='container-geral'>
       <form>
           <div className="form-row">
             <div className="addproduct-price form-group col-12">
@@ -242,7 +242,7 @@ const AddProduct = () => {
                   Tamanhos *
                 </label>
                   <p className="warning" style={{"margin": "0", "padding": '0', "fontSize": "12px"}}>
-                    Adicione os tamanhos disponiveis do seu produto!
+                    Tamanhos
                   </p>
                 <div className="group" style={{"marginBottom": "1rem"}}>
                   <div className="sizeGroup">
@@ -287,24 +287,12 @@ const AddProduct = () => {
               </div>
               <div className="addproduct-itemfield col-4 category">
                 <label htmlFor="conditions">Condição do produto *</label>
-                <p className='warning' style={{'marginTop': '0', 'padding':'0'}}>Descreva em que situação o produto se encontra</p>
                 <input type='text' value={productDetails.conditions} onChange={handleChange} name="conditions" />
+                <p className='warning' style={{'bottom': '0', 'padding':'0'}}>Descreva em que situação o produto se encontra</p>
               </div>
-            </div>
-            <div className="addproduct-itemfield form-group col-4">
-              <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione uma imagem! *</p>
-              <label htmlFor="file-input">
-                {image ? (
-                  <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" alt="Pré-visualização da imagem"/>
-                ):(
-                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-                )}
-              </label>
-              <input onChange={handleImage} type="file" accept="image/*" name="image" id="file-input" hidden />
-            </div>
-            <div className="addproduct-itemfield form-group col-5">
-              <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione uma descrição ao produto! *</p>
-              <div className="description">
+              <div className="addproduct-itemfield form-group col-4">
+                <p style={{"bottom": "0", "paddingTop": "1rem"}}>Descrição do produto! *</p>
+                <div className="description">
                   <textarea
                     rows={5}
                     onChange={handleChange}
@@ -315,6 +303,31 @@ const AddProduct = () => {
                     placeholder="Descreva seu produto aqui!"
                   />
                 </div>
+              </div>
+            </div>
+            <div className="group images-group"> 
+              <div className="addproduct-itemfield form-group">
+                <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione uma imagem para a thumbnail! *</p>
+                <label htmlFor="file-input">
+                  {image ? (
+                    <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" alt="Pré-visualização da imagem"/>
+                  ):(
+                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+                  )}
+                </label>
+                <input onChange={handleImage} type="file" accept="image/*" name="image" id="file-input" hidden />
+              </div>
+              <div className="addproduct-itemfield form-group">
+                <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione as imagens de seu produto! *</p>
+                <label htmlFor="file-input">
+                  {image ? (
+                    <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" alt="Pré-visualização da imagem"/>
+                  ):(
+                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+                  )}
+                </label>
+                <input onChange={handleImage} type="file" accept="image/*" name="image" id="file-input" hidden />
+              </div>
             </div>
             <button onClick={(e)=>{e.preventDefault(); Add_product()}} className='addproduct-btn'>Adicionar</button>
         </div>

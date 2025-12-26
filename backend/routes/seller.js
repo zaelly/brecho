@@ -134,9 +134,9 @@ router.post("/updateprofile", fetchSeller, async (req, res) => {
 });
 
 //trazer dados do vendedor no admin seller
-router.get("/getsellerprofile:id", fetchSeller, async (req, res) => {
+router.get("/getsellerprofile", fetchSeller, async (req, res) => {
   try {
-    const seller = await Seller.findById(req.req.id).select("-password");
+    const seller = await Seller.findById(req.seller.id).select("-password");
     if(!seller){
       return res.status(404).json({ success: false, message: "Vendedor não encontrado." });
     }

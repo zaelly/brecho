@@ -45,9 +45,9 @@
 }
 
 .profile img {
-    width: 35px;
+    width: 25px;
     background-color: rgb(255, 255, 255);
-    height: 35px;
+    height: 25px;
     object-fit: cover;
     border-radius: 50%;
     display: block;
@@ -56,7 +56,7 @@
 .profile{
     border-radius: .5rem;
     display: flex;
-    padding: .3rem .6rem;
+    padding: .2rem .6rem;
     border: 1px solid rgb(255, 101, 40);
     align-items: center;
     justify-content: center;

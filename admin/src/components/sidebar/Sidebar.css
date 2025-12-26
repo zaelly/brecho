@@ -1,6 +1,6 @@
 .fa-cart-shopping,
 .fa-rectangle-list,
-.fa-truck,
+.fa-truck, .fa-paper-plane, .fa-grip,
 .fa-bell, .fa-star{
     margin-top: -17px;
     color:  rgb(255, 86, 19);
@@ -14,7 +14,6 @@
     gap: 20px;
     width: 100%;
     max-width: 250px;
-    height: 100vh;
     background-color: rgb(24, 24, 24);
 }
 
@@ -22,12 +21,13 @@
     display: flex;
     color: rgb(255, 255, 255);
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-left: 1.3rem;
     margin: 0 25px;
     border-radius: 6px;
     background-color:rgb(43, 42, 42);
     gap: 10px;
-    text-align: center;
+    text-align: left;
     padding-top: 1rem;
     cursor: pointer;
 }

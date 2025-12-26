@@ -1,29 +1,3 @@
-.SellerProfile{
-    width: 100%;
-    padding: 30px 50px;
-    margin: 20px 30px;
-    border-radius: 6px;
-    background-color: rgb(24, 24, 24);
-}
-
-.perfil-file{
-    order: 1;
-}
-
-.container-config{
-    display: flex;
-    justify-content: flex-start;
-    gap: 100px;
-}
-
-input[type="text"], 
-input[type="email"], 
-input[type="password"], 
-textarea{
-    font-size: .9rem;
-    background-color: rgb(32, 32, 32);
-}
-
 .arrow-cloud{
     font-size: 2rem;
     margin: 1rem 0;
@@ -35,101 +9,14 @@ textarea{
     object-fit: contain;
 }
 
-.inputsConfig{
-    order: 2;
-    width: 35%;
-    display: flex;
-    flex-direction: column;
-}
-
-.btn{
-    display: flex;
-    align-items: end;
-    justify-content:flex-end;
-    gap: 2rem;
-}
-
-.inputsConfig p{
-    margin-bottom:5px;
-}
-
-.inputsConfig input{
-    border-radius: 5px;
-    outline: none;
-    margin-bottom: 1rem;
-    height: 2.4rem;
-    width: 100%;
-    background-color: rgb(32, 32, 32);
-    border: 2px solid rgb(255, 144, 17);
-    padding-left: 1rem;
-}
-
-.inputsConfig input::placeholder{
-    color: #c2c2c2;
-}
-
-button{
-    width: 10%;
-    color: #ffffff;
-    background-color: rgb(0, 162, 255);
-    border: none;
-    padding: .1rem 1rem;
-    border-radius: .5rem;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.vendidos{
-    width: 100%;
-}
-
 .detailsgateway a{
-    color: rgb(0, 255, 34);
+    color: rgb(1, 194, 26);
 }
 
-.detailsgateway p{
+.detailsgateway{
     font-size: .7rem;
-}
-
-.logout{
-    background-color: rgb(196, 0, 0);
-}
-
-.vendidos input{
-    border: 2px solid rgb(255, 144, 17);
-    border-radius: 5px;
-    text-align: center;
-    background-color: rgb(32, 32, 32);
-    color: #fff;
-}
-
-.info-empresa{
-    order: 3;
-    gap: 2rem;
-    text-align: center;
-    padding: 1rem;
-    display: flex;
-}
-
-.info-empresa p{
-    margin-bottom: 0;
-}
-
-.info-empresa input{
-    margin-bottom: 1rem;
-}
-
-.description textarea{
-    border-radius: 5px;
-    width: 100%;
-    height: 2.4rem;
-    border: 2px solid rgb(255, 144, 17);
-    padding-left: 1rem;
-}
-
-.description::placeholder{
-    width: 100%;
-    color: #d8d8d8;
+    padding-top: 5px;
+    word-wrap: break-word;
 }
 
 .addprofile-thumbnail-img{
@@ -142,44 +29,53 @@ button{
     display: block;
 }
 
-/* @media (max-width: 768px) {
-    .container-config{
-        flex-direction: column;
-        align-items: center;
-    }
+.inputsConfig{
+    display: flex;
+    text-align: left;
+    padding: 1rem;
+}
 
-    .inputsConfig{
-        width: 100%;
-    }
+.container-group{
+    display: flex;
+    justify-content: space-between;
+}
 
-    .btn{
-        justify-content: center;
-        gap: 1rem;
-    }
+button{
+    border-radius: 7px;
+    padding:.2rem 2rem;
+    border: none;
+}
 
-    .btn button{
-        width: 30%;
-    }
+input{
+    border: 2px solid #ff9900;
+    border-radius: 7px;
+    width: 70%;
+    color: white;
+    padding-left: 1rem;
+}
 
-    .info-empresa{
-        flex-direction: column;
-        align-items: center;
-    }
-} */
+.name, .emailChange,
+.passwordChange, 
+.description,
+.gateways{
+    display: flex;
+    flex-direction: column;
+}
 
-/* @media(max-width:1336px) {
-    .container-config{
-        gap: 50px;
-        display:flex;
-        justify-content: center;
-        flex-direction: column;
-    }
-    .arrow-cloud{
-        font-size: 2rem;
-        padding: 5.5rem 5rem;
-    }
-    .addprofile-thumbnail-img{
-        height: 150px;
-        width: 150px;
-    }
-} */
+.formInputs label{
+    margin-top: 1rem
+}
+
+.info-empresa{
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid #ff9900;
+    flex-direction: column;
+}
+
+.stars, .vendidos{
+    display: flex;
+    gap: 1rem;
+}

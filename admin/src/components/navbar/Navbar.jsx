@@ -6,9 +6,6 @@ import nav_profile from '../../assets/nav_profile.png'
 
 const Navbar = () => {
   const [image_profile, setImage_profile] = useState(nav_profile);
-  const [isLoading, setIsLoading] = useState(false);
-  const [profileFile, setProfileFile] = useState(null);
-  const url = import.meta.env.VITE_API_URL;
   const [width, setWindowWidth] = useState(window.innerWidth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);    
@@ -35,7 +32,7 @@ const Navbar = () => {
       {/* verificar pq nao ta pegando a imagem q add no navbar */}
         <div className="nav-logo">
             <img src={logo} alt="" />
-            <Link to="/admin/welcome">
+            <Link to="/admin/">
               <p>Reverto <span>Painel Admin</span></p>
             </Link>
         </div>
@@ -56,7 +53,7 @@ const Navbar = () => {
           {width <= 1000 && isMenuOpen ? (
             <div className='SidebarMobile'>
               <div className="menu-logo">
-                <Link to="/admin/welcome">
+                <Link to="/admin/">
                   <p>Reverto <span>Painel Admin</span></p>
                 </Link>
               </div>
@@ -91,6 +88,12 @@ const Navbar = () => {
                       <p>Reviews</p>
                   </div>
                 </Link>
+                <div className="profile">
+                  <Link to='/admin/profile'>
+                    <img src={image_profile} alt=""/>
+                    <p>Seu Perfil</p>
+                  </Link>
+                </div>
               </div>
             </div>
           ):(

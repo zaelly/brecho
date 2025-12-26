@@ -24,7 +24,7 @@ const NewOrders = () => {
      },[])
    
   return (
-    <div className="newOrderproduct">
+    <div className="container-geral">
         {/* mostra o produto e 
         todos os detalhes do produto
         se foi e se tem:

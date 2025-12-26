@@ -2,7 +2,7 @@ import React from 'react'
 
 const DetailsReviews = () => {
   return (
-    <div className='listProductReviews'>
+    <div className='container-geral'>
 
     </div>
   )

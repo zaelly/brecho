@@ -17,6 +17,12 @@ const Sidebar = () => {
     <>
         {width > 1000 && (
             <div className='Sidebar'>
+                <Link to={'/admin/'} style={{TextDecoderation: "none"}}>
+                    <div className="sidebar-item">
+                        <i className="fa-solid fa-grip"></i>
+                        <p>Dashboard Painel</p>
+                    </div>
+                </Link>
                 <Link to={'/admin/addproduct'} style={{TextDecoderation: "none"}}>
                     <div className="sidebar-item">
                         <i className="fa-solid fa-cart-shopping"></i>
@@ -27,6 +33,12 @@ const Sidebar = () => {
                     <div className="sidebar-item">
                         <i className="fa-solid fa-rectangle-list"></i>
                         <p>Lista de Produtos</p>
+                    </div>
+                </Link>
+                <Link to={'/admin/chatseller'} style={{TextDecoderation: "none"}}>
+                    <div className="sidebar-item">
+                        <i className="fa-regular fa-paper-plane"></i>
+                        <p>Conversas</p>
                     </div>
                 </Link>
                 <Link to={'/admin/neworder'} style={{TextDecoderation: "none"}}>

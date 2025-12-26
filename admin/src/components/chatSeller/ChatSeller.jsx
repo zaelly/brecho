@@ -1,8 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 const ChatSeller = () => {
+  const {detailPerfil} = useContext
   return (
-    <div>ChatSeller</div>
+    <div className='container-geral'>
+      <div className="chat">
+        <div className="chat-header">
+          <p>em</p>
+        </div>
+      </div>
+    </div>
   )
 }
 

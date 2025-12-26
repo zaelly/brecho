@@ -11,6 +11,7 @@ const ViewOrder = () => {
         size: "",
         id: ""
     })
+    const [allProducts, setAllProducts] = useState([])
     const [btn_order, setBtn_order] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [orderDetails, setOrder] = useState({
@@ -29,35 +30,35 @@ const ViewOrder = () => {
         setIsLoading(true); // Start loading
 
         await fetch(`${url}/api/order/updateOrder`, {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'auth-token-seller': localStorage.getItem('auth-token'),
-        },
-        body: JSON.stringify({
-            orderId: orderDetails.orderId,
-            fieldsToUpdate: {
-                statusOrder: orderDetails.statusOrder
-            }
-        }),
-        })
-        .then((resp) => resp.json())
-        .then((data) => {
-            data.success ? successHandle() : alert('Alteração de pedido falhou!');
-        })
-        .finally(() => setIsLoading(false)); // Stop loading
-    };
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'auth-token-seller': localStorage.getItem('auth-token'),
+            },
+            body: JSON.stringify({
+                orderId: orderDetails.orderId,
+                fieldsToUpdate: {
+                    statusOrder: orderDetails.statusOrder
+                }
+            }),
+            })
+            .then((resp) => resp.json())
+            .then((data) => {
+                data.success ? successHandle() : alert('Alteração de pedido falhou!');
+            })
+            .finally(() => setIsLoading(false)); // Stop loading
+        };
 
-    const fetchInfo = async ()=>{
-        const response = await fetch(`${url}/api/products/order/allorders`, {
-        headers: {
-        'auth-token-seller': localStorage.getItem('auth-token')
-        }
-    })
-    const data = await response.json();
-    
-    setAllProducts(data);
+        const fetchInfo = async ()=>{
+            const response = await fetch(`${url}/api/products/order/allorders`, {
+            headers: {
+            'auth-token-seller': localStorage.getItem('auth-token')
+            }
+        })
+        const data = await response.json();
+        
+        setAllProducts(data);
     }
 
     const successHandle = () => {
@@ -113,7 +114,7 @@ const ViewOrder = () => {
     };
 
   return (
-    <div className='ViewOrder'>
+    <div className='container-geral'>
         <div className="item-field-infos">
             <h5>Dados do Produto</h5>
             <hr/>

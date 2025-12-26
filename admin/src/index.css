@@ -1,6 +1,15 @@
-body{
-    margin: 0;
-    font-family: "Poppins";
-    background-color: #f6f6f6;
-    height: 100vh;
+.container-geral {
+    flex: 1;
+    padding: 30px 50px;
+    margin: 10px;
+    border-radius: 6px;
+    background-color: rgb(24, 24, 24);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }

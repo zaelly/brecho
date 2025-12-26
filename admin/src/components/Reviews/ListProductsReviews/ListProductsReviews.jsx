@@ -19,30 +19,32 @@ const ListProductsReviews = () => {
   }, []);
 
   return (
-    <div className="listProductReviews">
-      <div className="productReview">
-            <h3>Avaliações dos Produtos</h3>
-            <div className="allproducts">
-                {allproducts
-                .filter(product => product.reviews && product.reviews.length > 0)
-                .map((product) => (
-                    <div className="productView" key={product._id} onClick={() => console.log(product.reviews)}>
-                    <div className="productReview-format-main">
-                        <img src={product.image} alt={product.name} />
-                    <div className="overlay"></div>
-                    </div>
-                    <div className="productReview-format-text">
-                    <p className="title">{product.name}</p>
-                    <p className="reviewText">
-                        {product.reviews && product.reviews.length > 0
-                        ? `${product.reviews.length} ${product.reviews.length === 1 ? 'Avaliação' : 'Avaliações'}`
-                        : "Sem avaliações"}
-                    </p>
-                    </div>
-                </div>
-                ))}
-            </div>
-        </div>
+    <div className="container-geral">
+      <div className="listProductReviews">
+        <div className="productReview">
+              <h3>Avaliações dos Produtos</h3>
+              <div className="allproducts">
+                  {allproducts
+                  .filter(product => product.reviews && product.reviews.length > 0)
+                  .map((product) => (
+                      <div className="productView" key={product._id} onClick={() => console.log(product.reviews)}>
+                      <div className="productReview-format-main">
+                          <img src={product.image} alt={product.name} />
+                      <div className="overlay"></div>
+                      </div>
+                      <div className="productReview-format-text">
+                      <p className="title">{product.name}</p>
+                      <p className="reviewText">
+                          {product.reviews && product.reviews.length > 0
+                          ? `${product.reviews.length} ${product.reviews.length === 1 ? 'Avaliação' : 'Avaliações'}`
+                          : "Sem avaliações"}
+                      </p>
+                      </div>
+                  </div>
+                  ))}
+              </div>
+          </div>
+      </div>
     </div>
   );
 };

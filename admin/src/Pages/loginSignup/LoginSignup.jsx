@@ -45,7 +45,7 @@ const LoginSignup = () => {
         toast.error("Login falhou, tente novamente");
       }
     } catch (err) {
-      toast.error("Ocorreu um erro. Tente novamente.");
+      toast.error("Ocorreu um erro. Tente novamente.", err);
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const LoginSignup = () => {
         toast.error("Cadastro falhou: " + data.message);
       }
     } catch (err) {
-      toast.error("Ocorreu um erro. Tente novamente.");
+      toast.error("Ocorreu um erro. Tente novamente.", err);
     } finally {
       setLoading(false);
     }
