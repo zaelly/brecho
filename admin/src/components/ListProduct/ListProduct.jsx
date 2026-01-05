@@ -4,7 +4,7 @@ import { AdminContext } from '../../context/AdminContext'
 
 const ListProduct = () => {
 
-  const {fetchInfo, allproducts, remove_product} = useContext(AdminContext);
+  const {fetchInfo, allproducts, remove_product, edit_product} = useContext(AdminContext);
 
   useEffect(()=>{
     fetchInfo();
@@ -21,6 +21,7 @@ const ListProduct = () => {
           <p>Preço Oferta</p>
           <p>Categoria</p>
           <p>Unid.</p>
+          <p>Editar</p>
           <p>Remover</p>
         </div>
         <div className="listproduct-allproducts">
@@ -40,7 +41,8 @@ const ListProduct = () => {
                 </p>
                 <p>{product.category}</p>
                 <p>{product.unit}</p>
-                <i className="fa-solid fa-square-xmark" onClick={() => remove_product(product._id)}></i>
+                <i className="fa-solid fa-pen-to-square" onClick={() => edit_product(product._id)}></i>
+                <i className="fa-solid fa-delete-left" onClick={() => remove_product(product._id)}></i>
               </div>
               <hr />
             </React.Fragment>

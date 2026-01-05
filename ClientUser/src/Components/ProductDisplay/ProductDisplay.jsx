@@ -12,13 +12,16 @@ const ProductDisplay = ({product, openChat}) => {
     const [selectedSize, setSelectedSize] = useState(null);
     const [reviews, setReviews] = useState(product?.reviews || []);
     const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    const {addToCart} = useContext(ShopContext)
     const inOffer = product?.inOffer;
     const sizes = product?.size
     const marca = product?.marca
     const sellerId = product.sellerId;
     const conditions = product?.conditions
     const [enterprise, setEnterprise] = useState({name: ""});
+    const {addToCart} = useContext(ShopContext);
+    
+    const itemId = "";
+    const size = "";
 
     const fetchSeller = async () => {
         if (!sellerId) return;
@@ -30,6 +33,14 @@ const ProductDisplay = ({product, openChat}) => {
         console.error("Erro ao buscar seller no chat:", err);
         }
     };
+
+    const removeQuantity = (itemId, size)=>{
+        console.log(itemId, size);
+    }
+
+    const addQuantity = (itemId, size)=>{
+        console.log(itemId, size); 
+    }
 
     useEffect(()=>{
         if(!sellerId) return;
@@ -66,11 +77,11 @@ const ProductDisplay = ({product, openChat}) => {
                 <div className="productDisplay-right-prices">
                     {inOffer ? (
                         <> 
-                            <div className='productDisplay-old-prices'>R${product.old_price}</div>
-                            <div className='productDisplay-new-prices'>R${product.new_price}</div>
+                            <div className='productDisplay-old-prices'>R${product.old_price.toFixed(2).replace(".",",")}</div>
+                            <div className='productDisplay-new-prices'>R${product.new_price.toFixed(2).replace(".",",")}</div>
                         </>
                     ) : (
-                        <div className='productDisplay-new-prices'>R${product.current_price}</div> 
+                        <div className='productDisplay-new-prices'>R${product.current_price.toFixed(2).replace(".",",")}</div> 
                     )}
                 </div>  
                 <div className="description">
@@ -124,6 +135,14 @@ const ProductDisplay = ({product, openChat}) => {
                             </div>
                         ))}
                     </div>
+                </div>
+                <div className="product-display-right-size">
+                    <h2 className='tamanhos-h2'>Quantidade</h2>
+                        <div className="QuantityItens">
+                            <button onClick={() => removeQuantity(itemId, size)}><i className="fa-solid fa-minus"></i></button>
+                                <input type="number" name="" id="" value="0" />
+                            <button onClick={()=> addQuantity(itemId, size)}><i className="fa-solid fa-plus"></i></button>
+                        </div>
                 </div>
                 <div className="buttons">
                     <button className='btn-cart' onClick={()=>{

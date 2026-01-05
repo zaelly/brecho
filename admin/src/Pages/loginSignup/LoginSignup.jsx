@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from 'react-toastify';
+import new_york_bg from "../../assets/new-york-bg.jpg"
 
 const LoginSignup = () => {
   const [signup, setSignup] = useState(false);
@@ -78,10 +79,14 @@ const LoginSignup = () => {
   return (
     <div className="LoginSignup">
       <ToastContainer position="top-right" autoClose={4000} />
+      <div className='pageImg'>
+        <img src={new_york_bg} alt="" className="img-container-full"/>
+      </div>
       <div className={`loginSignup-container ${signup ? "active" : ""}`}>
-        <h1>{signup ? "Sign Up Seller" : "Login Seller"}</h1>
+        <h1>{signup ? "Cadastrar-se" : "Entrar"}</h1>
         {signup ? (
           <>
+          {/* cadastro */}
             <div className="login-fields">
               <input
                 value={formData.username}
@@ -114,6 +119,7 @@ const LoginSignup = () => {
           </>
         ) : (
           <>
+          {/* login */}
             <div className="login-fields">
               <input
                 value={formData.email}
@@ -139,7 +145,7 @@ const LoginSignup = () => {
           </>
         )}
       </div>
-    </div>
+  </div>
   );
 };
 

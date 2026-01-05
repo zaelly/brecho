@@ -71,13 +71,16 @@ const AdminContextProvider = (props) =>{
         await fetchInfo();
     };
 
+    const edit_product = async(id) =>{
+        console.log("teste", id);
+    };
 
     useEffect(()=>{
         fetchInfo();
     },[])
 
     const contextValue = {
-        fetchProfile, setProfileDetail, remove_product, url, allproducts, profileDetail, fetchInfo, setAllProducts, 
+        fetchProfile, setProfileDetail, remove_product, edit_product, url, allproducts, profileDetail, fetchInfo, setAllProducts, 
     }
     return(
         <AdminContext.Provider value={contextValue}>

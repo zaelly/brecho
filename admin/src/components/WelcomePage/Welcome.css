@@ -1,50 +1,32 @@
-.container-dashboard{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-}
-
-.welcome h1{
+.container-dashboard h3{
     color: rgb(255, 255, 255);
+    padding-bottom: 2rem;
     text-shadow: 1px 1px 1px #000;
 }
 
 /* dashboard */
 
 .containerCommon{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 3rem;
+    width: 100%;
 }
 
-.stockContainer, 
-.soldContainer,
-.bestSellers,
-.statistic,
-.valueSell{
-    border: 1px solid #000;
-    padding: 1rem;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+@media(max-width:1366px){
+    
+    .containerCommon{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 3rem;
+        width: 100%;
+    }
 
-.stockContainer .group{
-    justify-content: flex-start;
-    display: flex;
-}
+    .group-box span{
+        font-size: 2rem;
+    }
 
-.containerCommon 
-input[type="number"]{
-    border: none;
-    width: 4rem;
-    font-weight: 700;
-    color: orangered;
-    background-color: transparent;
-    text-align: center;
+    .icon{
+        font-size: 5.5rem;
+    }
 }

@@ -8,7 +8,7 @@ import Checkout from '../checkout/Checkout';
 const CartItems = () => {
     const {getTotalCartAmount, all_product, addToCart, cartItem, removeFromCart, profileDetail, fetchProfile} = useContext(ShopContext);
     const [selectedPayment, setSelectedPayment] = useState(null);
-    const [paymentMethod, setPaymentMethod] = useState([])
+    // const [paymentMethod, setPaymentMethod] = useState([])
     const isDisabled = !selectedPayment || getTotalCartAmount <= 0;
     const [checkout, setCheckout] = useState(false);
 

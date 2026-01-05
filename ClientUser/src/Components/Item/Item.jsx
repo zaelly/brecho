@@ -18,14 +18,14 @@ const Item = (props) => {
             {
             props.current_price ? (
                 <div className="item-price-new">
-                  R${props.current_price}
+                  R${props.current_price.toFixed(2).replace(".",",")}
                 </div>
             ):( <>
                 <div className="item-price-new">
-                  R${props.new_price}
+                  R${props.new_price.toFixed(2).replace(".",",")}
                 </div>
                 <div className="item-price-old">
-                  R${props.old_price}
+                  R${props.old_price.toFixed(2).replace(".",",")}
                 </div>
               </>)
             }

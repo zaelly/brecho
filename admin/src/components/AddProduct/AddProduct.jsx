@@ -29,7 +29,7 @@ const AddProduct = () => {
   }
 
   const handleChange = (e) =>{
-    const {name, value, type, checked} = e.target;
+    const {name, type, checked} = e.target;
 
     if (type === "checkbox" && name.startsWith("size")) {
       const sizeLabel = name.replace("size", ""); // ex: "PP"
@@ -140,199 +140,237 @@ const AddProduct = () => {
   }
 
   return (
-    <div className='container-geral'>
-      <form>
-          <div className="form-row">
-            <div className="addproduct-price form-group col-12">
-              <div className="addproduct-itemfield">
-                <p>Titulo do Produto *</p>
-                <input 
-                  required 
-                  value={productDetails.name} 
-                  onChange={handleChange} 
-                  type="text" 
-                  name="name" 
-                  placeholder='Digite aqui' 
-                />
-              </div>
-              <div className="addproduct-itemfield">
-                <p>Preço *</p>
-                {/* se a offer for true entao tem oferta e o value passa a ser old_price
-                se for false entao nao tem oferta e o value passa a ser o new_price
-                
-                se nao tiver oferta entao vai chamar o current_price*/}
-                <input 
-                  value={offer ? (productDetails.old_price || '') : (productDetails.current_price || '')} 
-                  onChange={handleChange} 
-                  type="number" 
-                  name={offer ? "old_price" : "current_price"}
-                  placeholder='Digite o valor aqui' 
-                  required
-                />
-              </div>
-              {offer && (
-                <div className="addproduct-itemfield">
-                  <p>Preço de Oferta</p>
-                  <input value={(productDetails.new_price || '')} 
-                    onChange={handleChange} 
-                    type="number" 
-                    name="new_price"
-                    placeholder='Digite o valor aqui' 
-                  />
-                </div>
-              )}
-              <div className="addproduct-itemfield">
-                <p>Quantidade *</p>
-                <input 
-                  required 
-                  value={productDetails.unit} 
-                  onChange={handleChange} 
-                  type="number" 
-                  name="unit" 
-                  placeholder='Ex.: 100' 
-                />
-              </div>
-              <div className="add-product-itemfield category">
-                <label htmlFor="category">Categoria do Produto *</label>
-                <select value={productDetails.category} onChange={handleChange} name="category" className='add-product-selector'>
-                  <option value="Feminina">Feminina</option>
-                  <option value="Masculina">Masculina</option>
-                  <option value="kid">Kid</option>
-                  <option value="Unissex">Unissex</option>
-                  <option value="Eletronicos">Eletrônicos</option>
-                </select>
-              </div>
+    <div className="container-geral">
+      <form className="addproduct-form">
+
+        {/* ===== INFORMAÇÕES PRINCIPAIS ===== */}
+        <section className="form-section">
+          <h3 className="section-title">Informações do Produto</h3>
+
+          <div className="form-grid">
+            <div className="addproduct-itemfield">
+              <label>Título do Produto *</label>
+              <input
+                type="text"
+                name="name"
+                value={productDetails.name}
+                onChange={handleChange}
+                placeholder="Digite o nome do produto"
+                required
+              />
             </div>
-            <div className="addproduct-productDetails form-group col-12">
-              <div className="addproduct-itemfield check">      
-                <p className="warning">
-                  Se o produto não estiver habilitado ele não é mostrado!
-                </p>      
-                <div className="group"> 
-                  <label htmlFor="enableCheckbox">Habilitado *</label> 
-                  <input 
-                    onChange={handleChange} 
-                    checked={!!productDetails.enable} 
-                    type="checkbox" 
-                    name="enable" 
-                    required 
-                    id="enableCheckbox"
-                  /> 
-                </div>
-              </div>
-              <div className="addproduct-itemfield check">
-                <p className="warning">
-                  Se seu produto estiver em oferta adicione esta opção!
-                </p> 
-                <div className="group">
-                  <label htmlFor="checkOffer">
-                    Em oferta
-                  </label>
-                  <input 
-                    onChange={handleChange} 
-                    checked={!!productDetails.inOffer} 
-                    type="checkbox" 
-                    name="inOffer" 
-                    id="checkOffer"
-                  />
-                </div>
-              </div>
-              <div className="addproduct-itemfield check size">
-                <label htmlFor="checkSize">
-                  Tamanhos *
-                </label>
-                  <p className="warning" style={{"margin": "0", "padding": '0', "fontSize": "12px"}}>
-                    Tamanhos
-                  </p>
-                <div className="group" style={{"marginBottom": "1rem"}}>
-                  <div className="sizeGroup">
-                    <input 
-                      onChange={handleChange} 
-                      type="checkbox" 
-                      name="sizePP" 
-                      id="sizePP"
-                      checked={productDetails.size.includes("PP")}
-                    />
-                    <p>PP</p>
-                  </div>
-                  <div className="sizeGroup">
-                    <input onChange={handleChange} type="checkbox" name="sizeP" id="sizeP" checked={productDetails.size.includes("P")}/>
-                    <p>P</p>
-                  </div>
-                  <div className="sizeGroup">
-                    <input onChange={handleChange} type="checkbox" name="sizeM" id="sizeM" checked={productDetails.size.includes("M")}/>
-                    <p>M</p>
-                  </div>
-                  <div className="sizeGroup">
-                    <input onChange={handleChange} type="checkbox" name="sizeG" id="sizeG" checked={productDetails.size.includes("G")}/>
-                    <p>G</p>
-                  </div>
-                  <div className="sizeGroup">
-                    <input onChange={handleChange} type="checkbox" name="sizeGG" id="sizeGG" checked={productDetails.size.includes("GG")}/>
-                    <p>GG</p>
-                  </div>
-                  <div className="sizeGroup">
-                    <input onChange={handleChange} type="checkbox" name="sizeUnico" id="sizeUn" checked={productDetails.size.includes("Unico")}/>
-                    <p>Único</p>
-                  </div>
-                </div>
-              </div>
+
+            <div className="addproduct-itemfield">
+              <label>Preço *</label>
+              <input
+                type="number"
+                name={offer ? "old_price" : "current_price"}
+                value={
+                  offer
+                    ? productDetails.old_price || ""
+                    : productDetails.current_price || ""
+                }
+                onChange={handleChange}
+                placeholder="Digite o valor"
+                required
+              />
             </div>
-            <div className="addproduct-price form-group col-12">
-              <div className="addproduct-itemfield col-3">
-                 <label htmlFor="marca">Marca *</label>
-                 <input type="text" name="marca" required 
-                  value={productDetails.marca} 
-                  onChange={handleChange} />
+
+            {offer && (
+              <div className="addproduct-itemfield">
+                <label>Preço promocional</label>
+                <input
+                  type="number"
+                  name="new_price"
+                  value={productDetails.new_price || ""}
+                  onChange={handleChange}
+                  placeholder="Preço com desconto"
+                />
               </div>
-              <div className="addproduct-itemfield col-4 category">
-                <label htmlFor="conditions">Condição do produto *</label>
-                <input type='text' value={productDetails.conditions} onChange={handleChange} name="conditions" />
-                <p className='warning' style={{'bottom': '0', 'padding':'0'}}>Descreva em que situação o produto se encontra</p>
-              </div>
-              <div className="addproduct-itemfield form-group col-4">
-                <p style={{"bottom": "0", "paddingTop": "1rem"}}>Descrição do produto! *</p>
-                <div className="description">
-                  <textarea
-                    rows={5}
+            )}
+
+            <div className="addproduct-itemfield">
+              <label>Quantidade *</label>
+              <input
+                type="number"
+                name="unit"
+                value={productDetails.unit}
+                onChange={handleChange}
+                placeholder="Ex: 100"
+                required
+              />
+            </div>
+
+            <div className="addproduct-itemfield">
+              <label>Categoria *</label>
+              <select
+                name="category"
+                value={productDetails.category}
+                onChange={handleChange}
+              >
+                <option value="Feminina">Feminina</option>
+                <option value="Masculina">Masculina</option>
+                <option value="Kid">Kid</option>
+                <option value="Unissex">Unissex</option>
+                <option value="Eletronicos">Eletrônicos</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== STATUS ===== */}
+        <section className="form-section">
+          <h3 className="section-title">Status do Produto</h3>
+
+          <div className="checkbox-grid">
+            <div className="checkbox-item">
+                <label className="switch">
+                <input
+                  type="checkbox"
+                  name="enable"
+                  checked={!!productDetails.enable}
+                  onChange={handleChange}
+                />
+                <span className="slider"></span>
+              </label>
+              <span>Produto habilitado</span>
+            </div>
+           
+            <div className="checkbox-item">
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  name="inOffer"
+                  checked={!!productDetails.inOffer}
+                  onChange={handleChange}
+                />
+                <span className="slider"></span>
+              </label>              
+              <span>Produto em oferta</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== TAMANHOS ===== */}
+        <section className="form-section">
+          <h3 className="section-title">Tamanhos disponíveis</h3>
+
+          <div className="sizes-grid">
+            {["PP", "P", "M", "G", "GG", "Unico"].map((size) => (
+              <>
+                <label key={size} className="size-item switch">
+                  <input
+                    type="checkbox"
+                    name={`size${size}`}
+                    checked={productDetails.size.includes(size)}
                     onChange={handleChange}
-                    cols={40}
-                    required
-                    value={productDetails.descriptionProduct}
-                    name="descriptionProduct"
-                    placeholder="Descreva seu produto aqui!"
                   />
-                </div>
-              </div>
-            </div>
-            <div className="group images-group"> 
-              <div className="addproduct-itemfield form-group">
-                <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione uma imagem para a thumbnail! *</p>
-                <label htmlFor="file-input">
-                  {image ? (
-                    <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" alt="Pré-visualização da imagem"/>
-                  ):(
-                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-                  )}
+                  <span className="slider"></span>
                 </label>
-                <input onChange={handleImage} type="file" accept="image/*" name="image" id="file-input" hidden />
-              </div>
-              <div className="addproduct-itemfield form-group">
-                <p style={{"margin": "0", "paddingTop": "1rem"}}>Adicione as imagens de seu produto! *</p>
-                <label htmlFor="file-input">
-                  {image ? (
-                    <img src={URL.createObjectURL(image)} className="addproduct-thumbnail-img" alt="Pré-visualização da imagem"/>
-                  ):(
-                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-                  )}
-                </label>
-                <input onChange={handleImage} type="file" accept="image/*" name="image" id="file-input" hidden />
-              </div>
+                <span>{size === "Unico" ? "Único" : size}</span>
+              </>
+            ))}
+          </div>
+        </section>
+
+        {/* ===== DESCRIÇÃO ===== */}
+        <section className="form-section">
+          <h3 className="section-title">Detalhes do Produto</h3>
+
+          <div className="form-grid">
+            <div className="addproduct-itemfield">
+              <label>Marca *</label>
+              <input
+                type="text"
+                name="marca"
+                value={productDetails.marca}
+                onChange={handleChange}
+                required
+              />
             </div>
-            <button onClick={(e)=>{e.preventDefault(); Add_product()}} className='addproduct-btn'>Adicionar</button>
-        </div>
+
+            <div className="addproduct-itemfield">
+              <label>Condição do produto *</label>
+              <input
+                type="text"
+                name="conditions"
+                value={productDetails.conditions}
+                onChange={handleChange}
+                placeholder="Novo, usado, seminovo..."
+              />
+            </div>
+
+            <div className="addproduct-itemfield full description">
+              <label>Descrição do produto *</label>
+              <textarea
+                rows="5"
+                name="descriptionProduct"
+                value={productDetails.descriptionProduct}
+                onChange={handleChange}
+                placeholder="Descreva seu produto"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ===== IMAGENS ===== */}
+        <section className="form-section">
+          <h3 className="section-title">Imagens do Produto</h3>
+
+          <div className="images-group">
+            {/* imagem de thumbnail */}
+            <div className="image-upload">
+              <label htmlFor="file-input">
+                {image ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="Preview"
+                    className="addproduct-thumbnail-img"
+                  />
+                ) : (
+                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+                )}
+              </label>
+              <input
+                type="file"
+                id="file-input"
+                accept="image/*"
+                hidden
+                onChange={handleImage}
+              />
+              <p>Imagem principal</p>
+            </div>
+            {/* imagens de carrosel */}
+            <div className="image-upload">
+              <label htmlFor="file-input">
+                {image ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="Preview"
+                    className="addproduct-thumbnail-img"
+                  />
+                ) : (
+                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+                )}
+              </label>
+              <p>Outras imagens</p>
+            </div>
+          </div>
+        </section>
       </form>
+      {/* ===== BOTÃO ===== */}
+        <button
+          type="button"
+          className="addproduct-btn"
+          onClick={(e) => {
+            e.preventDefault();
+            Add_product();
+          }}
+        >
+          Adicionar produto
+        </button>
     </div>
+
   )
 }
 

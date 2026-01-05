@@ -3,12 +3,15 @@ import './Welcome.css'
 import { AdminContext } from '../../context/AdminContext'
 
 const Welcome = () => {
-  const {allproducts} = useContext(AdminContext)
+  const {allproducts, fetchInfo} = useContext(AdminContext)
   const [enableProdutos, setEnableProdutos] = useState([])
 
   const countAllProducts = allproducts.length
 
+  console.log(countAllProducts)
+
   useEffect(()=>{
+    fetchInfo()
     const filterEnable = allproducts.filter(p => p.enable)
     setEnableProdutos(filterEnable)
     
@@ -22,30 +25,45 @@ const Welcome = () => {
 
       <div className="containerCommon">      
         {/* MOSTRAR QUANTOS PRODUTOS TEM NO ESTOQUE */}
-        <div className="stockContainer">
-          <div className="group">
-            <label htmlFor="allProducts">Todos os Produtos</label>
-            <input type="number" name="allProducts" value={countAllProducts} disabled/>
+        <div className="box">
+          <p>Todos os Produtos:</p>
+          <hr className='hr'></hr>
+          <i className="fa-solid fa-dolly icon"></i>
+          <div className='group-box'>
+            <span>{countAllProducts}</span>
           </div>
-          <div className="group">
-            <label htmlFor="enableProducts">Produtos ativos</label>
-            <input type="number" name="enableProducts" value={enableProdutos.length} disabled/>
+        </div>
+        <div className="box">
+          <p>Produtos Ativos:</p>
+          <hr className='hr'></hr>
+          <i className="fa-solid fa-square-check icon"></i>
+          <div className='group-box'>
+            <span>{enableProdutos.length}</span>
           </div>
         </div>
 
         {/* MOSTRAR QUANTOS PRODUTOS VENDIDOS */}
-        <div className="soldContainer">
-
+        <div className="box">
+          <p>Total Vendido:</p>
+          <hr className='hr'></hr>
+          <i className="fa-solid fa-sack-dollar icon"></i>
+          <div className='group-box'>
+            <span>1.200,00</span>
+          </div>
         </div>
-
-        {/* MOSTRAR QUAIS PRODUTOS MAIS VENDEM */}
-        <div className="bestSellers">
-
+        <div className="box">
+          <p>Populares:</p>
+          <hr className='hr'></hr>
+          <i className="fa-solid fa-fire icon"></i>
+          <div className='group-box'>
+            {/* adicionar no model "bestSeller" */}
+            <span>15</span>
+          </div>
         </div>
 
         {/* ESTATISTICA DO MES QUE MAIS VENDEU */}
         <div className="statistic">
-
+          
         </div>
 
         {/* QUANTO VENDEU */}
