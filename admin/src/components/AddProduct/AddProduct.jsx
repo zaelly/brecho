@@ -5,10 +5,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
 
-  const [image, setImage] = useState(false)
+  const [gallery, setGallery] = useState([])
+  const [thumbnail, setThumbnail] = useState(null)
   const [productDetails, setProductDetails] = useState({
     name:"",
-    image:"",
+    thumbnail:"",
+    gallery:"",
     category: "Feminina",
     current_price: "",
     new_price: "",
@@ -24,8 +26,22 @@ const AddProduct = () => {
   })
   const url = import.meta.env.VITE_API_URL;
 
-  const handleImage = (e)=>{
-    setImage(e.target.files[0]);
+  const handleImageThumbnail = (e)=>{
+    setThumbnail(e.target.files[0]);
+  }
+
+  const handleImageGallery = (e)=>{
+    const galleryFiles = Array.from(e.target.files)
+
+    setGallery(prev => {
+      const total = prev.length + galleryFiles.length;
+      if(total > 5){
+        toast.warn("Só adicione 5 imagens adicionais!")
+        return prev;
+      }
+
+      return [...prev, ...galleryFiles]
+    })
   }
 
   const handleChange = (e) =>{
@@ -58,11 +74,17 @@ const AddProduct = () => {
     }
   },[productDetails.sellerId])
 
+  useEffect(() => {
+    return () => {
+      gallery.forEach(img => URL.revokeObjectURL(img));
+    };
+  }, [gallery]);
   const successHandle = ()=>{
     toast.success("Produto Adicionado!");
     setProductDetails({
       name:"",
-      image:"",
+      thumbnail:"",
+      gallery:"",
       category: "Feminina",
       current_price: "",
       new_price: "",
@@ -81,7 +103,6 @@ const AddProduct = () => {
   let offer = productDetails.inOffer;
 
   const Add_product = async ()=>{
-    console.log('testew')
     let responseData;
     let product = { ...productDetails };
 
@@ -111,26 +132,30 @@ const AddProduct = () => {
       }
     }
 
-    formData.append('product', image);
+    
+    gallery.forEach(g =>{
+      formData.append('gallery', g)
+    })
 
-    await fetch(`${url}/upload`,{
+    formData.append('thumbnail', thumbnail);
+
+    await fetch(`${url}/api/sellers/upload-product`,{
       method:'POST',
-      headers:{
-        Accept:'application/json',
-      },
       body: formData,
     }).then((resp) => resp.json())
     .then((data)=>{responseData=data})
 
     if(responseData.success){
-      product.image = responseData.image_url;
+      product.thumbnail = responseData.thumbnail;
+      product.gallery = responseData.gallery;
+      console.log(responseData, "resposta do server")
 
       await fetch(`${url}/api/products/seller/addproduct` ,{
         method:'POST',
         headers:{
           Accept:'application/json',
           'Content-Type':'application/json',
-          'auth-token-seller': localStorage.getItem('auth-token'), // ou onde você salva o token do vendedor
+          'auth-token-seller': localStorage.getItem('auth-token'),
         },
         body: JSON.stringify(product),
       }).then((resp)=>resp.json()).then((data)=>{
@@ -141,7 +166,7 @@ const AddProduct = () => {
 
   return (
     <div className="container-geral">
-      <form className="addproduct-form">
+      <form className="addproduct-form" method='post' encType="multipart/form-data">
 
         {/* ===== INFORMAÇÕES PRINCIPAIS ===== */}
         <section className="form-section">
@@ -320,10 +345,10 @@ const AddProduct = () => {
           <div className="images-group">
             {/* imagem de thumbnail */}
             <div className="image-upload">
-              <label htmlFor="file-input">
-                {image ? (
+              <label htmlFor="thumbnail">
+                {thumbnail ? (
                   <img
-                    src={URL.createObjectURL(image)}
+                    src={URL.createObjectURL(thumbnail)}
                     alt="Preview"
                     className="addproduct-thumbnail-img"
                   />
@@ -333,26 +358,42 @@ const AddProduct = () => {
               </label>
               <input
                 type="file"
-                id="file-input"
+                id="thumbnail"
+                name='thumbnail'
                 accept="image/*"
                 hidden
-                onChange={handleImage}
+                onChange={handleImageThumbnail}
               />
               <p>Imagem principal</p>
             </div>
             {/* imagens de carrosel */}
             <div className="image-upload">
-              <label htmlFor="file-input">
-                {image ? (
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt="Preview"
-                    className="addproduct-thumbnail-img"
-                  />
-                ) : (
-                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+              <label htmlFor="gallery">
+                {gallery && (
+                  <div className='container-gallery'>
+                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+                    <div className="gallery">
+                      {gallery.map((img, index)=>(
+                        <img
+                          key={index}
+                          src={URL.createObjectURL(img)}
+                          alt="Preview"
+                          className="addproduct-gallery-img"
+                        />
+                      ))}
+                    </div>
+                  </div>
                 )}
               </label>
+              <input
+                type="file"
+                id="gallery"
+                name='gallery'
+                accept="image/*"
+                multiple
+                hidden
+                onChange={handleImageGallery}
+              />
               <p>Outras imagens</p>
             </div>
           </div>

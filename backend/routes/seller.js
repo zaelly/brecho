@@ -4,14 +4,14 @@ const Seller = require('../models/Seller.js');
 const { fetchSeller } = require('../middlewares/auth.js');
 const jwt = require("jsonwebtoken");
 const Product = require('../models/Product.js');
-
+const cors = require("cors")
 const multer = require("multer");
 const path = require("path");
-const cors = require("cors");
 const bcrypt = require('bcryptjs');
 const fs = require("fs");
 
-// Usar o JSON e CORS para as requisições
+// Usar o JSON e 
+// 
 router.use(express.json());
 router.use(cors());
 
@@ -22,13 +22,14 @@ const port = process.env.PORT || 4000;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`;
 
 const dir = "./upload/images";
+
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
 // Configuração do Multer para o upload de imagens
 const storage = multer.diskStorage({
-  destination: './upload/images',
+  destination: dir,
   filename: (req, file, cb) => {
     return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
   }
@@ -39,8 +40,36 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } 
  });
 
-// Rota para upload de imagens
 router.use("/images", express.static("upload/images"));
+ 
+// Rota para upload de imagens
+router.post("/upload-product", 
+  upload.fields([{name:"thumbnail", maxCount:1}, {name:"gallery", maxCount:5}]), 
+  (req,res) =>{
+    const thumbnail = req.files.thumbnail[0]
+    const gallery = req.files.gallery;
+
+    // tratar erros, caso nao tenha feito o upload do arquivo exibir mensagem
+    if(!thumbnail){
+      return res.status(400).json({success: false, message: "Thumbnail não adicionada!"})
+    }
+
+    if(!gallery){
+      return res.status(400).json({success: false, message: "Imagens não adicionadas!"})
+    }
+
+    // fazer loop para trazer todas as imagens que estao dentro do array de objetos
+    gallery.forEach(e => {
+      const fileName = e.filename
+      return fileName
+    });
+
+    res.json({
+      thumbnail: thumbnail?.filename,
+      gallery: gallery,
+    })
+  }
+)
 
 // Rota de signup para vendedor
 router.post("/seller/signup", async (req, res) => {
@@ -101,8 +130,7 @@ router.post("/seller/login", async (req, res) => {
 });
 
 //tras uma imagem carregada pelo usuario no perfil
-router.post("/uploadprofileimage", fetchSeller, 
-  upload.single('profile'), (req, res)=>{
+router.post("/uploadprofileimage", fetchSeller, upload.single('profile'), (req, res)=>{
   res.json({
     success:1,
     image_url: `${url}/images/${req.file.filename}`

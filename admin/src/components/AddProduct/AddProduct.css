@@ -178,12 +178,34 @@
   margin-top: 1rem;
 }
 
+.container-gallery{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gallery{
+  display: grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap: 1rem;
+}
+
 .addproduct-thumbnail-img {
   width: 100%;
   height: 180px;
   object-fit: cover;
   border-radius: 10px;
   border: 2px dashed #444;
+}
+
+.addproduct-gallery-img{
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  width: 90px;
+  height: 90px;
 }
 
 .cloud-arrow {
