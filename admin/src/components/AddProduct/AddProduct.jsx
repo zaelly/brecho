@@ -1,3 +1,4 @@
+import React from 'react';
 import './AddProduct.css'
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -36,7 +37,7 @@ const AddProduct = () => {
     setGallery(prev => {
       const total = prev.length + galleryFiles.length;
       if(total > 5){
-        toast.warn("Só adicione 5 imagens adicionais!")
+        toast.warn("Limite de Imagens Adicionais Atingido!")
         return prev;
       }
 
@@ -79,6 +80,7 @@ const AddProduct = () => {
       gallery.forEach(img => URL.revokeObjectURL(img));
     };
   }, [gallery]);
+
   const successHandle = ()=>{
     toast.success("Produto Adicionado!");
     setProductDetails({
@@ -103,12 +105,13 @@ const AddProduct = () => {
   let offer = productDetails.inOffer;
 
   const Add_product = async ()=>{
+
     let responseData;
     let product = { ...productDetails };
-
     let formData =  new FormData();
 
     product.unit = Number(product.unit);
+
     product.old_price = product.old_price ? Number(product.old_price) : undefined;
     product.new_price = product.new_price ? Number(product.new_price) : undefined;
     product.current_price = product.current_price ? Number(product.current_price) : undefined;
@@ -132,23 +135,21 @@ const AddProduct = () => {
       }
     }
 
-    
     gallery.forEach(g =>{
       formData.append('gallery', g)
     })
 
     formData.append('thumbnail', thumbnail);
 
-    await fetch(`${url}/api/sellers/upload-product`,{
+    await fetch(`${url}/api/products/upload-product`,{
       method:'POST',
       body: formData,
     }).then((resp) => resp.json())
-    .then((data)=>{responseData=data})
+    .then((data)=>{responseData = data})
 
     if(responseData.success){
       product.thumbnail = responseData.thumbnail;
       product.gallery = responseData.gallery;
-      console.log(responseData, "resposta do server")
 
       await fetch(`${url}/api/products/seller/addproduct` ,{
         method:'POST',
@@ -166,7 +167,7 @@ const AddProduct = () => {
 
   return (
     <div className="container-geral">
-      <form className="addproduct-form" method='post' encType="multipart/form-data">
+      <form className="addproduct-form" encType="multipart/form-data">
 
         {/* ===== INFORMAÇÕES PRINCIPAIS ===== */}
         <section className="form-section">
@@ -282,8 +283,8 @@ const AddProduct = () => {
 
           <div className="sizes-grid">
             {["PP", "P", "M", "G", "GG", "Unico"].map((size) => (
-              <>
-                <label key={size} className="size-item switch">
+              <React.Fragment key={size}>
+                <label className="size-item switch">
                   <input
                     type="checkbox"
                     name={`size${size}`}
@@ -293,7 +294,7 @@ const AddProduct = () => {
                   <span className="slider"></span>
                 </label>
                 <span>{size === "Unico" ? "Único" : size}</span>
-              </>
+              </React.Fragment>
             ))}
           </div>
         </section>

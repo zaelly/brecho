@@ -91,16 +91,18 @@ const SellerProfile = () => {
         <div className="container-group">
           <div className="left-side">
             <div className="perfil-file">
-              <label htmlFor="file-input">
+              <label htmlFor="image">
                   {image ? (
-                    <img src={URL.createObjectURL(image)} className="addprofile-thumbnail-img" />
-                  ) : profileDetail.image ? (
+                    <img 
+                      src={URL.createObjectURL(image)} 
+                      className="addprofile-thumbnail-img" />
+                    ) : profileDetail.image ? (
                     <img src={profileDetail.image} className="addprofile-thumbnail-img" />
                   ) : (
                     <i className="fa-solid fa-cloud-arrow-up arrow-cloud"></i>
                   )}
               </label>
-              <input disabled={!btn_profile} onChange={handleImage} type="file" name="image" id="file-input" hidden />
+              <input disabled={!btn_profile} onChange={handleImage} accept="image/*" type="file" name="image" id="image" hidden />
             </div>
             {width > 1200 && (
               <button className='btn-save'

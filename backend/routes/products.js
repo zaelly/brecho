@@ -4,7 +4,9 @@ const Product = require('../models/Product.js');
 const { fetchSeller, fetchUser } = require('../middlewares/auth');
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
-
+const fs = require("fs");
+const multer = require("multer");
+const path = require("path");
 // Carregar variáveis de ambiente
 dotenv.config();
 const cors = require("cors");
@@ -12,6 +14,72 @@ const cors = require("cors");
 // Usar o JSON e CORS para as requisições
 router.use(express.json());
 router.use(cors());
+
+// upload de imagens
+const dir = "./upload/images";
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
+// Configuração do Multer para o upload de imagens
+const storage = multer.diskStorage({
+  destination: dir,
+  filename: (req, file, cb) => {
+    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 } 
+});
+
+const uploadMiddleware = upload.fields([{name:"thumbnail", maxCount:1}, {name:"gallery", maxCount:5}]);
+
+function handleMulterError(err, req, res, next) {
+  if(err instanceof multer.MulterError){
+    return res.status(500).json({success:false, message: err.message});
+  } else if(err){
+    return res.status(500).json({success:false, message: err.message});
+  } else if(req.files.gallery){
+    return res.status(500).json({success:false, message: err.message});
+  }
+
+  console.log("Upload realizado com sucesso!");
+
+  next();
+}
+
+router.use("/images", express.static("upload/images"));
+ 
+// Rota para upload de imagens
+router.post("/upload-product", uploadMiddleware, handleMulterError,
+  (req,res) =>{
+    const thumbnail = req.files.thumbnail[0]
+    const gallery = req.files.gallery;
+
+    // tratar erros, caso nao tenha feito o upload do arquivo exibir mensagem
+    if(!thumbnail){
+      return res.status(400).json({success: false, message: "Thumbnail não adicionada!"})
+    }
+
+    if(!gallery){
+      return res.status(400).json({success: false, message: "Imagens não adicionadas!"})
+    }
+
+    // fazer loop para trazer todas as imagens que estao dentro do array de objetos
+    gallery.forEach(e => {
+      const fileName = e.filename
+      console.log(fileName)
+    });
+
+    res.json({
+      thumbnail: thumbnail?.filename,
+      gallery: gallery,
+    })
+  }
+)
 
 // Endpoint para novas coleções
 router.get('/newcollections', async (req, res) => {
@@ -52,29 +120,54 @@ router.get('/allproducts', async (req, res) => {
   }
 });
 
-router.post('/seller/addproduct', fetchSeller, async (req,res)=>{
+router.post('/seller/addproduct', fetchSeller,
+  async (req,res)=>{
+
+   const {
+    name, unit, category, descriptionProduct, 
+    conditions, marca, size, new_price, old_price, 
+    current_price, enable, inOffer
+  } = req.body;
+
+  const {gallery, thumbnail} = req.files;
+
+  const tamanho = Array.isArray(size) ? size: [];
+  const unidade = Number(unit);
+
+  if(!name || !category || !descriptionProduct){
+    return res.status(400).json({success: false, message: "Campos em branco!"})
+  }
+
+  if(!unidade){
+    return res.status(400).json({success: false, message: "Unidade precisa ser maior que 0!"})
+  }
+
   try {
     const product = new Product({
-      name: req.body.name,
-      image: req.body.image,
-      category: req.body.category,
-      current_price: req.body.current_price ? Number(req.body.current_price) : undefined,
-      new_price: req.body.new_price ? Number(req.body.new_price) : undefined,
-      old_price: req.body.old_price ? Number(req.body.old_price) : undefined,
+      name:name,
+      gallery: gallery?.map(f => f.filename) || [],
+      thumbnail: thumbnail?.filename,
+      current_price: current_price ? Number(current_price) : undefined,
+      new_price: new_price ? Number(new_price) : undefined,
+      old_price: old_price ? Number(old_price) : undefined,
       sellerId: req.seller.id,
-      unit: Number(req.body.unit),
-      size: Array.isArray(req.body.size) ? req.body.size : [],
-      enable: req.body.enable === 'true' || req.body.enable === true,
-      inOffer: req.body.inOffer === 'true' || req.body.inOffer === true,
-      descriptionProduct: req.body.descriptionProduct,
-      conditions: req.body.conditions,
-      marca: req.body.marca
+      unit: unidade,
+      size: tamanho,
+      enable: enable === "true" || enable === true,
+      inOffer: inOffer === 'true' || inOffer === true,
+      descriptionProduct: descriptionProduct,
+      conditions: conditions,
+      marca: marca,
+      category: category
     });
+
     await product.save();
+
     res.json({
       success: true,
-      name: req.body.name,
+      name: name,
     });
+
     console.log(product, "produto")
   } catch (err) {
     console.error("Erro ao adicionar produto:", err);
