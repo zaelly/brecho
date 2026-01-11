@@ -57,14 +57,13 @@ const ProductDisplay = ({product, openChat}) => {
             <div className="ProductDisplay-left">
                 <div className="ProductDisplay-img-list">
                     <div className="itens-list">
-                        <img src={product.image} />
-                        <img src={product.image} />
-                        <img src={product.image} />
-                        <img src={product.image} />
+                        {product.gallery && product.gallery.map((img, index) => (
+                            <img key={index} src={img} />
+                        ))}
                     </div>
                 </div>
                 <div className="productDisplay-img">
-                    <img src={product.image} className='productDisplay-main-img' />
+                    <img src={product.thumbnail} className='productDisplay-main-img' />
                 </div>
             </div>
             <div className="ProductDisplay-right">

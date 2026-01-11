@@ -54,7 +54,7 @@ const Category = (props) => {
               key={i}
               id={item._id}
               name={item.name}
-              image={item.image}
+              thumbnail={item.thumbnail}
               new_price={item.new_price}
               current_price={item.current_price}
               old_price={item.old_price}

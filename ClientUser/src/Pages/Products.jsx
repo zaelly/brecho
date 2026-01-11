@@ -10,7 +10,7 @@ import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
 const Products = ({ openChat }) => {
   const { all_product } = useContext(ShopContext);
   const { productId, reviewId } = useParams();
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  // const [isChatOpen, setIsChatOpen] = useState(false);
 
   const product = all_product.find((e) => e._id === productId);
   const review = product?.review?.find((e) => e._id === reviewId);

@@ -4,7 +4,7 @@ import { AdminContext } from '../../context/AdminContext'
 
 const ListProduct = () => {
 
-  const {fetchInfo, allproducts, remove_product, edit_product} = useContext(AdminContext);
+  const {fetchInfo, allproducts, remove_product, edit_product, url} = useContext(AdminContext);
 
   useEffect(()=>{
     fetchInfo();
@@ -29,7 +29,7 @@ const ListProduct = () => {
           {allproducts.map((product)=>(
             <React.Fragment key={product._id}>
               <div className="listproduct-format-main listproduct-format">
-                <img src={product.thumbnail} alt="" className="listproduct-product-img" />
+                <img src={`${url}/images/${product.thumbnail}`} alt="" className="listproduct-product-img" />
                 <p>{product.name}</p>
                 <p>R${product.inOffer ? (Number(product.old_price).toFixed(2)) : (Number(product.current_price).toFixed(2))}</p>
                 <p>

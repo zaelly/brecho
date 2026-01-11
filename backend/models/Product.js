@@ -6,16 +6,12 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image:{
-    type: String,
-    required: true,
-  },
   thumbnail:{
     type: String,
     required: true,
   },
   gallery:{
-    type: String,
+    type: [String],
     required: true,
   },
   category:{

@@ -59,7 +59,7 @@ const CartItems = () => {
                     return (
                         <div key={key} className="cart-mobile">
                             <div className="cartItems-format cartItems-format-main">
-                                <img src={product.image} className="cartItems-product-icon" alt={product.name} />
+                                <img src={product.thumbnail} className="cartItems-product-icon" alt={product.name} />
                                 <p>{product.name}</p>
                                 <p className="CartItems-size">{size}</p>
                                 <div className="CartItems-quantity">

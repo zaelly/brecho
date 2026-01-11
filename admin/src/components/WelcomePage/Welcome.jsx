@@ -8,14 +8,11 @@ const Welcome = () => {
 
   const countAllProducts = allproducts.length
 
-  console.log(countAllProducts)
-
   useEffect(()=>{
     fetchInfo()
     const filterEnable = allproducts.filter(p => p.enable)
     setEnableProdutos(filterEnable)
-    
-  },[allproducts])
+  },[])
 
   return (
     <div className="container-geral">

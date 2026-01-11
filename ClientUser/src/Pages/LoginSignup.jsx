@@ -59,7 +59,7 @@ const LoginSignup = () => {
   }
 
   const handleClick = () => {
-    window.location.href = 'https://revertoclient.vercel.app'
+    return window.location.href = import.meta.env.VITE_VENDEDOR_URL_LOCAL || import.meta.env.VITE_VENDEDOR_URL;
   };
 
   const handleLogin = ()=>{
@@ -69,16 +69,6 @@ const LoginSignup = () => {
   const handleSignup = ()=>{
       setSignup(true);
   }
-
-  // const handleEnter = (e)=>{
-  //   if(e.key === "Enter"){
-  //     if(changeSignup){
-  //       signup();
-  //     }else{
-  //       login();
-  //     }
-  //   }
-  // }
 
   return (
     <div className="LoginSignup">
@@ -97,11 +87,11 @@ const LoginSignup = () => {
             <p className="login">
               Já tem uma conta? <span onClick={handleLogin}>Faça login</span>
             </p>
-
+{/* 
             <div className="agree-terms">
               <input type="checkbox" name="" id="" required />
               <p>Concordo com os termos de uso e privacidade.</p>
-            </div>
+            </div> */}
           </>
         ) : (
           <>
@@ -117,9 +107,7 @@ const LoginSignup = () => {
             </p>
 
             <Link className='areaVendedor' onClick={handleClick}>
-            <p>
               Área do vendedor
-            </p>
             </Link>
           </>
         )}

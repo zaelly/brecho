@@ -3,7 +3,6 @@ const router = express.Router();
 const Product = require('../models/Product.js');
 const { fetchSeller, fetchUser } = require('../middlewares/auth');
 const dotenv = require("dotenv");
-const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
@@ -39,14 +38,12 @@ const uploadMiddleware = upload.fields([{name:"thumbnail", maxCount:1}, {name:"g
 
 function handleMulterError(err, req, res, next) {
   if(err instanceof multer.MulterError){
-    return res.status(500).json({success:false, message: err.message});
+    return res.status(400).json({success:false, message: "erro ao enviar seu arquivo!"});
   } else if(err){
-    return res.status(500).json({success:false, message: err.message});
-  } else if(req.files.gallery){
-    return res.status(500).json({success:false, message: err.message});
+    return res.status(400).json({success:false, message: "erro ao enviar seu arquivo!"});
+  } else if(req.files.gallery.length === 0 || req.files.gallery === undefined){
+    return res.status(400).json({success:false, message: "Nenhum arquivo enviado!"});
   }
-
-  console.log("Upload realizado com sucesso!");
 
   next();
 }
@@ -55,7 +52,7 @@ router.use("/images", express.static("upload/images"));
  
 // Rota para upload de imagens
 router.post("/upload-product", uploadMiddleware, handleMulterError,
-  (req,res) =>{
+  (req,res) =>{    
     const thumbnail = req.files.thumbnail[0]
     const gallery = req.files.gallery;
 
@@ -68,15 +65,12 @@ router.post("/upload-product", uploadMiddleware, handleMulterError,
       return res.status(400).json({success: false, message: "Imagens não adicionadas!"})
     }
 
-    // fazer loop para trazer todas as imagens que estao dentro do array de objetos
-    gallery.forEach(e => {
-      const fileName = e.filename
-      console.log(fileName)
-    });
+    const loopGallery = gallery.map((g) => g.filename);
 
     res.json({
+      success:true,
       thumbnail: thumbnail?.filename,
-      gallery: gallery,
+      gallery: loopGallery,
     })
   }
 )
@@ -126,10 +120,10 @@ router.post('/seller/addproduct', fetchSeller,
    const {
     name, unit, category, descriptionProduct, 
     conditions, marca, size, new_price, old_price, 
-    current_price, enable, inOffer
+    current_price, enable, inOffer, gallery, thumbnail
   } = req.body;
 
-  const {gallery, thumbnail} = req.files;
+  console.log(req.body, "dados do produto recebidos no backend")
 
   const tamanho = Array.isArray(size) ? size: [];
   const unidade = Number(unit);
@@ -145,8 +139,8 @@ router.post('/seller/addproduct', fetchSeller,
   try {
     const product = new Product({
       name:name,
-      gallery: gallery?.map(f => f.filename) || [],
-      thumbnail: thumbnail?.filename,
+      gallery: gallery || [],
+      thumbnail: thumbnail,
       current_price: current_price ? Number(current_price) : undefined,
       new_price: new_price ? Number(new_price) : undefined,
       old_price: old_price ? Number(old_price) : undefined,
@@ -161,6 +155,8 @@ router.post('/seller/addproduct', fetchSeller,
       category: category
     });
 
+    console.log(product, "produto a ser salvo")
+
     await product.save();
 
     res.json({
@@ -168,7 +164,6 @@ router.post('/seller/addproduct', fetchSeller,
       name: name,
     });
 
-    console.log(product, "produto")
   } catch (err) {
     console.error("Erro ao adicionar produto:", err);
     res.status(500).json({ success: false, message: "Erro interno do servidor" });
