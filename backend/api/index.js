@@ -1,26 +1,24 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
 const fs = require("fs");
 const app = express();
+
+
+const app = require("../app");
+module.exports = app;
+
+
 const dotenv = require("dotenv");
 // Carregar variáveis de ambiente
 dotenv.config();
-const server = require('http').createServer(app)
 
 const port = process.env.PORT || 4000 ;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`
 // Middleware
 app.use(express.json());
 app.use(cors());
-
-// Conexão com o MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ Conectado ao MongoDB"))
-  .catch((err) => console.error("❌ Erro ao conectar no MongoDB:", err));
 
 // Criar diretório para upload de imagens se não existir
 const dir = "./upload/images";
@@ -89,27 +87,3 @@ app.post("/upload", upload.single("product"), (req, res) => {
 app.get("/", (req, res) => {
   res.send("🚀 API Rodando");
 });
-
-const userRoutes = require('./routes/user');
-const sellerRoutes = require('./routes/seller');
-const cartRoutes = require('./routes/cartRoute');
-const productRoutes = require('./routes/products');
-const orderRoutes = require('./routes/orderRoute');
-const chatRoutes = require('./routes/chatRoute');
-
-// Usar as rotas no aplicativo
-app.use('/api/users', userRoutes); 
-app.use('/api/products', productRoutes); 
-app.use('/api/cart', cartRoutes);        
-app.use('/api/sellers', sellerRoutes);   
-app.use('/api/order', orderRoutes);
-app.use('/api/chat', chatRoutes);
-
-// Inicia o servidor
-// server.listen(port, (err) => {
-//   if (err) {
-//     console.error(`❌ Erro ao iniciar o servidor: ${err}`);
-//   } else {
-//     console.log(`✅ Servidor rodando na porta ${port}`);
-//   }
-// });
