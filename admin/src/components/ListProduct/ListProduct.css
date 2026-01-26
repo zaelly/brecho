@@ -1,76 +1,97 @@
-.list-product{
-    padding: 10px 50px;
+/* ===== CONTAINER ===== */
+.list-product {
+    width: 95%;
 }
 
-.list-product h1{
-    color:  rgb(255, 86, 19);
-    margin-bottom: 2rem;
-}
-
-.listproduct-format-main{
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 100px;
-    width: 100%;
-    padding: 20px 0;
-    text-align: left;
-    color: #cacaca;
-    font-size: 15px;
+.list-product h1 {
+    color: #ff5613;
+    margin-bottom: 24px;
     font-weight: 600;
 }
 
-.fa-delete-left{
-    font-size:20px;
-    color: rgb(145, 145, 145);
-    cursor: pointer;
-    margin: auto;
+/* ===== TABELA ===== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.fa-pen-to-square{
-    font-size:20px;
-    color: rgb(145, 145, 145);
-    cursor: pointer;
-    margin: auto; 
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #353535;
+    overflow: auto;
 }
 
-.listproduct-allproducts{
-    overflow-y: auto;
+/* ===== HEADER ===== */
+.product-table thead {
+    background: linear-gradient(135deg, #ff7300, #ff5613);
 }
 
-.listproduct-format{
-    align-items: center;
+.product-table th {
+    padding: 16px;
+    font-weight: 600;
+    color: #fff;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* ===== BODY ===== */
+.product-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #b6b6b6;
+    color: white;
+    text-align: left;
     font-weight: 500;
+    vertical-align: middle;
 }
 
-.listproduct-product-img{
+.product-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.product-table tbody tr:hover {
+    background-color: #424242;
+}
+
+/* ===== IMAGEM ===== */
+.listproduct-product-img {
+    width: 80px;
     height: 80px;
+    object-fit: cover;
+    border-radius: 1rem;
 }
 
-@media(max-width:1380px){
-    .listproduct-format-main{
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-        gap: 10px;
-    }
-    .list-product{
-        max-height: 610px;
-    }
-    
+/* ===== BADGE OFERTA ===== */
+td[data-label="Preço Oferta"] {
+    font-weight: 600;
+    color: #1a9c5d;
 }
 
-@media(max-width:800px){
-    .list-product{
-        width: 95%;
-        height: 100%;
-        padding: 10px 30px;
-        margin: 20px auto;
-    }
-    .listproduct-format-main{
-        padding: 15px 0;
-        color: #454545;
-        font-size: 12px;
-    }
-    .listproduct-product-img{
-        height: 60px;
-    }
+/* ===== AÇÕES ===== */
+.action {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.action i {
+    font-size: 18px;
+}
+
+.action.edit {
+    color: #a5a5a5;
+}
+
+.action.delete {
+    color: #a5a5a5;
+}
+
+.action:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
 }

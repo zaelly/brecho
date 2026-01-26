@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import ListProductsReviews from '../../components/Reviews/ListProductsReviews/ListProductsReviews.jsx'
 import ChatSeller from '../../components/ChatSeller/ChatSeller.jsx'
 import Welcome from '../../components/WelcomePage/Welcome.jsx'
+import EditProduct from '../../components/EditProduct/EditProduct.jsx'
 
 const Admin = () => {
   return (
@@ -27,6 +28,7 @@ const Admin = () => {
         <Route path='notifications' element={<Notifications/>}/>
         <Route path='reviewsproducts' element={<ListProductsReviews/>}/>
         <Route path="chatseller" element={<ChatSeller/>}/>
+        <Route path="editproduto/:productId" element={<EditProduct />} />
       </Routes>
     </div>
   )

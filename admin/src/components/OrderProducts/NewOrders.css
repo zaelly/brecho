@@ -63,19 +63,6 @@ a{
     text-decoration: none;
 }
 
-@media(max-width:1380px){
-    .listproduct-format-main, 
-    .productOrder{
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-        gap: 10px;
-    }
-    .newOrderproduct{
-        max-height: 610px;
-    }
-    
-}
-
 @media(max-width:800px){
     .newOrderproduct{
         width: 95%;

@@ -51,39 +51,39 @@ app.post("/upload", upload.single("product"), (req, res) => {
 });
 
 // Rota de envio de e-mail
-app.post("/sendemail", async (req, res) => {
-  const { email } = req.body;
+// app.post("/sendemail", async (req, res) => {
+//   const { email } = req.body;
   
-  if (!email) {
-    return res.status(400).json({ message: "E-mail é obrigatório" });
-  }
+//   if (!email) {
+//     return res.status(400).json({ message: "E-mail é obrigatório" });
+//   }
 
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls:{
-         rejectUnauthorized: false
-      }
-    });
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//       },
+//       tls:{
+//          rejectUnauthorized: false
+//       }
+//     });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Bem-vindo!",
-      text: "Obrigado por se inscrever!",
-    };
+//     const mailOptions = {
+//       from: process.env.EMAIL_USER,
+//       to: email,
+//       subject: "Bem-vindo!",
+//       text: "Obrigado por se inscrever!",
+//     };
 
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "E-mail enviado com sucesso!" });
-  } catch (error) {
-    console.error("❌ Erro ao enviar e-mail:", error);
-    res.status(500).json({ message: "Erro ao enviar e-mail." });
-  }
-});
+//     await transporter.sendMail(mailOptions);
+//     res.status(200).json({ message: "E-mail enviado com sucesso!" });
+//   } catch (error) {
+//     console.error("❌ Erro ao enviar e-mail:", error);
+//     res.status(500).json({ message: "Erro ao enviar e-mail." });
+//   }
+// });
 
 // Rota inicial
 app.get("/", (req, res) => {
@@ -106,11 +106,10 @@ app.use('/api/order', orderRoutes);
 app.use('/api/chat', chatRoutes);
 
 // Inicia o servidor
-server.listen(port, (err) => {
-  if (err) {
-    console.error(`❌ Erro ao iniciar o servidor: ${err}`);
-    process.exit(1);
-  } else {
-    console.log(`✅ Servidor rodando na porta ${port}`);
-  }
-});
+// server.listen(port, (err) => {
+//   if (err) {
+//     console.error(`❌ Erro ao iniciar o servidor: ${err}`);
+//   } else {
+//     console.log(`✅ Servidor rodando na porta ${port}`);
+//   }
+// });

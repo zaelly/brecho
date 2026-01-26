@@ -107,7 +107,20 @@ router.get('/allproducts', async (req, res) => {
 
   try {
     let products = await Product.find({});
-    res.json(products);
+
+    const productWithUrl = products.map((product)=>{
+      const p = product.toObject();
+      const protocol = req.protocol;
+      const host = req.get("host")
+      const baseUrl = `${protocol}://${host}/images/`
+
+      p.thumbnail = p.thumbnail ? baseUrl + p.thumbnail : null;
+      p.gallery = p.gallery.map((m)=> baseUrl + m);
+
+      return p;
+    })
+
+    res.json(productWithUrl);
   } catch (err) {
     console.error("Erro ao buscar produtos:", err);
     res.status(500).json({ success: false, message: "Erro ao buscar produtos." });
@@ -170,8 +183,54 @@ router.post('/seller/addproduct', fetchSeller,
   }
 });
 
+router.get('/seller/getproduct:productId', async (req, res) =>{
+  let product = await Product.findById({_id: data._id})
+
+  if(!product){
+    return res.json({success:false, message:"Produto não encontrado!"});
+  }
+
+  res.json(product)
+})
+
+router.put("/seller/editproduct", fetchSeller, async (req, res) => {
+  try{
+    const requiredFields = [
+      'name', 'unit', 'category', 'descriptionProduct', 
+      'conditions', 'marca', 'size', 'new_price', 'old_price',
+      'current_price', 'thumbnail', 'gallery', 'enable', 'inOffer',
+    ];
+
+    const data = req.body;
+    const updateFields = {};
+
+    for(const field of requiredFields) {
+      if(data[field] === undefined || data[field] === null){
+        return res.status(400).json({success:false, message: `faltando ${field} na lista`})
+      }
+
+      updateFields[field] = data[field]
+    };
+  
+    const updated = await Product.findOneAndUpdate(
+      {_id: data._id, sellerId: req.seller.id}, 
+      updateFields, 
+      {new: true}
+    );
+    if(!updated){
+      return res.status(404).json({ success: false, message: "Produto não encontrado ou permissão negada." });
+    }
+
+    res.json({ success: true, message: "Produto atualizado com sucesso." })
+
+    } catch (err) {
+      console.error("Erro ao atualizar produto:", err);
+      res.status(500).json({ success: false, message: "Erro interno do servidor" });
+    }
+})
+
 //Criando api para deletar produtos
-router.post('/seller/removeproduct', fetchSeller, async (req, res) => {
+router.delete('/seller/removeproduct', fetchSeller, async (req, res) => {
   try {
     const product = await Product.findById(req.body.id);
     if (!product) {

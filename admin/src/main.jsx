@@ -6,11 +6,11 @@ import { BrowserRouter } from "react-router-dom";
 import AdminContextProvider from './context/AdminContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AdminContextProvider>
-      <BrowserRouter>
+  <StrictMode>      
+    <BrowserRouter>
+      <AdminContextProvider>
         <App />
-      </BrowserRouter>
-    </AdminContextProvider>
+      </AdminContextProvider>
+    </BrowserRouter>
   </StrictMode>,
 )

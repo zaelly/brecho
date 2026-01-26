@@ -23,7 +23,11 @@ const ShopContextProvider = (props) => {
     useEffect(()=>{
         fetch(`${url}/api/products/allproducts`)
             .then((response)=>response.json())
-            .then((data)=>setAll_products(data))
+            .then((data)=>{
+                // data.filter((d)=> console.log(d.thumbnail))
+                console.log(data, "data")
+                setAll_products(data)
+            })
 
         if(localStorage.getItem('auth-token')){
             fetch(`${url}/api/cart/getcart`,{

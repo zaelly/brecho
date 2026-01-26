@@ -1,9 +1,13 @@
 import { createContext, useEffect, useState } from "react";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from 'react-router-dom';
+
 export const AdminContext = createContext(null);
 
 const AdminContextProvider = (props) =>{
+    const navigate = useNavigate();
+
     const url = import.meta.env.VITE_API_URL;
     const [allproducts, setAllProducts] = useState([]);
     const [profileDetail, setProfileDetail] = useState({
@@ -37,6 +41,7 @@ const AdminContextProvider = (props) =>{
     })
     let offer = productDetails.inOffer;
     const [loading, setLoading] = useState(false);
+    const [image, setImage] = useState(null);
 
     const Add_product = async ()=>{
         if(loading) return;
@@ -80,7 +85,7 @@ const AdminContextProvider = (props) =>{
 
             const formData = new FormData();
             formData.append('thumbnail', thumbnail);
-            gallery.forEach((file, index) => {
+            gallery.forEach((file) => {
                 formData.append('gallery', file);
             });
 
@@ -109,6 +114,7 @@ const AdminContextProvider = (props) =>{
                 })
                 
                 const data = await addProdutoApi.json();
+                console.log(data)
                 data.success ? successHandle() : toast.error("Adição de produto falhou!")
             }
         }catch(err){
@@ -158,26 +164,118 @@ const AdminContextProvider = (props) =>{
         }
     })
         const data = await response.json();    
-        console.log(data, "todos os produtos do seller no contexto")
+        console.log(data)
         setAllProducts(data);
     }
 
     const remove_product = async(id) => {
-        await fetch(`${url}/api/products/seller/removeproduct`, {
-        method: 'POST',
+        const deleteProduct = await fetch(`${url}/api/products/seller/removeproduct`, {
+        method: 'DELETE',
         headers: {
             Accept:'application/json',
             'Content-Type':'application/json',
             'auth-token-seller': localStorage.getItem('auth-token'),
-        },
-        body: JSON.stringify({ id: id })
+        }
         });
-        await fetchInfo();
+
+        const response = deleteProduct.JSON.stringify({ id: id })
+
+        if(response.success){
+            await fetchInfo();
+            toast.success("Produto removido com sucesso")
+        }
     };
 
     const edit_product = async(id) =>{
-        console.log("teste", id);
+        if(loading) return;
+        setLoading(true);
+
+        // altera o produto
+        try{
+            let product = { ...productDetails };
+
+            product.unit = Number(product.unit);
+
+            product.current_price = Number(product.current_price) || 0;
+            product.old_price = Number(product.old_price) || 0;
+            product.new_price = Number(product.new_price) || 0;
+            product.unit = Number(product.unit) || 0;
+            
+            // tras o produto preenchido com as informações anterior
+
+            if (product.inOffer) {
+                product.current_price = undefined;
+                if (!product.old_price || !product.new_price) {
+                toast.warn("Preço antigo e preço de oferta são obrigatórios para produtos em oferta.");
+                return;
+                }
+                if(product.new_price > product.old_price){
+                toast.warn("Preço antigo é MENOR que preço de oferta altere o valor!.");
+                return;
+                }
+            } else {
+                product.old_price = undefined;
+                product.new_price = undefined;
+                if (!product.current_price) {
+                toast.warn("Preço atual é obrigatório para produtos sem oferta.");
+                return;
+                }
+            }
+
+            if(image){
+                let formData = new FormData();
+                formData.append('thumbnail', thumbnail);
+                gallery.forEach((file) => {
+                    formData.append('gallery', file);
+                });
+
+                console.log(product, "produto a ser enviado para upload")
+
+                const uploadApi = await fetch(`${url}/api/products/upload-product`,{
+                    method:'POST',
+                    body: formData
+                })
+
+                const resp = await uploadApi.json();
+
+                if(resp.success){
+                    product.thumbnail = resp.thumbnail;
+                    product.gallery = resp.gallery;
+                }
+            }
+
+            const updateProduct = await fetch(`${url}/api/products/seller/editproduct`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": 'application/json',
+                    'auth-token-seller': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({...product, _id: id})
+            })
+
+            const responseUpdate = await updateProduct.json();
+            if(responseUpdate.success){
+                toast.success("Produto achado com sucesso!")
+                await fetchInfo()
+            }else{
+                toast.error("Erro ao atualizar produto!");
+            }
+
+        }catch(err){
+            console.error(err)
+        }finally{
+            setLoading(false);
+        }
     };
+
+    const removeImage = (indexToRemove)=>{
+        setImage((prev) => {
+            URL.revokeObjectURL(prev[indexToRemove])
+            return prev.filter((_, index) => index !== indexToRemove)
+        })
+        setImage("")
+        console.log("removeed", indexToRemove)
+    }
 
     const handleImageThumbnail = (e)=>{
         setThumbnail(e.target.files[0]);
@@ -222,6 +320,7 @@ const AdminContextProvider = (props) =>{
 
     const successHandle = ()=>{
         toast.success("Produto Adicionado!");
+
         setProductDetails({
             name:"",
             thumbnail:"",
@@ -239,8 +338,9 @@ const AdminContextProvider = (props) =>{
             marca: '',
             conditions: ''
         })
+        navigate("/admin/listproduct")
     }
-    
+
     useEffect(()=>{
         const sellerId = localStorage.getItem('seller-id');
         if (sellerId) {
@@ -259,7 +359,7 @@ const AdminContextProvider = (props) =>{
     },[])
 
     const contextValue = {
-        fetchProfile, offer, loading, handleChange, Add_product, setGallery, handleImageGallery, setThumbnail, handleImageThumbnail, gallery, productDetails, setProductDetails, thumbnail, setProfileDetail, remove_product, edit_product, url, allproducts, profileDetail, fetchInfo, setAllProducts,
+        fetchProfile, offer, loading, removeImage, setImage, handleChange, Add_product, setGallery, handleImageGallery, setThumbnail, handleImageThumbnail, gallery, productDetails, setProductDetails, thumbnail, setProfileDetail, remove_product, edit_product, url, allproducts, profileDetail, fetchInfo, setAllProducts,
     }
     return(
         <AdminContext.Provider value={contextValue}>
