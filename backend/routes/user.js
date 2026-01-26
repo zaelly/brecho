@@ -4,7 +4,7 @@ const Users = require('../models/User.js');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const { fetchUser } = require('../middlewares/auth.js');
-const fs = require("fs");
+// const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
@@ -18,18 +18,13 @@ router.use(cors());
 const port = process.env.PORT || 4000;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`
 
-const dir = "./upload/images";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+// const dir = "./upload/images";
+// if (!fs.existsSync(dir)) {
+//   fs.mkdirSync(dir, { recursive: true });
+// }
 
 //Configuração do Multer para o upload de imagens
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
   storage,
@@ -135,9 +130,11 @@ router.post("/updateprofile", fetchUser, async (req, res) => {
 
 router.post("/uploadprofileimage", fetchUser, 
   upload.single('profile'), (req, res)=>{
+  
+    const fileName = `profile_${Date.now()}${path.extname(req.file.originalname)}`;
   res.json({
     success:1,
-    image_url: `${url}/images/${req.file.filename}`
+    image_url: `${url}/images/${fileName}`
   })
 })
 

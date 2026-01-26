@@ -8,7 +8,7 @@ const cors = require("cors")
 const multer = require("multer");
 const path = require("path");
 const bcrypt = require('bcryptjs');
-const fs = require("fs");
+// const fs = require("fs");
 
 // Usar o JSON e 
 // 
@@ -22,18 +22,9 @@ const port = process.env.PORT || 4000;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`;
 
 // upload de avatar
-const dir = "./upload/images";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+const storage = multer.memoryStorage();
 
 // Configuração do Multer para o upload de imagens
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
 
 const upload = multer({ 
   storage,
@@ -43,9 +34,10 @@ const upload = multer({
 // Rota para upload de imagens
 router.use("/images", express.static("upload/images"));
 router.post("/upload", upload.single("avatar"), (req, res) => {
+  const fileName = `avatar_${Date.now()}${path.extname(req.file.originalname)}`;
   res.json({
     success: 1,
-    image_url: `${url}/images/${req.file.filename}`,
+    image_url: `${url}/images/${fileName}`,
   });
 });
 
