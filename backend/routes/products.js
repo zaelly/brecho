@@ -15,24 +15,24 @@ router.use(express.json());
 router.use(cors());
 
 // upload de imagens
-const dir = "./upload/images";
+// const dir = "./upload/images";
 
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+// if (!fs.existsSync(dir)) {
+//   fs.mkdirSync(dir, { recursive: true });
+// }
 
 // Configuração do Multer para o upload de imagens
-const storage = multer.diskStorage({
-  destination: dir,
-  filename: (req, file, cb) => {
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: dir,
+//   filename: (req, file, cb) => {
+//     return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+//   }
+// });
 
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 } 
-});
+// const upload = multer({ 
+//   storage,
+//   limits: { fileSize: 5 * 1024 * 1024 } 
+// });
 
 const uploadMiddleware = upload.fields([{name:"thumbnail", maxCount:1}, {name:"gallery", maxCount:5}]);
 

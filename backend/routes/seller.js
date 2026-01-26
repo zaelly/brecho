@@ -22,23 +22,23 @@ const port = process.env.PORT || 4000;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`;
 
 // upload de avatar
-const dir = "./upload/images";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+// const dir = "./upload/images";
+// if (!fs.existsSync(dir)) {
+//   fs.mkdirSync(dir, { recursive: true });
+// }
 
 // Configuração do Multer para o upload de imagens
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: './upload/images',
+//   filename: (req, file, cb) => {
+//     return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+//   }
+// });
 
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 } 
- });
+// const upload = multer({ 
+//   storage,
+//   limits: { fileSize: 5 * 1024 * 1024 } 
+//  });
 
 // Rota para upload de imagens
 router.use("/images", express.static("upload/images"));
