@@ -1,18 +1,62 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const cloudinary = require("../config/cloudinary");
 const path = require("path");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 
+// Import error handler
+const errorHandler = require("../middleware/errorHandler");
+
 // Configurações Iniciais
 dotenv.config();
 const app = express();
 
-// Middleware
+// Middleware para OPTIONS requests (preflight)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:5174',
+    'https://brechobackend.vercel.app',
+    'https://brechoadmin.vercel.app'
+  ];
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, auth-token, auth-token-seller');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    console.log('Preflight request para:', req.url, 'origin:', origin);
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
+// Middleware JSON
 app.use(express.json());
-app.use(cors());
+
+// CORS adicional
+app.use(require('cors')({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:5174',
+    'https://brechobackend.vercel.app',
+    'https://brechoadmin.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'auth-token', 'auth-token-seller'],
+  credentials: true
+}));
 
 // Conexão com o MongoDB 
 const connectDB = async () => {
@@ -38,17 +82,61 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// Como o disco é temporário, o ideal é enviar para o Cloudinary aqui.
-app.post("/upload", upload.single("product"), (req, res) => {
-  if (!req.file) return res.status(400).json({ success: 0, message: "Ficheiro não enviado" });
-  
-  const generatedName = `product_${Date.now()}${path.extname(req.file.originalname)}`;
-  
-  res.json({
-    success: 1,
-    image_url: `${process.env.VITE_API_URL || ""}/images/${generatedName}`,
-    note: "Aviso: O disco da Vercel é temporário. Use Cloudinary para salvar permanentemente."
-  });
+// Upload para o Cloudinary
+app.post("/upload", upload.single("product"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: 0, message: "Ficheiro não enviado" });
+    }
+
+    // Converter buffer para base64
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+
+    // Upload para o Cloudinary
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: "brecho/products",
+      resource_type: "auto",
+      transformation: [
+        { quality: "auto", fetch_format: "auto" }
+      ]
+    });
+
+    res.json({
+      success: 1,
+      image_url: result.secure_url,
+      public_id: result.public_id
+    });
+
+  } catch (error) {
+    console.error("Erro ao fazer upload para Cloudinary:", error);
+    res.status(500).json({ 
+      success: 0, 
+      message: "Erro ao fazer upload da imagem" 
+    });
+  }
+});
+
+// Rota para deletar imagem do Cloudinary
+app.delete("/upload/:public_id", async (req, res) => {
+  try {
+    const { public_id } = req.params;
+    
+    const result = await cloudinary.uploader.destroy(public_id);
+    
+    res.json({
+      success: 1,
+      message: "Imagem deletada com sucesso",
+      result
+    });
+
+  } catch (error) {
+    console.error("Erro ao deletar imagem do Cloudinary:", error);
+    res.status(500).json({ 
+      success: 0, 
+      message: "Erro ao deletar imagem" 
+    });
+  }
 });
 
 // Rota de envio de e-mail 
@@ -92,5 +180,8 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/sellers', sellerRoutes);   
 app.use('/api/order', orderRoutes);
 app.use('/api/chat', chatRoutes);
+
+// Error handling middleware (deve ser por último)
+app.use(errorHandler);
 
 module.exports = app;

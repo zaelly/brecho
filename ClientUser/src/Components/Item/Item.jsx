@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { getThumbnailUrl } from '../../utils/cloudinary'
 import './Item.css'
 
 const Item = (props) => {
@@ -7,10 +8,18 @@ const Item = (props) => {
     window.scrollTo(0, 0);
   };
 
+  // Gerar URL otimizada do Cloudinary
+  const getImageUrl = () => {
+    if (props.image?.includes('cloudinary.com')) {
+      return getThumbnailUrl(props.image, 300);
+    }
+    return props.thumbnail || props.image;
+  };
+
   return (
     <div className="item">
         <Link to={`/products/${props.id}`}>
-          <img onClick={handleScrollToTop} src={props.thumbnail} alt={props.name} />
+          <img onClick={handleScrollToTop} src={getImageUrl()} alt={props.name} loading="lazy" />
         </Link>
         <div className="informations">
           <p>{props.name}</p>

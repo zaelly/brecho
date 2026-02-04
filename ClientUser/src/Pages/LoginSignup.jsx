@@ -18,43 +18,64 @@ const LoginSignup = () => {
   }
   const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const login = async() =>{
+    if (!formData.email || !formData.password) {
+      toast.error("Preencha todos os campos!");
+      return;
+    }
 
-    let responseData;
-    await fetch(`${url}/api/users/user/login`,{
-      method:'POST',
-      headers:{
-        Accept:'application/form-data',
-        'Content-Type': 'application/json'
-      }, body:JSON.stringify(formData),
-    }).then((response)=>response.json())
-    .then((data)=>responseData=data);
+    try {
+      const response = await fetch(`${url}/api/users/user/login`,{
+        method:'POST',
+        headers:{
+          'Accept':'application/json',
+          'Content-Type': 'application/json'
+        }, 
+        body:JSON.stringify(formData),
+      });
 
-    if(responseData.success){
-      localStorage.setItem('auth-token', responseData.token);
-      window.location.replace("/");
-    }else{
-      toast.error(responseData.errors)
+      const responseData = await response.json();
+
+      if(responseData.success){
+        localStorage.setItem('auth-token', responseData.token);
+        toast.success("Login realizado com sucesso!");
+        window.location.replace("/");
+      }else{
+        toast.error(responseData.errors || responseData.message || "Erro ao fazer login");
+      }
+    } catch (error) {
+      console.error("Erro no login:", error);
+      toast.error("Erro ao conectar com o servidor");
     }
   }
 
   const signup = async() =>{
+    if (!formData.username || !formData.email || !formData.password) {
+      toast.error("Preencha todos os campos!");
+      return;
+    }
 
-    let responseData;
-    await fetch(`${url}/api/users/user/signup`,{
-      method:'POST',
-      headers:{
-        Accept:'application/form-data',
-        'Content-Type': 'application/json'
-      },
-      body:JSON.stringify(formData),
-    }).then((response)=>response.json())
-    .then((data)=>responseData=data);
+    try {
+      const response = await fetch(`${url}/api/users/user/signup`,{
+        method:'POST',
+        headers:{
+          'Accept':'application/json',
+          'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(formData),
+      });
 
-    if(responseData.success){
-      localStorage.setItem('auth-token', responseData.token);
-      window.location.replace("/");
-    }else{
-      toast.error(responseData.errors)
+      const responseData = await response.json();
+
+      if(responseData.success){
+        localStorage.setItem('auth-token', responseData.token);
+        toast.success("Cadastro realizado com sucesso!");
+        window.location.replace("/");
+      }else{
+        toast.error(responseData.errors || responseData.message || "Erro ao fazer cadastro");
+      }
+    } catch (error) {
+      console.error("Erro no cadastro:", error);
+      toast.error("Erro ao conectar com o servidor");
     }
   }
 

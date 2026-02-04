@@ -10,9 +10,35 @@ const path = require("path");
 dotenv.config();
 const cors = require("cors");
 
-// Usar o JSON e CORS para as requisições
+// Middleware CORS específico para produtos
+router.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://brechoadmin.vercel.app',
+    'https://brechobackend.vercel.app'
+  ];
+  
+  console.log('Router Products - Origin:', origin);
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, auth-token, auth-token-seller');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    console.log('Preflight PRODUCTS para:', req.url, 'origin:', origin);
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 router.use(express.json());
-router.use(cors());
 
 // upload de imagens
 const storage = multer.memoryStorage();
