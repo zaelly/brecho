@@ -13,7 +13,7 @@ const LoginSignup = () => {
     email: '',
     password: '',
   })
-  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const url = import.meta.env.VITE_API_URL;
   const [loading, setLoading] = useState(false);  // Estado de carregamento
 
   const navigate = useNavigate();

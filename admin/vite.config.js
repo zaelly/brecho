@@ -11,4 +11,16 @@ export default defineConfig({
     },
     host: true,
   },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          mui: ['@mui/material', '@emotion/react', '@emotion/styled']
+        }
+      }
+    }
+  }
 })
