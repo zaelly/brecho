@@ -10,53 +10,48 @@ const dotenv = require("dotenv");
 // Import error handler
 const errorHandler = require("../middleware/errorHandler");
 
-// Configurações Iniciais
 dotenv.config();
 const app = express();
 
-// Middleware para OPTIONS requests (preflight)
+// ===== LOG DE DEBUG (opcional mas recomendado) =====
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:4000',
-    'http://localhost:5174',
-    // 'https://brechobackend.vercel.app',
-    // 'https://brechoadmin.vercel.app'
-  ];
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, auth-token, auth-token-seller');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    console.log('Preflight request para:', req.url, 'origin:', origin);
-    res.sendStatus(200);
-  } else {
-    next();
-  }
+  console.log("➡️", req.method, req.url, "Origin:", req.headers.origin);
+  next();
 });
 
-// Middleware JSON
-app.use(express.json());
+// ===== CORS ÚNICO E DEFINITIVO =====
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:4000',
+  'https://brechoadmin.vercel.app',
+  'https://brechoclient.vercel.app',
+  'https://brechobackend.vercel.app'
+];
 
-// CORS adicional
-app.use(require('cors')({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:4000',
-    'http://localhost:5174',
-    // 'https://brechobackend.vercel.app',
-    // 'https://brechoadmin.vercel.app'
-  ],
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.log("❌ CORS bloqueado para:", origin);
+    return callback(null, false);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'auth-token', 'auth-token-seller'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'auth-token',
+    'auth-token-seller'
+  ],
   credentials: true
 }));
+
+// ===== IMPORTANTE: JSON DEPOIS DO CORS =====
+app.use(express.json());
 
 // Conexão com o MongoDB 
 const connectDB = async () => {
