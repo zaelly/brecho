@@ -1,5 +1,5 @@
-// Verbose error handling para debug
-app.use((err, req, res, next) => {
+// Middleware de tratamento de erros para debug
+const errorHandler = (err, req, res, next) => {
   console.error('Erro detalhado:', {
     message: err.message,
     stack: err.stack,
@@ -30,4 +30,6 @@ app.use((err, req, res, next) => {
     message: 'Erro interno do servidor',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
-});
+};
+
+module.exports = errorHandler;

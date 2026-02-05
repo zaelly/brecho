@@ -19,10 +19,10 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
   const allowedOrigins = [
     'http://localhost:5173',
-    'http://localhost:3000',
+    'http://localhost:4000',
     'http://localhost:5174',
-    'https://brechobackend.vercel.app',
-    'https://brechoadmin.vercel.app'
+    // 'https://brechobackend.vercel.app',
+    // 'https://brechoadmin.vercel.app'
   ];
   
   if (allowedOrigins.includes(origin)) {
@@ -48,10 +48,10 @@ app.use(express.json());
 app.use(require('cors')({
   origin: [
     'http://localhost:5173',
-    'http://localhost:3000',
+    'http://localhost:4000',
     'http://localhost:5174',
-    'https://brechobackend.vercel.app',
-    'https://brechoadmin.vercel.app'
+    // 'https://brechobackend.vercel.app',
+    // 'https://brechoadmin.vercel.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'auth-token', 'auth-token-seller'],

@@ -45,8 +45,9 @@ const LoginSignup = () => {
       } else {
         toast.error("Login falhou, tente novamente");
       }
-    } catch (err) {
-      toast.error("Ocorreu um erro. Tente novamente.", err);
+    }catch (err) {
+      console.error(err);
+      toast.error("Erro ao conectar com o servidor");
     } finally {
       setLoading(false);
     }

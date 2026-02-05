@@ -61,18 +61,24 @@ router.use("/images", express.static("upload/images"));
 // Endpoint para registrar usuário
 router.post('/user/signup', async (req, res) => {
   try {
+    // Verifica se já existe usuário com esse email
     let check = await Users.findOne({ email: req.body.email });
     if (check) {
-      return res.status(400).json({ success: false, errors: "Já existe um usuário com este email!" });
+      return res.status(400).json({
+        success: false,
+        errors: "Já existe um usuário com este email!"
+      });
     }
 
+    // Criptografa senha
     const hashedPassword = await bcrypt.hash(req.body.password, 8);
 
+    // Cria usuário
     const user = new Users({
       name: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-      cartData: {},  
+      cartData: {},
       cpf: req.body.cpf,
       adress: req.body.adress
     });
@@ -85,11 +91,23 @@ router.post('/user/signup', async (req, res) => {
       }
     };
 
-    const token = jwt.sign(data, process.env.JWT_SECRET || 'secret_ecom');
-    res.json({ success: true, token });
+    const token = jwt.sign(
+      data,
+      process.env.JWT_SECRET || 'secret_ecom',
+      { expiresIn: "7d" } 
+    );
+
+    res.json({
+      success: true,
+      token
+    });
+
   } catch (err) {
     console.error("Erro ao criar usuário:", err);
-    res.status(500).json({ success: false, errors: "Erro interno ao criar o usuário." });
+    res.status(500).json({
+      success: false,
+      errors: "Erro interno ao criar o usuário."
+    });
   }
 });
 

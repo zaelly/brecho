@@ -93,7 +93,12 @@ router.post("/seller/signup", async (req, res) => {
       }
     };
 
-    const token = jwt.sign(data, process.env.JWT_SECRET_SELLER);
+    jwt.sign(
+      data,
+      process.env.JWT_SECRET_SELLER,
+      { expiresIn: "7d" }
+    );
+
     res.json({ success: true, token });
   } catch (err) {
     console.error("Erro no signup do vendedor:", err);

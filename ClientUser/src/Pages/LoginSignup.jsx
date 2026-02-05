@@ -13,10 +13,13 @@ const LoginSignup = () => {
     email: ""
   })
 
-  const changeHandle = (e) =>{
-    setFormData({...formData, [e.target.name]:e.target.value})
+const changeHandle = (e) =>{
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   }
-  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const url = import.meta.env.VITE_API_URL;
   const login = async() =>{
     if (!formData.email || !formData.password) {
       toast.error("Preencha todos os campos!");
@@ -38,7 +41,9 @@ const LoginSignup = () => {
       if(responseData.success){
         localStorage.setItem('auth-token', responseData.token);
         toast.success("Login realizado com sucesso!");
-        window.location.replace("/");
+        setTimeout(() => {
+          window.location.replace("/");
+        }, 1000);
       }else{
         toast.error(responseData.errors || responseData.message || "Erro ao fazer login");
       }
@@ -69,7 +74,9 @@ const LoginSignup = () => {
       if(responseData.success){
         localStorage.setItem('auth-token', responseData.token);
         toast.success("Cadastro realizado com sucesso!");
-        window.location.replace("/");
+        setTimeout(() => {
+          window.location.replace("/");
+        }, 1000);
       }else{
         toast.error(responseData.errors || responseData.message || "Erro ao fazer cadastro");
       }
@@ -80,7 +87,8 @@ const LoginSignup = () => {
   }
 
   const handleClick = () => {
-    return window.location.href = import.meta.env.VITE_VENDEDOR_URL_LOCAL || import.meta.env.VITE_VENDEDOR_URL;
+    const sellerUrl = import.meta.env.VITE_VENDEDOR_URL || 'http://localhost:5174';
+    window.location.href = sellerUrl;
   };
 
   const handleLogin = ()=>{
@@ -103,7 +111,7 @@ const LoginSignup = () => {
                 <input value={formData.email} onChange={changeHandle} type="email" name="email" placeholder="Adicione seu email" />
                 <input value={formData.password} onChange={changeHandle} type="password" name="password" placeholder="Crie uma senha" />
             </div>
-            <button onClick={()=>{signup()}}>Continue</button>
+            <button onClick={signup}>Continue</button>
 
             <p className="login">
               Já tem uma conta? <span onClick={handleLogin}>Faça login</span>
@@ -121,15 +129,26 @@ const LoginSignup = () => {
                 <input value={formData.email} onChange={changeHandle} type="email" name='email' placeholder="Adicione seu email" />
                 <input value={formData.password} onChange={changeHandle} type="password" name='password' placeholder="Crie uma senha" />
             </div>
-            <button onClick={()=>{login()}}>Continue</button>
+            <button onClick={login}>Continue</button>
 
             <p className="login">
               Ainda não tem uma conta? Faça seu <span onClick={handleSignup}>cadastro</span>
             </p>
 
-            <Link className='areaVendedor' onClick={handleClick}>
-              Área do vendedor
-            </Link>
+<span 
+  className='areaVendedor' 
+  onClick={handleClick}
+  style={{ 
+    cursor: 'pointer', 
+    color: '#007bff', 
+    textDecoration: 'none',
+    display: 'block',
+    textAlign: 'center',
+    marginTop: '10px'
+  }}
+>
+  Área do vendedor
+</span>
           </>
         )}
       </div>
