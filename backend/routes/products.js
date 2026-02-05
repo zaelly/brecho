@@ -3,45 +3,32 @@ const router = express.Router();
 const Product = require('../models/Product.js');
 const { fetchSeller, fetchUser } = require('../middlewares/auth');
 const dotenv = require("dotenv");
-// const fs = require("fs");
+const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
 // Carregar variáveis de ambiente
 dotenv.config();
 const cors = require("cors");
 
-// Middleware CORS específico para produtos
-router.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://brechoadmin.vercel.app',
-    'https://brechobackend.vercel.app'
-  ];
-  
-  console.log('Router Products - Origin:', origin);
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, auth-token, auth-token-seller');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    console.log('Preflight PRODUCTS para:', req.url, 'origin:', origin);
-    res.sendStatus(200);
-  } else {
-    next();
+// Usar o JSON e CORS para as requisições
+router.use(express.json());
+router.use(cors());
+
+// upload de imagens
+const dir = "./upload/images";
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
+// Configuração do Multer para o upload de imagens
+const storage = multer.diskStorage({
+  destination: dir,
+  filename: (req, file, cb) => {
+    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
   }
 });
 
-router.use(express.json());
-
-// upload de imagens
-const storage = multer.memoryStorage();
 const upload = multer({ 
   storage,
   limits: { fileSize: 5 * 1024 * 1024 } 
@@ -50,30 +37,43 @@ const upload = multer({
 const uploadMiddleware = upload.fields([{name:"thumbnail", maxCount:1}, {name:"gallery", maxCount:5}]);
 
 function handleMulterError(err, req, res, next) {
-  if (err) return res.status(400).json({ success: false, message: "Erro no upload de arquivos!" });
+  if(err instanceof multer.MulterError){
+    return res.status(400).json({success:false, message: "erro ao enviar seu arquivo!"});
+  } else if(err){
+    return res.status(400).json({success:false, message: "erro ao enviar seu arquivo!"});
+  } else if(req.files.gallery.length === 0 || req.files.gallery === undefined){
+    return res.status(400).json({success:false, message: "Nenhum arquivo enviado!"});
+  }
+
   next();
 }
 
 router.use("/images", express.static("upload/images"));
  
 // Rota para upload de imagens
-router.post("/upload-product", uploadMiddleware, handleMulterError, (req, res) => {
-  if (!req.files || !req.files.thumbnail) {
-    return res.status(400).json({ success: false, message: "Thumbnail obrigatória!" });
+router.post("/upload-product", uploadMiddleware, handleMulterError,
+  (req,res) =>{    
+    const thumbnail = req.files.thumbnail[0]
+    const gallery = req.files.gallery;
+
+    // tratar erros, caso nao tenha feito o upload do arquivo exibir mensagem
+    if(!thumbnail){
+      return res.status(400).json({success: false, message: "Thumbnail não adicionada!"})
+    }
+
+    if(!gallery){
+      return res.status(400).json({success: false, message: "Imagens não adicionadas!"})
+    }
+
+    const loopGallery = gallery.map((g) => g.filename);
+
+    res.json({
+      success:true,
+      thumbnail: thumbnail?.filename,
+      gallery: loopGallery,
+    })
   }
-
-  const thumbFile = req.files.thumbnail[0];
-  const galleryFiles = req.files.gallery || [];
-
-  const thumbName = `thumb_${Date.now()}${path.extname(thumbFile.originalname)}`;
-  const galleryNames = galleryFiles.map((f, i) => `gal_${i}_${Date.now()}${path.extname(f.originalname)}`);
-
-  res.json({
-    success: true,
-    thumbnail: thumbName,
-    gallery: galleryNames,
-  });
-});
+)
 
 // Endpoint para novas coleções
 router.get('/newcollections', async (req, res) => {
@@ -101,6 +101,10 @@ router.get('/popularinwomen', async (req, res) => {
 
 // Endpoint para pegar todos os produtos
 router.get('/allproducts', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   try {
     let products = await Product.find({});
 

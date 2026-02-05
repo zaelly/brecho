@@ -1,10 +1,23 @@
-// Produtos com URLs do Cloudinary
+
+import p1_img from "./p1_img.jpeg"
+import p2_img from "./p2_img.jpeg"
+import p3_img from "./p3_img.jpeg"
+import p4_img from "./p4_img.jpeg"
+import p5_img from "./p5_img.jpeg"
+import p6_img from "./p6_img.jpeg"
+import product_7_img from "./product_7.jpeg"
+import product_8_img from "./product_8.jpeg"
+import p9_img from './product_1.jpeg'
+import p10_img from './product_2.jpeg'
+import p11_img from './product_3.jpeg'
+import p12_img from './product_4.jpeg'
+
 let all_product = [
     {
         id:1,
         name: "Lavanderia Roupas Coloridas",
         category:"Unissex",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_1_1234567890",
+        image: p1_img,
         new_price: 50.0,
         old_price:80.5,
     },
@@ -12,7 +25,7 @@ let all_product = [
         id:2,
         name: "Calça",
         category:"Masculino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_2_1234567891",
+        image: p2_img,
         new_price: 50.0,
         old_price:80.5,
     },
@@ -20,7 +33,7 @@ let all_product = [
         id:3,
         name: "Saia",
         category:"Feminino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_3_1234567892",
+        image: p3_img,
         new_price: 50.0,
         old_price:80.5,
     },
@@ -28,7 +41,7 @@ let all_product = [
         id:4,
         name: "Chapéu",
         category:"Masculino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_4_1234567893",
+        image: p4_img,
         new_price: 50.0,
         old_price:80.5,
     },
@@ -36,7 +49,7 @@ let all_product = [
         id:5,
         name: "Salto",
         category:"Feminino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_5_1234567894",
+        image: p5_img,
         new_price: 50.0,
         old_price:80.5,
     },
@@ -44,38 +57,38 @@ let all_product = [
         id:6,
         name: "Sapato",
         category:"Masculino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_6_1234567895",
+        image: p6_img,
         new_price: 50.0,
         old_price:80.5,
     },
     {
         id:7,
-        name: "Sapato Social",
+        name: "Sapato",
         category:"Masculino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_7_1234567896",
+        image: p6_img,
         new_price: 80.0,
         old_price:100.5,
     },
     {
         id:8,
-        name: "Conjunto momy cherry",
+        name: "conjunto momy cherry",
         category:"kid",
-        image:"https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_8_1234567897",
+        image:product_7_img,
         new_price: 70.0,
         old_price:80.5,
     },
     {
         id:9,
-        name: "Pipa kids conjunto",
+        name: "pipa kids conjunto",
         category:"kid",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_9_1234567898",
+        image: product_8_img,
         new_price: 45.90,
         old_price:75.50,
     },
     {
         id:10,
         name: "Shorts feminino",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_10_1234567899",
+        image: p9_img ,
         category:"Feminino",
         new_price: 100.50,
         old_price:89.90,
@@ -83,7 +96,7 @@ let all_product = [
     {
         id:11,
         name: "Conjunto feminino c/ estampa",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_11_1234567900",
+        image: p10_img ,
         category:"Feminino",
         new_price: 57.80,
         old_price:90.99,
@@ -91,7 +104,7 @@ let all_product = [
     {
         id:12,
         name: "Conjunto feminino black",
-        image: "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_12_1234567901",
+        image: p11_img,
         category:"Feminino",
         new_price: 150.50,
         old_price:100.00,
@@ -100,8 +113,10 @@ let all_product = [
         id:13,
         name: "Vestido feminino verde neon",
         category:"Feminino",
-        image:  "https://res.cloudinary.com/dj8aysbhb/image/upload/v1/brecho/products/product_13_1234567902",
+        image:  p12_img,
         new_price: 50.90,
         old_price:45.80,
     },
 ];
+
+export default all_product;

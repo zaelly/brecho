@@ -13,82 +13,53 @@ const LoginSignup = () => {
     email: ""
   })
 
-const changeHandle = (e) =>{
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  const changeHandle = (e) =>{
+    setFormData({...formData, [e.target.name]:e.target.value})
   }
-  const url = import.meta.env.VITE_API_URL;
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const login = async() =>{
-    if (!formData.email || !formData.password) {
-      toast.error("Preencha todos os campos!");
-      return;
-    }
 
-    try {
-      const response = await fetch(`${url}/api/users/user/login`,{
-        method:'POST',
-        headers:{
-          'Accept':'application/json',
-          'Content-Type': 'application/json'
-        }, 
-        body:JSON.stringify(formData),
-      });
+    let responseData;
+    await fetch(`${url}/api/users/user/login`,{
+      method:'POST',
+      headers:{
+        Accept:'application/form-data',
+        'Content-Type': 'application/json'
+      }, body:JSON.stringify(formData),
+    }).then((response)=>response.json())
+    .then((data)=>responseData=data);
 
-      const responseData = await response.json();
-
-      if(responseData.success){
-        localStorage.setItem('auth-token', responseData.token);
-        toast.success("Login realizado com sucesso!");
-        setTimeout(() => {
-          window.location.replace("/");
-        }, 1000);
-      }else{
-        toast.error(responseData.errors || responseData.message || "Erro ao fazer login");
-      }
-    } catch (error) {
-      console.error("Erro no login:", error);
-      toast.error("Erro ao conectar com o servidor");
+    if(responseData.success){
+      localStorage.setItem('auth-token', responseData.token);
+      window.location.replace("/");
+    }else{
+      toast.error(responseData.errors)
     }
   }
 
   const signup = async() =>{
-    if (!formData.username || !formData.email || !formData.password) {
-      toast.error("Preencha todos os campos!");
-      return;
-    }
 
-    try {
-      const response = await fetch(`${url}/api/users/user/signup`,{
-        method:'POST',
-        headers:{
-          'Accept':'application/json',
-          'Content-Type': 'application/json'
-        },
-        body:JSON.stringify(formData),
-      });
+    let responseData;
+    await fetch(`${url}/api/users/user/signup`,{
+      method:'POST',
+      headers:{
+        Accept:'application/form-data',
+        'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(formData),
+    }).then((response)=>response.json())
+    .then((data)=>responseData=data);
 
-      const responseData = await response.json();
-
-      if(responseData.success){
-        localStorage.setItem('auth-token', responseData.token);
-        toast.success("Cadastro realizado com sucesso!");
-        setTimeout(() => {
-          window.location.replace("/");
-        }, 1000);
-      }else{
-        toast.error(responseData.errors || responseData.message || "Erro ao fazer cadastro");
-      }
-    } catch (error) {
-      console.error("Erro no cadastro:", error);
-      toast.error("Erro ao conectar com o servidor");
+    if(responseData.success){
+      localStorage.setItem('auth-token', responseData.token);
+      window.location.replace("/");
+    }else{
+      toast.error(responseData.errors)
     }
   }
 
   const handleClick = () => {
-    const sellerUrl = import.meta.env.VITE_VENDEDOR_URL || 'http://localhost:5174';
-    window.location.href = sellerUrl;
+    return window.location.href = import.meta.env.VITE_VENDEDOR_URL_LOCAL || import.meta.env.VITE_VENDEDOR_URL;
   };
 
   const handleLogin = ()=>{
@@ -111,7 +82,7 @@ const changeHandle = (e) =>{
                 <input value={formData.email} onChange={changeHandle} type="email" name="email" placeholder="Adicione seu email" />
                 <input value={formData.password} onChange={changeHandle} type="password" name="password" placeholder="Crie uma senha" />
             </div>
-            <button onClick={signup}>Continue</button>
+            <button onClick={()=>{signup()}}>Continue</button>
 
             <p className="login">
               Já tem uma conta? <span onClick={handleLogin}>Faça login</span>
@@ -129,26 +100,15 @@ const changeHandle = (e) =>{
                 <input value={formData.email} onChange={changeHandle} type="email" name='email' placeholder="Adicione seu email" />
                 <input value={formData.password} onChange={changeHandle} type="password" name='password' placeholder="Crie uma senha" />
             </div>
-            <button onClick={login}>Continue</button>
+            <button onClick={()=>{login()}}>Continue</button>
 
             <p className="login">
               Ainda não tem uma conta? Faça seu <span onClick={handleSignup}>cadastro</span>
             </p>
 
-<span 
-  className='areaVendedor' 
-  onClick={handleClick}
-  style={{ 
-    cursor: 'pointer', 
-    color: '#007bff', 
-    textDecoration: 'none',
-    display: 'block',
-    textAlign: 'center',
-    marginTop: '10px'
-  }}
->
-  Área do vendedor
-</span>
+            <Link className='areaVendedor' onClick={handleClick}>
+              Área do vendedor
+            </Link>
           </>
         )}
       </div>

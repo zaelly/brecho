@@ -13,8 +13,7 @@ const LoginSignup = () => {
     email: '',
     password: '',
   })
-  const url = import.meta.env.VITE_API_URL;
-  console.log("🔥 URL carregada:", url);
+  const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const [loading, setLoading] = useState(false);  // Estado de carregamento
 
   const navigate = useNavigate();
@@ -46,9 +45,8 @@ const LoginSignup = () => {
       } else {
         toast.error("Login falhou, tente novamente");
       }
-    }catch (err) {
-      console.error(err);
-      toast.error("Erro ao conectar com o servidor");
+    } catch (err) {
+      toast.error("Ocorreu um erro. Tente novamente.", err);
     } finally {
       setLoading(false);
     }

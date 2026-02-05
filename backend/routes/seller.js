@@ -8,37 +8,12 @@ const cors = require("cors")
 const multer = require("multer");
 const path = require("path");
 const bcrypt = require('bcryptjs');
-// const fs = require("fs");
+const fs = require("fs");
 
-// Middleware CORS específico para sellers
-router.use((req, res, next) => {
-  const origin = req.headers.origin;
-  const allowedOrigins = [
-    'http://localhost:5174',
-    'https://brechoadmin.vercel.app',
-    'http://localhost:5173',
-    'https://brechobackend.vercel.app'
-  ];
-  
-  console.log('Router Seller - Origin:', origin);
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, auth-token, auth-token-seller');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    console.log('Preflight SELLER para:', req.url, 'origin:', origin);
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-
+// Usar o JSON e 
+// 
 router.use(express.json());
+router.use(cors());
 
 // -------------------------
 // Endpoints para VENDEDORES
@@ -47,9 +22,18 @@ const port = process.env.PORT || 4000;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`;
 
 // upload de avatar
-const storage = multer.memoryStorage();
+const dir = "./upload/images";
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
 
 // Configuração do Multer para o upload de imagens
+const storage = multer.diskStorage({
+  destination: './upload/images',
+  filename: (req, file, cb) => {
+    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
 
 const upload = multer({ 
   storage,
@@ -59,10 +43,9 @@ const upload = multer({
 // Rota para upload de imagens
 router.use("/images", express.static("upload/images"));
 router.post("/upload", upload.single("avatar"), (req, res) => {
-  const fileName = `avatar_${Date.now()}${path.extname(req.file.originalname)}`;
   res.json({
     success: 1,
-    image_url: `${url}/images/${fileName}`,
+    image_url: `${url}/images/${req.file.filename}`,
   });
 });
 
@@ -93,12 +76,7 @@ router.post("/seller/signup", async (req, res) => {
       }
     };
 
-    jwt.sign(
-      data,
-      process.env.JWT_SECRET_SELLER,
-      { expiresIn: "7d" }
-    );
-
+    const token = jwt.sign(data, process.env.JWT_SECRET_SELLER);
     res.json({ success: true, token });
   } catch (err) {
     console.error("Erro no signup do vendedor:", err);

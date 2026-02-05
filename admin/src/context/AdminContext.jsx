@@ -157,38 +157,15 @@ const AdminContextProvider = (props) =>{
     };
     
     const fetchInfo = async ()=>{
-        try {
-            const token = localStorage.getItem('auth-token');
-            if (!token) {
-                console.error('Token não encontrado');
-                return;
-            }
-
-            const response = await fetch(`${url}/api/products/seller/allproducts`, {
-                headers: {
-                    'auth-token-seller': token,
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();    
-            console.log('Produtos recebidos:', data);
-            
-            if (data && Array.isArray(data)) {
-                setAllProducts(data);
-            } else {
-                console.warn('Dados de produtos inválidos:', data);
-                setAllProducts([]);
-            }
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-            toast.error('Erro ao carregar produtos');
-            setAllProducts([]);
+        const response = await 
+        fetch(`${url}/api/products/seller/allproducts`, {
+        headers: {
+        'auth-token-seller': localStorage.getItem('auth-token')
         }
+    })
+        const data = await response.json();    
+        console.log(data)
+        setAllProducts(data);
     }
 
     const remove_product = async(id) => {
@@ -391,4 +368,4 @@ const AdminContextProvider = (props) =>{
     )
 }
 
-export default AdminContextProvider;
+export default AdminContextProvider
