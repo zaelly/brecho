@@ -14,6 +14,7 @@ const LoginSignup = () => {
     password: '',
   })
   const url = import.meta.env.VITE_API_URL;
+  console.log("🔥 URL carregada:", url);
   const [loading, setLoading] = useState(false);  // Estado de carregamento
 
   const navigate = useNavigate();
