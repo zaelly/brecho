@@ -5,7 +5,7 @@ import { AdminContext } from '../../context/AdminContext';
 
 const AddProduct = () => {
 
-  const { offer, Add_product, loading, gallery, handleImageGallery, removeImage, handleChange, thumbnail, handleImageThumbnail, productDetails } = useContext(AdminContext);
+  const { offer, Add_product, loading, gallery, handleImageGallery, handleChange, thumbnail, handleImageThumbnail, productDetails } = useContext(AdminContext);
 
   return (
     <div className="container-geral">
@@ -126,18 +126,16 @@ const AddProduct = () => {
           <div className="sizes-grid">
             {["PP", "P", "M", "G", "GG", "Unico"].map((size) => (
               <React.Fragment key={size}>
-                <div className="sizes">
-                  <label className="size-item switch">
-                    <input
-                      type="checkbox"
-                      name={`size${size}`}
-                      checked={productDetails.size.includes(size)}
-                      onChange={handleChange}
-                    />
-                    <span className="slider"></span>
-                  </label>
-                  <span>{size === "Unico" ? "Único" : size}</span>
-                </div>
+                <label className="size-item switch">
+                  <input
+                    type="checkbox"
+                    name={`size${size}`}
+                    checked={productDetails.size.includes(size)}
+                    onChange={handleChange}
+                  />
+                  <span className="slider"></span>
+                </label>
+                <span>{size === "Unico" ? "Único" : size}</span>
               </React.Fragment>
             ))}
           </div>
@@ -192,64 +190,53 @@ const AddProduct = () => {
             <div className="image-upload">
               <label htmlFor="thumbnail">
                 {thumbnail ? (
-                  <div className="imageHover thumbnail" onClick={() => removeImage(thumbnail)}>
-                    <img
-                      src={URL.createObjectURL(thumbnail)}
-                      alt="Preview"
-                      className="addproduct-thumbnail-img"
-                    />
-                    <i className="fa-solid fa-x" ></i>
-                  </div>
+                  <img
+                    src={URL.createObjectURL(thumbnail)}
+                    alt="Preview"
+                    className="addproduct-thumbnail-img"
+                  />
                 ) : (
-                  <>
-                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-
-                    <input
-                      type="file"
-                      id="thumbnail"
-                      name='thumbnail'
-                      accept="image/*"
-                      hidden
-                      onChange={handleImageThumbnail}
-                    />
-                  </>
+                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
                 )}
               </label>
+              <input
+                type="file"
+                id="thumbnail"
+                name='thumbnail'
+                accept="image/*"
+                hidden
+                onChange={handleImageThumbnail}
+              />
               <p>Imagem principal</p>
             </div>
             {/* imagens de carrosel */}
             <div className="image-upload">
               <label htmlFor="gallery">
-                <div className="mb-2">                      
-                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-                  <input
-                    type="file"
-                    id="gallery"
-                    name='gallery'
-                    accept="image/*"
-                    multiple
-                    hidden
-                    onChange={handleImageGallery}
-                  />
-                </div>
-              </label>
-              {gallery && (
-                <div className='container-gallery'>
-                  <div className="gallery">
-                    {gallery.map((img, index)=>(
-                      <div className="imageHover" onClick={() => removeImage(img)}>
+                {gallery && (
+                  <div className='container-gallery'>
+                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
+                    <div className="gallery">
+                      {gallery.map((img, index)=>(
                         <img
                           key={index}
                           src={URL.createObjectURL(img)}
                           alt="Preview"
                           className="addproduct-gallery-img"
                         />
-                        <i className="fa-solid fa-x"></i>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </label>
+              <input
+                type="file"
+                id="gallery"
+                name='gallery'
+                accept="image/*"
+                multiple
+                hidden
+                onChange={handleImageGallery}
+              />
               <p>Outras imagens</p>
             </div>
           </div>
@@ -267,6 +254,8 @@ const AddProduct = () => {
           {loading ? "Carregando...": "Adicionar produto"}
         </button>
     </div>
+
+
   )
 }
 

@@ -156,7 +156,7 @@ const SellerProfile = () => {
               <label><i className="fa-solid fa-circle-info"></i> Gateway de pagamento</label>
               <input
                 onChange={handleChange}
-                value={profileDetail.gateways}
+                value={profileDetail.gatways}
                 name="gateways"
                 type='text'
                 disabled={!btn_profile}

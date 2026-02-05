@@ -53,12 +53,12 @@ const Sidebar = () => {
                         <p>Reviews</p>
                     </div>
                 </Link>
-                {/* <Link to={'/admin/reviewsproducts'} style={{TextDecoderation: "none"}}>
+                <Link to={'/admin/reviewsproducts'} style={{TextDecoderation: "none"}}>
                     <div className="sidebar-item">
                         <i className="fa-solid fa-book-medical"></i>
                         <p>Galeria</p>
                     </div>
-                </Link> */}
+                </Link>
             </div>
         )}
     </>

@@ -1,87 +1,55 @@
 import React, { useContext, useEffect } from 'react'
 import './ListProduct.css'
 import { AdminContext } from '../../context/AdminContext'
-import { Link } from 'react-router-dom';
 
 const ListProduct = () => {
 
-  const {fetchInfo, allproducts, remove_product, url} = useContext(AdminContext);
+  const {fetchInfo, allproducts, remove_product, edit_product, url} = useContext(AdminContext);
 
   useEffect(()=>{
     fetchInfo();
   },[])
 
   return (
-   <div className="container-geral">
-    <div className="list-product">
-      <h1>Todos os Produtos</h1>
-
-      <div className="table-responsive">
-        <table className="product-table">
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th>Título</th>
-              <th>Preço</th>
-              <th>Preço Oferta</th>
-              <th>Categoria</th>
-              <th>Unid.</th>
-              <th>Editar</th>
-              <th>Remover</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {allproducts.map((product) => (
-              <tr key={product._id}>
-                <td data-label="Produto">
-                  <img
-                    src={`${url}/images/${product.thumbnail}`}
-                    alt={product.name}
-                    className="listproduct-product-img"
-                  />
-                </td>
-
-                <td data-label="Título">{product.name}</td>
-
-                <td data-label="Preço">
-                  R$
-                  {product.inOffer
-                    ? Number(product.old_price).toFixed(2)
-                    : Number(product.current_price).toFixed(2)}
-                </td>
-
-                <td data-label="Preço Oferta">
-                  {product.inOffer
-                    ? `R$${Number(product.new_price).toFixed(2)}`
-                    : "-"}
-                </td>
-
-                <td data-label="Categoria">{product.category}</td>
-
-                <td data-label="Unid.">{product.unit}</td>
-
-                <td data-label="Editar">
-                  <Link to={`/admin/editproduto/${product._id}`} className="action edit">
-                    <i className="fa-solid fa-pen-to-square"></i>
-                  </Link>
-                </td>
-
-                <td data-label="Remover">
-                  <button
-                    className="action delete"
-                    onClick={() => remove_product(product._id)}
-                  >
-                    <i className="fa-solid fa-delete-left"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className='container-geral'>
+      <div className="list-product">
+        <h1>Todos os Produtos</h1>
+        <div className="listproduct-format-main">
+          <p>Produtos</p>
+          <p>Título</p>
+          <p>Preço</p>
+          <p>Preço Oferta</p>
+          <p>Categoria</p>
+          <p>Unid.</p>
+          <p>Editar</p>
+          <p>Remover</p>
+        </div>
+        <div className="listproduct-allproducts">
+          <hr />
+          {allproducts.map((product)=>(
+            <React.Fragment key={product._id}>
+              <div className="listproduct-format-main listproduct-format">
+                <img src={`${url}/images/${product.thumbnail}`} alt="" className="listproduct-product-img" />
+                <p>{product.name}</p>
+                <p>R${product.inOffer ? (Number(product.old_price).toFixed(2)) : (Number(product.current_price).toFixed(2))}</p>
+                <p>
+                  {product.inOffer ? (
+                    `R$${Number(product.new_price).toFixed(2)}`
+                  ) : (
+                    '-'
+                  )}
+                </p>
+                <p>{product.category}</p>
+                <p>{product.unit}</p>
+                <i className="fa-solid fa-pen-to-square" onClick={() => edit_product(product._id)}></i>
+                <i className="fa-solid fa-delete-left" onClick={() => remove_product(product._id)}></i>
+              </div>
+              <hr />
+            </React.Fragment>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
   )
 }
 

@@ -135,8 +135,6 @@ router.post("/updateprofile", fetchSeller, async (req, res) => {
         updateFields.password = hashedPassword;
     }
 
-    console.log(updateFields, "updateFields")
-
     await Seller.findByIdAndUpdate(req.seller.id, updateFields);
     res.json({ success: true, message: "Perfil do vendedor atualizado com sucesso." });
   } catch (err) {
