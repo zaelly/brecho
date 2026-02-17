@@ -3,9 +3,10 @@ const router = express.Router();
 const Product = require('../models/Product.js');
 const { fetchSeller, fetchUser } = require('../middlewares/auth');
 const dotenv = require("dotenv");
-const fs = require("fs");
+const cloudinary = require("../config/cloudinary");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 // Carregar variáveis de ambiente
 dotenv.config();
 const cors = require("cors");
@@ -50,185 +51,228 @@ function handleMulterError(err, req, res, next) {
 
 router.use("/images", express.static("upload/images"));
  
-// Rota para upload de imagens
-router.post("/upload-product", uploadMiddleware, handleMulterError,
-  (req,res) =>{    
-    const thumbnail = req.files.thumbnail[0]
-    const gallery = req.files.gallery;
+// Rota para upload de imagens (simplificada para testar)
+router.post("/upload-product", 
+  async (req,res) => {    
+    try {
+      let thumbnailUrl = null;
+      let galleryUrls = [];
 
-    // tratar erros, caso nao tenha feito o upload do arquivo exibir mensagem
-    if(!thumbnail){
-      return res.status(400).json({success: false, message: "Thumbnail não adicionada!"})
+      // Receber URLs já processadas do frontend
+      if (req.body.thumbnail) {
+        thumbnailUrl = req.body.thumbnail;
+      }
+
+      if (req.body.gallery) {
+        galleryUrls = Array.isArray(req.body.gallery) ? req.body.gallery : [req.body.gallery];
+      }
+
+      // Validações
+      if (!thumbnailUrl) {
+        return res.status(400).json({ success: false, message: "Thumbnail obrigatória!" });
+      }
+
+      if (!galleryUrls || galleryUrls.length === 0) {
+        return res.status(400).json({ success: false, message: "Gallery obrigatória!" });
+      }
+
+      console.log('Upload recebido:', { thumbnailUrl, galleryUrls });
+
+      res.json({
+        success: true,
+        thumbnail: thumbnailUrl,
+        gallery: galleryUrls
+      });
+
+    } catch (error) {
+      console.error('Erro no upload:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Erro ao processar upload" 
+      });
     }
-
-    if(!gallery){
-      return res.status(400).json({success: false, message: "Imagens não adicionadas!"})
-    }
-
-    const loopGallery = gallery.map((g) => g.filename);
-
-    res.json({
-      success:true,
-      thumbnail: thumbnail?.filename,
-      gallery: loopGallery,
-    })
   }
-)
+);
 
-// Endpoint para novas coleções
+// Função auxiliar para upload para Cloudinary
+async function uploadToCloudinary(file, folder) {
+    const b64 = Buffer.from(file.buffer).toString("base64");
+    let dataURI = `data:${file.mimetype};base64,${b64}`;
+
+    const result = await cloudinary.uploader.upload(dataURI, {
+      folder: `brecho-reverto/${folder}`,
+      resource_type: "auto",
+      transformation: [
+        { quality: "auto", fetch_format: "auto" }
+      ]
+    });
+
+    return result;
+}
+
+// -------------------------
+// Rotas do Vendedor (Seller)
+// -------------------------
+
+// Listar todos os produtos (rota pública para clientes)
+router.get('/allproducts', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+// Listar todos os produtos do vendedor autenticado
+router.get('/seller/allproducts', fetchSeller, async (req, res) => {
+  try {
+    const products = await Product.find({ sellerId: req.seller.id });
+    res.json(products);
+  } catch (error) {
+    console.error('Erro ao buscar produtos do vendedor:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+// Novas coleções (produtos recentes)
 router.get('/newcollections', async (req, res) => {
   try {
-    let products = await Product.find({});
-    let newCollection = products.slice(1).slice(-8);
-    res.json(newCollection);
-  } catch (err) {
-    console.error("Erro ao buscar novas coleções:", err);
-    res.status(500).json({ success: false, message: "Erro ao buscar novas coleções." });
+    const products = await Product.find()
+      .sort({ date: -1 })
+      .limit(8);
+    res.json(products);
+  } catch (error) {
+    console.error('Erro ao buscar novas coleções:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
 });
 
-// Endpoint para produtos populares para mulheres
+// Popular em mulheres (produtos em oferta)
 router.get('/popularinwomen', async (req, res) => {
   try {
-    let products = await Product.find({ category: "Feminina" });
-    let popularInWomen = products.slice(0, 4);
-    res.json(popularInWomen);
-  } catch (err) {
-    console.error("Erro ao buscar produtos populares para mulheres:", err);
-    res.status(500).json({ success: false, message: "Erro ao buscar produtos populares." });
-  }
-});
-
-// Endpoint para pegar todos os produtos
-router.get('/allproducts', async (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10;
-  const skip = (page - 1) * limit;
-
-  try {
-    let products = await Product.find({});
+    const products = await Product.find({ inOffer: true })
+      .limit(8);
     res.json(products);
-  } catch (err) {
-    console.error("Erro ao buscar produtos:", err);
-    res.status(500).json({ success: false, message: "Erro ao buscar produtos." });
+  } catch (error) {
+    console.error('Erro ao buscar produtos populares:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
 });
 
-router.post('/seller/addproduct', fetchSeller,
-  async (req,res)=>{
-
-   const {
-    name, unit, category, descriptionProduct, 
-    conditions, marca, size, new_price, old_price, 
-    current_price, enable, inOffer, gallery, thumbnail
-  } = req.body;
-
-  console.log(req.body, "dados do produto recebidos no backend")
-
-  const tamanho = Array.isArray(size) ? size: [];
-  const unidade = Number(unit);
-
-  if(!name || !category || !descriptionProduct){
-    return res.status(400).json({success: false, message: "Campos em branco!"})
-  }
-
-  if(!unidade){
-    return res.status(400).json({success: false, message: "Unidade precisa ser maior que 0!"})
-  }
-
+// Adicionar produto do vendedor
+router.post('/seller/addproduct', fetchSeller, async (req, res) => {
   try {
-    const product = new Product({
-      name:name,
-      gallery: gallery || [],
-      thumbnail: thumbnail,
-      current_price: current_price ? Number(current_price) : undefined,
-      new_price: new_price ? Number(new_price) : undefined,
-      old_price: old_price ? Number(old_price) : undefined,
-      sellerId: req.seller.id,
-      unit: unidade,
-      size: tamanho,
-      enable: enable === "true" || enable === true,
-      inOffer: inOffer === 'true' || inOffer === true,
-      descriptionProduct: descriptionProduct,
-      conditions: conditions,
-      marca: marca,
-      category: category
-    });
+    const {
+      name, thumbnail, gallery, category,
+      current_price, new_price, old_price,
+      unit, size, enable, inOffer,
+      descriptionProduct, conditions, marca
+    } = req.body;
 
-    console.log(product, "produto a ser salvo")
+    const product = new Product({
+      name,
+      thumbnail,
+      gallery,
+      category,
+      current_price,
+      new_price,
+      old_price,
+      unit,
+      size,
+      enable,
+      inOffer,
+      descriptionProduct,
+      conditions,
+      marca,
+      sellerId: req.seller.id
+    });
 
     await product.save();
-
-    res.json({
-      success: true,
-      name: name,
-    });
-
-  } catch (err) {
-    console.error("Erro ao adicionar produto:", err);
-    res.status(500).json({ success: false, message: "Erro interno do servidor" });
+    res.json({ success: true, message: 'Produto adicionado com sucesso!', product });
+  } catch (error) {
+    console.error('Erro ao adicionar produto:', error.message || error);
+    const message = error.name === 'ValidationError'
+      ? Object.values(error.errors).map(e => e.message).join(', ')
+      : 'Erro interno do servidor';
+    res.status(500).json({ success: false, message });
   }
 });
 
-//Criando api para deletar produtos
-router.post('/seller/removeproduct', fetchSeller, async (req, res) => {
+// Editar produto do vendedor
+router.post('/seller/editproduct', fetchSeller, async (req, res) => {
   try {
-    const product = await Product.findById(req.body.id);
-    if (!product) {
-      return res.status(404).json({ success: false, message: "Produto não encontrado" });
-    }
+    const { id, name, thumbnail, gallery, category,
+      current_price, new_price, old_price,
+      unit, size, enable, inOffer,
+      descriptionProduct, conditions, marca } = req.body;
 
-    // Verifica se o produto pertence ao vendedor logado
-    if (product.sellerId.toString() !== req.seller.id) {
-      return res.status(403).json({ success: false, message: "Você não tem permissão para remover este produto" });
-    }
+    const updateFields = {};
+    if (name !== undefined) updateFields.name = name;
+    if (thumbnail !== undefined) updateFields.thumbnail = thumbnail;
+    if (gallery !== undefined) updateFields.gallery = gallery;
+    if (category !== undefined) updateFields.category = category;
+    if (current_price !== undefined) updateFields.current_price = current_price;
+    if (new_price !== undefined) updateFields.new_price = new_price;
+    if (old_price !== undefined) updateFields.old_price = old_price;
+    if (unit !== undefined) updateFields.unit = unit;
+    if (size !== undefined) updateFields.size = size;
+    if (enable !== undefined) updateFields.enable = enable;
+    if (inOffer !== undefined) updateFields.inOffer = inOffer;
+    if (descriptionProduct !== undefined) updateFields.descriptionProduct = descriptionProduct;
+    if (conditions !== undefined) updateFields.conditions = conditions;
+    if (marca !== undefined) updateFields.marca = marca;
 
-    await product.deleteOne();
-    res.json({ success: true, message: "Produto removido com sucesso" });
-  } catch (err) {
-    console.error("Erro ao remover produto:", err);
-    res.status(500).json({ success: false, message: "Erro interno do servidor" });
-  }
-});
-
-// criando api para pegar todos produtos
-router.get('/seller/allproducts', fetchSeller, async(req, res)=>{
-  let products = await Product.find({ sellerId: req.seller.id });
-
-  res.json(products);
-})
-
-router.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ success: false, message: "Erro interno do servidor." });
-});
-
-//comentarios/avaliações
-router.post('/addreviews', fetchUser, async(req,res)=>{
-  const {name, productId, rating, comment } = req.body;
-
-  const review = {
-    name: req.user.name || `Usuário-${req.user.id.slice(0,3)}`,
-    userId: req.user.id,
-    rating: rating || 1,
-    comment,
-    date: new Date()
-  };
-
-  console.log(review)
-
-  try{
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      { $push: { reviews: review } },
+    const product = await Product.findOneAndUpdate(
+      { _id: id, sellerId: req.seller.id },
+      updateFields,
       { new: true }
     );
-    res.json({ success: true, product: updatedProduct });
-  }catch(err){
-    console.error('erro ao salvar avaliação!', err)
-    res.status(500).json({ success: false, message: "Erro interno do servidor." });
+
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Produto nao encontrado' });
+    }
+
+    res.json({ success: true, message: 'Produto editado com sucesso!', product });
+  } catch (error) {
+    console.error('Erro ao editar produto:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
   }
-})
+});
+
+// Buscar produto por ID para edicao
+router.get('/seller/getproduct/:id', fetchSeller, async (req, res) => {
+  try {
+    const product = await Product.findOne({ _id: req.params.id, sellerId: req.seller.id });
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Produto nao encontrado' });
+    }
+    res.json({ success: true, product });
+  } catch (error) {
+    console.error('Erro ao buscar produto:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+// Remover produto do vendedor
+router.post('/seller/removeproduct', fetchSeller, async (req, res) => {
+  try {
+    const { id } = req.body;
+    const product = await Product.findOneAndDelete({ _id: id, sellerId: req.seller.id });
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Produto não encontrado' });
+    }
+    res.json({ success: true, message: 'Produto removido com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao remover produto:', error);
+    res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+  }
+});
+
+// -------------------------
+// Rotas de Avaliações
+// -------------------------
 
 router.get('/getreviews/:productId', async(req,res)=>{
   try {

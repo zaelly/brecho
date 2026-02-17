@@ -4,10 +4,13 @@ const Users = require('../models/User.js');
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const { fetchUser } = require('../middlewares/auth.js');
-const fs = require("fs");
 const multer = require("multer");
-const path = require("path");
 const cors = require("cors");
+const cloudinary = require("../config/cloudinary");
+const nodemailer = require("nodemailer");
+
+// guardar codigos de recuperacao temporariamente
+const resetCodes = {};
 
 // Endpoints para USUÁRIOS
 // -------------------------
@@ -15,28 +18,23 @@ const cors = require("cors");
 router.use(express.json());
 router.use(cors());
 
-const port = process.env.PORT || 4000;
-const url = process.env.VITE_API_URL || `http://localhost:${port}`
-
-const dir = "./upload/images";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-// Configuração do Multer para o upload de imagens
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
+// Multer com memória para upload via Cloudinary
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 } 
- });
-
-router.use("/images", express.static("upload/images"));
+// Função auxiliar para upload no Cloudinary
+async function uploadToCloudinary(file, folder) {
+  const b64 = Buffer.from(file.buffer).toString("base64");
+  const dataURI = `data:${file.mimetype};base64,${b64}`;
+  const result = await cloudinary.uploader.upload(dataURI, {
+    folder: `brecho-reverto/${folder}`,
+    resource_type: "auto",
+    transformation: [{ quality: "auto", fetch_format: "auto" }]
+  });
+  return result;
+}
 
 // Endpoint para registrar usuário
 router.post('/user/signup', async (req, res) => {
@@ -46,14 +44,13 @@ router.post('/user/signup', async (req, res) => {
       return res.status(400).json({ success: false, errors: "Já existe um usuário com este email!" });
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 8);
-
-    const user = new Users({
+const user = new Users({
       name: req.body.username,
       email: req.body.email,
-      password: hashedPassword,
+      password: req.body.password,
       cartData: {},  
       cpf: req.body.cpf,
+      cep: req.body.cep,
       adress: req.body.adress
     });
 
@@ -79,7 +76,7 @@ router.post("/user/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await Users.findOne({ email });
     if (user) {
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await user.comparePassword(password);
       if (isMatch) {
         const data = {
           user: {
@@ -120,9 +117,9 @@ router.post("/updateprofile", fetchUser, async (req, res) => {
       if (image) updateFields.image = image;
       if (cpf) updateFields.cpf = cpf;
       if (city) updateFields.city = city;
+      if (cep) updateFields.city = cep;
       if (new_password) {
-        const hashedPassword = await bcrypt.hash(new_password, 8);
-        updateFields.password = hashedPassword;
+        updateFields.password = new_password;
     }
 
     await Users.findByIdAndUpdate(req.user.id, updateFields);
@@ -133,12 +130,144 @@ router.post("/updateprofile", fetchUser, async (req, res) => {
   }
 });
 
-router.post("/uploadprofileimage", fetchUser, 
-  upload.single('profile'), (req, res)=>{
-  res.json({
-    success:1,
-    image_url: `${url}/images/${req.file.filename}`
-  })
+router.post("/uploadprofileimage", fetchUser,
+  upload.single('profile'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: 0, message: "Nenhum arquivo enviado" });
+    }
+    const result = await uploadToCloudinary(req.file, 'users/profiles');
+    await Users.findByIdAndUpdate(req.user.id, { image: result.secure_url });
+    res.json({
+      success: 1,
+      image_url: result.secure_url
+    });
+  } catch (error) {
+    console.error("Erro no upload de perfil do usuário:", error);
+    res.status(500).json({ success: 0, message: "Erro ao fazer upload da imagem" });
+  }
 })
+
+// Solicitar recuperacao de senha - envia codigo por email
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await Users.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Email nao encontrado" });
+    }
+
+    // gerar codigo de 6 digitos
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // salvar codigo com expiracao de 10 minutos
+    resetCodes[email] = {
+      code: code,
+      expires: Date.now() + 10 * 60 * 1000,
+    };
+
+    // enviar email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: { rejectUnauthorized: false }
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Codigo de Recuperacao - Reverto Brecho",
+      text: `Ola!\n\nSeu codigo de recuperacao de senha e: ${code}\n\nEsse codigo expira em 10 minutos.\n\nSe voce nao solicitou a recuperacao, ignore este email.`,
+    });
+
+    res.json({ success: true, message: "Codigo enviado para seu email!" });
+  } catch (err) {
+    console.error("Erro ao enviar codigo:", err);
+    res.status(500).json({ success: false, message: "Erro ao enviar codigo" });
+  }
+});
+
+// Resetar senha com codigo
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    const stored = resetCodes[email];
+    if (!stored) {
+      return res.status(400).json({ success: false, message: "Nenhum codigo solicitado para este email" });
+    }
+
+    if (Date.now() > stored.expires) {
+      delete resetCodes[email];
+      return res.status(400).json({ success: false, message: "Codigo expirado. Solicite um novo." });
+    }
+
+    if (stored.code !== code) {
+      return res.status(400).json({ success: false, message: "Codigo incorreto" });
+    }
+
+    // atualizar senha
+    const user = await Users.findOne({ email });
+    user.password = newPassword;
+    await user.save();
+
+    // limpar codigo
+    delete resetCodes[email];
+
+    res.json({ success: true, message: "Senha alterada com sucesso!" });
+  } catch (err) {
+    console.error("Erro ao resetar senha:", err);
+    res.status(500).json({ success: false, message: "Erro ao resetar senha" });
+  }
+});
+
+// Adicionar produto aos favoritos
+router.post('/addfavorite', fetchUser, async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = await Users.findById(req.user.id);
+
+    if (user.favorites.includes(productId)) {
+      return res.json({ success: false, message: "Produto ja esta nos favoritos" });
+    }
+
+    user.favorites.push(productId);
+    await user.save();
+    res.json({ success: true, message: "Adicionado aos favoritos!" });
+  } catch (err) {
+    console.error("Erro ao adicionar favorito:", err);
+    res.status(500).json({ success: false, message: "Erro interno" });
+  }
+});
+
+// Remover produto dos favoritos
+router.post('/removefavorite', fetchUser, async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = await Users.findById(req.user.id);
+
+    user.favorites = user.favorites.filter(id => id !== productId);
+    await user.save();
+    res.json({ success: true, message: "Removido dos favoritos!" });
+  } catch (err) {
+    console.error("Erro ao remover favorito:", err);
+    res.status(500).json({ success: false, message: "Erro interno" });
+  }
+});
+
+// Buscar favoritos do usuario
+router.get('/getfavorites', fetchUser, async (req, res) => {
+  try {
+    const user = await Users.findById(req.user.id);
+    res.json({ success: true, favorites: user.favorites || [] });
+  } catch (err) {
+    console.error("Erro ao buscar favoritos:", err);
+    res.status(500).json({ success: false, message: "Erro interno" });
+  }
+});
 
 module.exports = router;

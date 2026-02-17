@@ -14,6 +14,9 @@ import kids_banner from './Components/Assets/banner_kids.png'
 import Unissex_banner from './Components/Assets/UNISEXFASHION.png'
 import desconto_banner from './Components/Assets/desconto_banner.png'
 import AllProducts from './Pages/AllProducts'
+import Sobre from './Pages/Sobre'
+import Favorits from './Pages/Favorits'
+import MeusPedidos from './Pages/MeusPedidos'
 import ProductsFilter from './Components/ProductsFilter/ProductsFilter'
 import PerfilUser from './Pages/PerfilUser'
 import { ToastContainer } from 'react-toastify';
@@ -52,6 +55,9 @@ function App() {
             <Route path="/cart" element={<Cart/>}/>
             <Route path="/LoginSignup" element={<LoginSignup/>}/>
             <Route path='/allProducts' element={<AllProducts/>}/>
+            <Route path='/sobre' element={<Sobre/>}/>
+            <Route path='/favoritos' element={<Favorits/>}/>
+            <Route path='/meuspedidos' element={<MeusPedidos/>}/>
           </Routes>
         </main>
         <ClientChat isOpen={isOpen} setIsOpen={setIsOpen} sellerId={currentSellerId}/>

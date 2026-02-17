@@ -2,16 +2,16 @@ import React from 'react';
 import './AddProduct.css'
 import { useContext } from 'react';
 import { AdminContext } from '../../context/AdminContext';
+import SimpleCloudinaryUpload from '../SimpleCloudinaryUpload/SimpleCloudinaryUpload';
 
 const AddProduct = () => {
 
-  const { offer, Add_product, loading, gallery, handleImageGallery, handleChange, thumbnail, handleImageThumbnail, productDetails } = useContext(AdminContext);
+  const { offer, Add_product, Save_edit_product, cancelEdit, editingProductId, loading, handleChange, productDetails } = useContext(AdminContext);
 
   return (
     <div className="container-geral">
       <form className="addproduct-form" encType='multipart/form-data'>
 
-        {/* ===== INFORMAÇÕES PRINCIPAIS ===== */}
         <section className="form-section">
           <h3 className="section-title">Informações do Produto</h3>
 
@@ -86,7 +86,6 @@ const AddProduct = () => {
           </div>
         </section>
 
-        {/* ===== STATUS ===== */}
         <section className="form-section">
           <h3 className="section-title">Status do Produto</h3>
 
@@ -119,7 +118,6 @@ const AddProduct = () => {
           </div>
         </section>
 
-        {/* ===== TAMANHOS ===== */}
         <section className="form-section">
           <h3 className="section-title">Tamanhos disponíveis</h3>
 
@@ -141,7 +139,6 @@ const AddProduct = () => {
           </div>
         </section>
 
-        {/* ===== DESCRIÇÃO ===== */}
         <section className="form-section">
           <h3 className="section-title">Detalhes do Produto</h3>
 
@@ -181,78 +178,109 @@ const AddProduct = () => {
           </div>
         </section>
 
-        {/* ===== IMAGENS ===== */}
         <section className="form-section">
           <h3 className="section-title">Imagens do Produto</h3>
 
           <div className="images-group">
-            {/* imagem de thumbnail */}
-            <div className="image-upload">
-              <label htmlFor="thumbnail">
-                {thumbnail ? (
-                  <img
-                    src={URL.createObjectURL(thumbnail)}
-                    alt="Preview"
-                    className="addproduct-thumbnail-img"
-                  />
-                ) : (
-                  <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-                )}
-              </label>
-              <input
-                type="file"
-                id="thumbnail"
-                name='thumbnail'
-                accept="image/*"
-                hidden
-                onChange={handleImageThumbnail}
+            <div className="image-upload-section">
+              <label className="image-label">Imagem Principal (Thumbnail)</label>
+              <SimpleCloudinaryUpload
+                onImageUpload={(imageUrl) => {
+                  const event = {
+                    target: { name: 'thumbnail', value: imageUrl }
+                  };
+                  handleChange(event);
+                }}
+                currentImage={productDetails.thumbnail}
+                label="Selecionar Thumbnail"
+                multiple={false}
               />
-              <p>Imagem principal</p>
+              {/* adicionar um btn de remover a imagem */}
             </div>
-            {/* imagens de carrosel */}
-            <div className="image-upload">
-              <label htmlFor="gallery">
-                {gallery && (
-                  <div className='container-gallery'>
-                    <i className="fa-solid fa-cloud-arrow-up cloud-arrow"></i>
-                    <div className="gallery">
-                      {gallery.map((img, index)=>(
-                        <img
-                          key={index}
-                          src={URL.createObjectURL(img)}
-                          alt="Preview"
-                          className="addproduct-gallery-img"
-                        />
-                      ))}
+
+            <div className="image-upload-section">
+              <label className="image-label">Galeria de Imagens</label>
+              <SimpleCloudinaryUpload
+                onImageUpload={(imageUrls) => {
+                  const currentGallery = Array.isArray(productDetails.gallery) ? productDetails.gallery : [];
+                  const newUrls = Array.isArray(imageUrls) ? imageUrls : [imageUrls];
+                  const newGallery = [...currentGallery, ...newUrls];
+                  const event = {
+                    target: { name: 'gallery', value: newGallery }
+                  };
+                  handleChange(event);
+                }}
+                currentImage={productDetails.gallery || []}
+                label="Adicionar à Galeria"
+                multiple={true}
+              />
+            </div>
+
+            {productDetails.gallery && productDetails.gallery.length > 0 && (
+              <div className="gallery-preview">
+                <label className="image-label">
+                  Galeria ({productDetails.gallery.length} imagens)
+                </label>
+                <div className="gallery-grid">
+                  {productDetails.gallery.map((img, index) => (
+                    <div key={index} className="gallery-item">
+                      <img
+                        src={img}
+                        alt={`Gallery ${index}`}
+                        className="gallery-preview-img"
+                      />
+                      <button
+                        type="button"
+                        className="remove-gallery-btn"
+                        onClick={() => {
+                          const newGallery = productDetails.gallery.filter((_, i) => i !== index);
+                          const event = {
+                            target: { name: 'gallery', value: newGallery }
+                          };
+                          handleChange(event);
+                        }}
+                      >
+                        X
+                      </button>
                     </div>
-                  </div>
-                )}
-              </label>
-              <input
-                type="file"
-                id="gallery"
-                name='gallery'
-                accept="image/*"
-                multiple
-                hidden
-                onChange={handleImageGallery}
-              />
-              <p>Outras imagens</p>
-            </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </form>
-      {/* ===== BOTÃO ===== */}
-        <button
-          type="button"
-          className="addproduct-btn"
-          onClick={(e) => {
-            e.preventDefault();
-            Add_product();
-          }}
-        >
-          {loading ? "Carregando...": "Adicionar produto"}
-        </button>
+        {editingProductId && (
+          <p style={{color:'#ff9800', fontWeight:'bold', marginBottom:'10px'}}>
+            <i className="fa-solid fa-pen-to-square"></i> Editando produto...
+          </p>
+        )}
+        <div style={{display:'flex', gap:'10px'}}>
+          <button
+            type="button"
+            className="addproduct-btn"
+            onClick={(e) => {
+              e.preventDefault();
+              if(editingProductId){
+                Save_edit_product();
+              } else {
+                Add_product();
+              }
+            }}
+          >
+            {loading ? "Carregando..." : editingProductId ? "Salvar alteracoes" : "Adicionar produto"}
+          </button>
+          {editingProductId && (
+            <button
+              type="button"
+              className="addproduct-btn"
+              style={{backgroundColor:'#999'}}
+              onClick={cancelEdit}
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
     </div>
 
 

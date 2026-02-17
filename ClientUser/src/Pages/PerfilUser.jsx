@@ -3,6 +3,7 @@ import {useState, useEffect, useContext} from 'react'
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { ShopContext } from '../Context/ShopContext';
+import { Link } from 'react-router-dom';
 
 const PerfilUser = () => {
   const [image, setImage] = useState(null);
@@ -163,6 +164,12 @@ const PerfilUser = () => {
                 placeholder="1234 Main St" disabled={!btn_profile} 
                 onChange={handleChange} value={profileDetail.adress}/>
               </div>
+              <div className="form-group">
+                <label htmlFor="inputAddress">CEP</label>
+                <input type='text' className="form-control"  name='cep'
+                placeholder="12345-678" disabled={!btn_profile} 
+                onChange={handleChange} value={profileDetail.cep}/>
+              </div>
               <div className="form-row">
                 <div className="form-group col-md-6">
                   <label htmlFor="inputCity">Cidade</label>
@@ -170,7 +177,17 @@ const PerfilUser = () => {
                 </div>
               </div>
           </form>
-          <div className="btn">
+          <div className="btn" style={{gap:'10px'}}>
+            <Link to="/meuspedidos">
+              <button style={{backgroundColor:'#2196f3'}}>
+                <i className="fa-solid fa-bag-shopping"></i> Meus Pedidos
+              </button>
+            </Link>
+            <Link to="/favoritos">
+              <button style={{backgroundColor:'#e91e63'}}>
+                <i className="fa-solid fa-heart mr-1"></i> Favoritos
+              </button>
+            </Link>
             <button className="logout" onClick={goOut}>
               Logout
             </button>

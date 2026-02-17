@@ -13,6 +13,29 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    userId:{
+        type: String,
+    },
+    sellerId:{
+        type: String,
+    },
+    items:[{
+        productId: String,
+        name: String,
+        size: String,
+        quantity: Number,
+        price: Number,
+        thumbnail: String,
+    }],
+    totalAmount:{
+        type: Number,
+    },
+    address:{
+        type: String,
+    },
+    city:{
+        type: String,
+    },
     dateOrder: {
         type: Date,
         default: Date.now

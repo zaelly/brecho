@@ -5,17 +5,67 @@ const path = require("path");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
+const cloudinary = require("./config/cloudinary");
 const app = express();
 const dotenv = require("dotenv");
 // Carregar variáveis de ambiente
 dotenv.config();
 const server = require('http').createServer(app)
+const { Server } = require('socket.io')
 
 const port = process.env.PORT || 4000 ;
 const url = process.env.VITE_API_URL || `http://localhost:${port}`
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+// Socket.io configuracao
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+// usuarios conectados
+const onlineUsers = {};
+
+io.on('connection', (socket) => {
+  console.log('Usuario conectado:', socket.id);
+
+  // quando usuario entra no chat
+  socket.on('join', (userId) => {
+    onlineUsers[userId] = socket.id;
+    console.log('Usuario entrou:', userId);
+  });
+
+  // quando envia mensagem
+  socket.on('sendMessage', (data) => {
+    const { sender, receiver, content, chat } = data;
+    console.log('Mensagem recebida:', data);
+
+    // enviar para o destinatario se estiver online
+    if (onlineUsers[receiver]) {
+      io.to(onlineUsers[receiver]).emit('receiveMessage', {
+        sender,
+        content,
+        chat,
+        time: new Date().toLocaleTimeString()
+      });
+    }
+  });
+
+  // quando desconecta
+  socket.on('disconnect', () => {
+    for (const [userId, socketId] of Object.entries(onlineUsers)) {
+      if (socketId === socket.id) {
+        delete onlineUsers[userId];
+        break;
+      }
+    }
+    console.log('Usuario desconectou:', socket.id);
+  });
+});
 
 // Conexão com o MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -96,6 +146,7 @@ const cartRoutes = require('./routes/cartRoute');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orderRoute');
 const chatRoutes = require('./routes/chatRoute');
+const uploadRoutes = require('./routes/upload');
 
 // Usar as rotas no aplicativo
 app.use('/api/users', userRoutes); 
@@ -104,6 +155,7 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/sellers', sellerRoutes);   
 app.use('/api/order', orderRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Inicia o servidor
 server.listen(port, (err) => {

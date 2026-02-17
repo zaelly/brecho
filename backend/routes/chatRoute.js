@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { fetchUser } = require('../middlewares/auth.js');
+const { fetchUser, fetchSeller } = require('../middlewares/auth.js');
+const Users = require('../models/User.js');
 const Chat = require('../models/Chat.js');
 const Message = require('../models/Message.js');
 const cors = require("cors");
@@ -101,5 +102,125 @@ router.get("/getMessages", async (req, res) => {
 //         res.status(500).json({ success: false, errors: error.message });
 //     }   
 // });
+
+// Buscar todas as conversas do vendedor (agrupadas por cliente)
+router.get("/sellerConversations", fetchSeller, async (req, res) => {
+    try {
+        const sellerId = req.seller.id;
+
+        // buscar todas mensagens onde chat = sellerId
+        const messages = await Message.find({ chat: sellerId }).sort({ createdAt: -1 });
+
+        if (!messages || messages.length === 0) {
+            return res.json({ success: true, conversations: [] });
+        }
+
+        // agrupar por sender (clientes que enviaram msg)
+        // cada sender que NAO e o vendedor = uma conversa
+        const conversationMap = {};
+
+        for (const msg of messages) {
+            const senderId = String(msg.sender);
+
+            // se o sender e o proprio vendedor, a conversa e com quem?
+            // precisamos achar o "outro" participante
+            // como chat = sellerId, todas as msgs estao no mesmo "chat"
+            // entao agrupamos por sender diferente do vendedor
+            if (senderId === sellerId) continue;
+
+            if (!conversationMap[senderId]) {
+                conversationMap[senderId] = {
+                    oderId: senderId,
+                    lastMessage: msg.content,
+                    lastMessageTime: msg.createdAt,
+                    unread: 0,
+                };
+            }
+        }
+
+        // tambem incluir conversas onde o vendedor respondeu
+        // pegar todos os senders unicos (que nao sao o vendedor)
+        const allSenders = await Message.distinct('sender', { chat: sellerId });
+        const clientIds = allSenders.filter(id => String(id) !== sellerId);
+
+        const conversations = [];
+
+        for (const clientId of clientIds) {
+            // pegar ultima mensagem dessa conversa
+            const lastMsg = await Message.findOne({
+                chat: sellerId,
+                $or: [{ sender: clientId }, { sender: sellerId }]
+            }).sort({ createdAt: -1 });
+
+            // buscar dados do cliente
+            let clientData = { name: 'Usuario', image: '' };
+            try {
+                const user = await Users.findById(clientId).select('name image');
+                if (user) {
+                    clientData = { name: user.name, image: user.image || '' };
+                }
+            } catch(e) {
+                // usuario nao encontrado, usar padrao
+            }
+
+            // contar mensagens do cliente (nao lidas - simplificado)
+            const msgCount = await Message.countDocuments({
+                chat: sellerId,
+                sender: clientId,
+            });
+
+            conversations.push({
+                clientId: String(clientId),
+                clientName: clientData.name,
+                clientImage: clientData.image,
+                lastMessage: lastMsg ? lastMsg.content : '',
+                lastMessageTime: lastMsg ? lastMsg.createdAt : null,
+                messageCount: msgCount,
+            });
+        }
+
+        // ordenar por ultima mensagem (mais recente primeiro)
+        conversations.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+
+        res.json({ success: true, conversations });
+
+    } catch(error) {
+        console.error("Erro ao buscar conversas do vendedor:", error);
+        res.status(500).json({ success: false, errors: error.message });
+    }
+});
+
+// Buscar mensagens entre vendedor e um cliente especifico
+router.get("/sellerMessages", fetchSeller, async (req, res) => {
+    try {
+        const sellerId = req.seller.id;
+        const { clientId } = req.query;
+
+        if (!clientId) {
+            return res.status(400).json({ success: false, message: "clientId obrigatorio" });
+        }
+
+        // buscar todas mensagens do chat do vendedor, filtradas por sender = cliente OU sender = vendedor
+        const messages = await Message.find({
+            chat: sellerId,
+            $or: [
+                { sender: clientId },
+                { sender: sellerId }
+            ]
+        }).sort({ createdAt: 1 });
+
+        const data = messages.map(msg => ({
+            content: msg.content,
+            sender: String(msg.sender),
+            createdAt: msg.createdAt,
+        }));
+
+        res.json({ success: true, data });
+
+    } catch(error) {
+        console.error("Erro ao buscar mensagens do vendedor:", error);
+        res.status(500).json({ success: false, errors: error.message });
+    }
+});
 
 module.exports = router;

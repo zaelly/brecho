@@ -1,0 +1,76 @@
+/* Estilos para o componente de upload */
+.simple-upload {
+  margin: 15px 0;
+}
+
+.preview-container {
+  margin-bottom: 15px;
+}
+
+.preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-width: 350px;
+}
+
+.gallery-preview {
+  margin-top: 20px;
+}
+
+.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gallery-item {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gallery-preview-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.image-upload-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.image-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Animações */
+.simple-upload label:hover {
+  background: #0056b3 !important;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .image-upload-section {
+    padding: 15px;
+  }
+  
+  .gallery-grid {
+    gap: 5px;
+  }
+  
+  .gallery-preview-img {
+    width: 80px;
+    height: 80px;
+  }
+}

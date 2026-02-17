@@ -1,16 +1,49 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import "./ClientChat.css";
 import { ShopContext } from "../../Context/ShopContext";
+import { io } from "socket.io-client";
 
 const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
-  const [receivedMessages, setReceivedMessages] = useState([]);
-  const [sentMessages, setSentMessages] = useState([]);
+  const [allMessages, setAllMessages] = useState([]);
   const [enterprise, setEnterprise] = useState({name: ""});
   const [message, setMessage] = useState("");
   const {profileDetail, fetchProfile} = useContext(ShopContext);
   const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
   const profileId = profileDetail?._id;
-  
+  const socketRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
+  // conectar socket
+  useEffect(() => {
+    socketRef.current = io(url);
+
+    socketRef.current.on('receiveMessage', (data) => {
+      setAllMessages(prev => [...prev, {
+        content: data.content,
+        sender: data.sender,
+        time: data.time || new Date().toLocaleTimeString()
+      }]);
+    });
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, [url]);
+
+  // entrar na sala quando tiver profileId
+  useEffect(() => {
+    if (profileId && socketRef.current) {
+      socketRef.current.emit('join', profileId);
+    }
+  }, [profileId]);
+
+  // scroll para baixo quando novas mensagens
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [allMessages]);
+
   const sendMessage = async () => {
     if (!message.trim()) return;
     if(!profileId){
@@ -22,12 +55,24 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
       content: message,
       time: new Date().toLocaleTimeString()
     }
-    
-    setSentMessages(prev => [...prev, newMessage]);
+
+    setAllMessages(prev => [...prev, newMessage]);
+
+    // enviar via socket
+    if (socketRef.current) {
+      socketRef.current.emit('sendMessage', {
+        sender: profileId,
+        receiver: sellerId,
+        content: message,
+        chat: sellerId
+      });
+    }
+
     setMessage("");
 
+    // salvar no banco tambem
     try{
-      const res = await fetch(`${url}/api/chat/saveMessage`, {
+      await fetch(`${url}/api/chat/saveMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -35,22 +80,10 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
           content: newMessage.content,
           chat: sellerId
         })
-      })
-
-      const data = await res.json();
-      if(data.success){
-        console.log("Mensagem enviada ao servidor:", data.data);
-      }
+      });
     }catch(err){
-      console.error("Erro ao enviar mensagem:", err);
+      console.error("Erro ao salvar mensagem:", err);
     }
-  };
-
-  const receiveMessage = (msg) => {
-    setReceivedMessages(prev => [
-      ...prev,
-      { content: msg, time: new Date().toLocaleTimeString() }
-    ]);
   };
 
   const getMessages = async () => {
@@ -68,20 +101,10 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
         const msgs = data.data.map(msg => ({
           content: msg.content,
           sender: String(msg.sender),
-          time: new Date(msg.createdAt).toLocaleTimeString(),
-          createdAt: msg.createdAt
+          time: new Date(msg.createdAt).toLocaleTimeString()
         }));
 
-        msgs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
-
-        setReceivedMessages(
-          msgs.filter(m => m.sender !== (profileId))
-        );
-        setSentMessages(
-          msgs.filter(m => m.sender === (profileId))
-        );
-
-        console.log("Mensagens carregadas do servidor:", msgs);
+        setAllMessages(msgs);
       }
     }catch(err){
       console.error("Erro ao buscar mensagens:", err);
@@ -101,13 +124,8 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
 
   useEffect(() => {
     if (!isOpen) return;
-
     fetchSeller();
     fetchProfile();
-
-    if (receivedMessages.length === 0 && sentMessages.length === 0) {
-      receiveMessage("Olá! Como podemos ajudar você hoje?");
-    }
   }, [sellerId, isOpen]);
 
   useEffect(()=>{
@@ -123,27 +141,22 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
 
       <div className="container-chat">
         <div className="messages">
-          {receivedMessages.length === 0 && sentMessages.length === 0 ? (
+          {allMessages.length === 0 ? (
             <div className="no-messages">
               <i className="fa-solid fa-comments"></i>
               <span>Sem mensagens ainda</span>
             </div>
           ) : (
-            <>
-              {receivedMessages.map((msg, i) => (
-                <div key={`r-${i}`} className="received">
-                  <p className="messageboxR">{msg.content}</p>
-                  <span className="time">{msg.time}</span>
-                </div>
-              ))}
-              {sentMessages.map((msg, i) => (
-                <div key={`s-${i}`} className="sent">
-                  <p className="messageboxS">{msg.content}</p>
-                  <span className="time">{msg.time}</span>
-                </div>
-              ))}
-            </>
+            allMessages.map((msg, i) => (
+              <div key={i} className={msg.sender === profileId ? "sent" : "received"}>
+                <p className={msg.sender === profileId ? "messageboxS" : "messageboxR"}>
+                  {msg.content}
+                </p>
+                <span className="time">{msg.time}</span>
+              </div>
+            ))
           )}
+          <div ref={messagesEndRef} />
         </div>
       </div>
 

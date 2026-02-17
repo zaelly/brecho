@@ -8,6 +8,7 @@ const ShopContextProvider = (props) => {
     const [cartItem, setCartItems] = useState({});
     const [all_product, setAll_products] = useState([]);
     const [review, setReview] = useState({})
+    const [favorites, setFavorites] = useState([]);
     const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
     const [profileDetail, setProfileDetail] = useState({
         name: '',
@@ -26,6 +27,7 @@ const ShopContextProvider = (props) => {
             .then((data)=>setAll_products(data))
 
         if(localStorage.getItem('auth-token')){
+            fetchFavorites();
             fetch(`${url}/api/cart/getcart`,{
                 method: 'POST',
                 headers: {
@@ -55,6 +57,72 @@ const ShopContextProvider = (props) => {
             })    
         }
     },[])
+
+    // buscar favoritos do usuario
+    const fetchFavorites = async () => {
+        if(!localStorage.getItem('auth-token')) return;
+        try {
+            const res = await fetch(`${url}/api/users/getfavorites`, {
+                headers: {
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+            });
+            const data = await res.json();
+            if(data.success){
+                setFavorites(data.favorites);
+            }
+        } catch(err) {
+            console.error("Erro ao buscar favoritos:", err);
+        }
+    };
+
+    // adicionar aos favoritos
+    const addFavorite = async (productId) => {
+        if(!localStorage.getItem('auth-token')){
+            toast.warn("Faca login para adicionar aos favoritos!");
+            return;
+        }
+        try {
+            const res = await fetch(`${url}/api/users/addfavorite`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({ productId }),
+            });
+            const data = await res.json();
+            if(data.success){
+                setFavorites(prev => [...prev, productId]);
+                toast.success("Adicionado aos favoritos!");
+            } else {
+                toast.info(data.message);
+            }
+        } catch(err) {
+            console.error("Erro ao adicionar favorito:", err);
+        }
+    };
+
+    // remover dos favoritos
+    const removeFavorite = async (productId) => {
+        try {
+            const res = await fetch(`${url}/api/users/removefavorite`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({ productId }),
+            });
+            const data = await res.json();
+            if(data.success){
+                setFavorites(prev => prev.filter(id => id !== productId));
+                toast.success("Removido dos favoritos!");
+            }
+        } catch(err) {
+            console.error("Erro ao remover favorito:", err);
+        }
+    };
 
     const fetchProfile = async () => {
         const res = await fetch(`${url}/api/users/getuserprofile`, {
@@ -174,7 +242,7 @@ const ShopContextProvider = (props) => {
         return totalItem;
     },[cartItem])
 
-    const contextValue = {profileDetail, setProfileDetail, fetchProfile, totalCartItems, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart};
+    const contextValue = {profileDetail, setProfileDetail, fetchProfile, totalCartItems, getTotalCartAmount, all_product, review, cartItem, addToCart, removeFromCart, favorites, addFavorite, removeFavorite, fetchFavorites};
     
     return (
         <ShopContext.Provider value={contextValue}>

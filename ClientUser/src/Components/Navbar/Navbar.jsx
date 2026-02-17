@@ -122,7 +122,7 @@ const Navbar = () => {
                     <p>Reverto Brechó</p>
                 </Link>
             </div>
-            {windowWidth < 800 ? (
+            {windowWidth < 900 ? (
                 <i
                     className={`fa-solid ${isMenuOpen ? "fa-xmark btn-close-menu" : "fa-bars btn-hamburger"}`}
                     onClick={toggleMenu}
@@ -149,8 +149,9 @@ const Navbar = () => {
                     </div>
                 </div>
             )} 
-            {windowWidth >= 800 &&(
+            {windowWidth >= 900 &&(
              <div className="nav-login-cart">
+                <Link to="favoritos"><i className="fa-regular fa-heart"></i></Link>
                 <Link to="cart"><i className="fa-solid fa-cart-shopping"></i></Link>
                 <div className="nav-cart-count">{totalCartItems}</div>
                 {isLoggedIn ? 
@@ -198,75 +199,100 @@ const Navbar = () => {
                     </ul>
                 </div>
             ) : (
+                <>
+                <div className={`mobile-overlay ${isMenuOpen ? "active" : ""}`} onClick={() => setIsMenuOpen(false)}></div>
                 <div ref={menuRef} tabIndex={0} className={`mobile-menu ${isMenuOpen ? "active" : ""}`} onFocus={handleFocus}>
-                    <div className="nav-logo mob-logo">
-                        <img src={logo} alt="" />
+
+                    {/* Header com perfil */}
+                    <div className="mobile-menu-header">
+                        {isLoggedIn ? (
+                            <Link to='/profile' className='prof' onClick={() => setIsMenuOpen(false)}>
+                                <div className="profile">
+                                    <img src={image_profile} onChange={save_profile}/>
+                                </div>
+                                <div className="mobile-menu-header-info">
+                                    <p>Meu Perfil</p>
+                                    <span>Ver conta</span>
+                                </div>
+                            </Link>
+                        ) : (
+                            <div className="mobile-menu-header-info">
+                                <p>Reverto Brecho</p>
+                                <span>Moda sustentavel</span>
+                            </div>
+                        )}
                     </div>
-                    <div className="nav-login-cart-mobile">
-                        {isLoggedIn ? 
-                            (
-                               <Link to='/profile' className='prof'>
-                                    <div className="profile">
-                                        <img src={image_profile} onChange={save_profile}/>
-                                    </div>
-                                    <p>Perfil</p>
-                                </Link> 
-                            )
-                            : (
-                            <button>
-                                <Link to="/LoginSignup">
-                                    <i className="fa-solid fa-circle-user"></i> Entrar
-                                </Link>
-                            </button>
-                            )
-                        } 
-                        <Link to="cart">
-                            <i className="fa-solid cart-mobile-icon fa-cart-shopping"></i>
-                            <div className="nav-cart-count-mobile">{totalCartItems}</div>
+
+                    {/* Botoes rapidos: Carrinho + Favoritos */}
+                    <div className="mobile-quick-actions">
+                        <Link to="cart" className="mobile-quick-action-btn" onClick={() => setIsMenuOpen(false)}>
+                            <i className="fa-solid fa-cart-shopping"></i>
+                            Carrinho
+                            {totalCartItems > 0 && (
+                                <span className="mobile-quick-action-badge">{totalCartItems}</span>
+                            )}
+                        </Link>
+                        <Link to="favoritos" className="mobile-quick-action-btn" style={{"gap": "25px"}} onClick={() => setIsMenuOpen(false)}>
+                            <i className="fa-solid fa-heart"></i>
+                            Favoritos
                         </Link>
                     </div>
-                    <div className="nav-search-mobile">
-                       <input 
-                        type="text" 
-                        onKeyDown={(e) => {if (e.key === 'Enter') {searchProducts(searchTerm)}}}
-                        value={searchTerm} 
-                        onBlur={handleBlur}
-                        id='searchInput' 
-                        className="form-control" 
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder='Pesquisar por...' 
-                        aria-label="Username" 
-                        aria-describedby="basic-addon1" 
-                        />
 
-                        <span className="input-group-text" onClick={() => searchProducts(searchTerm)} id="basic-addon1">      
-                            <i className="fa-solid fa-magnifying-glass"></i>      
+                    {/* Busca */}
+                    <div className="nav-search-mobile">
+                       <input
+                        type="text"
+                        onKeyDown={(e) => {if (e.key === 'Enter') {searchProducts(searchTerm); setIsMenuOpen(false);}}}
+                        value={searchTerm}
+                        id='searchInputMobile'
+                        className="form-control"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder='Pesquisar por...'
+                        />
+                        <span className="input-group-text" onClick={() => {searchProducts(searchTerm); setIsMenuOpen(false);}} >
+                            <i className="fa-solid fa-magnifying-glass"></i>
                         </span>
                     </div>
+
+                    {/* Categorias */}
+                    <p className="mobile-menu-section-title">Categorias</p>
                     <ul className="menu-categorys-mobile">
-                        <li onClick={() => setMenu("home")} className={menu === "home" ? "category-mobile" : ""}>
-                            <Link to="/">Home</Link>
+                        <li onClick={() => {setMenu("home"); setIsMenuOpen(false);}} className={menu === "home" ? "category-mobile" : ""}>
+                            <Link to="/"><i className="fa-solid fa-house"></i> Home</Link>
                         </li>
-                        <li onClick={() => setMenu("men")} className={menu === "men" ? "category-mobile" : ""}>
-                            <Link to="men">Homens</Link>
+                        <li onClick={() => {setMenu("men"); setIsMenuOpen(false);}} className={menu === "men" ? "category-mobile" : ""}>
+                            <Link to="men"><i className="fa-solid fa-person"></i> Homens</Link>
                         </li>
-                        <li onClick={() => setMenu("women")} className={menu === "women" ? "category-mobile" : ""}>
-                            <Link to="women">Mulheres</Link>
+                        <li onClick={() => {setMenu("women"); setIsMenuOpen(false);}} className={menu === "women" ? "category-mobile" : ""}>
+                            <Link to="women"><i className="fa-solid fa-person-dress"></i> Mulheres</Link>
                         </li>
-                        <li onClick={() => setMenu("kid")} className={menu === "kid" ? "category-mobile" : ""}>
-                            <Link to="kid">Crianças</Link>
+                        <li onClick={() => {setMenu("kid"); setIsMenuOpen(false);}} className={menu === "kid" ? "category-mobile" : ""}>
+                            <Link to="kid"><i className="fa-solid fa-child"></i> Criancas</Link>
                         </li>
-                        <li onClick={() => setMenu("Unissex")} className={menu === "Unissex" ? "category-mobile" : ""}>
-                            <Link to="Unissex">Unissex</Link>
+                        <li onClick={() => {setMenu("Unissex"); setIsMenuOpen(false);}} className={menu === "Unissex" ? "category-mobile" : ""}>
+                            <Link to="Unissex"><i className="fa-solid fa-shirt"></i> Unissex</Link>
                         </li>
-                        <li onClick={() => setMenu("Imperdiveis")} className={menu === "Imperdiveis" ? "category" : ""}>
-                            <Link to="Imperdiveis">Imperdíveis</Link>
+                        <li onClick={() => {setMenu("Imperdiveis"); setIsMenuOpen(false);}} className={menu === "Imperdiveis" ? "category-mobile" : ""}>
+                            <Link to="Imperdiveis"><i className="fa-solid fa-fire"></i> Imperdiveis</Link>
                         </li>
-                        <li onClick={() => setMenu("Eletronicos")} className={menu === "Eletronicos" ? "category" : ""}>
-                            <Link to="Eletronicos">Eletrônicos</Link>
+                        <li onClick={() => {setMenu("Eletronicos"); setIsMenuOpen(false);}} className={menu === "Eletronicos" ? "category-mobile" : ""}>
+                            <Link to="Eletronicos"><i className="fa-solid fa-laptop"></i> Eletronicos</Link>
                         </li>
                     </ul>
+
+                    {/* Botao entrar (se nao logado) */}
+                    {!isLoggedIn && (
+                        <Link to="/LoginSignup" className="mobile-login-btn" onClick={() => setIsMenuOpen(false)}>
+                            <i className="fa-solid fa-circle-user"></i> Entrar ou Cadastrar
+                        </Link>
+                    )}
+
+                    {/* Rodape */}
+                    <div className="mobile-menu-footer">
+                        <p>Reverto Brecho - Moda Circular</p>
+                    </div>
                 </div>
+                </>
             )}
     </>
   )

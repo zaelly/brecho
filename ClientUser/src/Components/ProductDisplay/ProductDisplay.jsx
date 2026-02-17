@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import './ProductDisplay.css'
 import { ShopContext } from '../../Context/ShopContext';
+import { getThumbnailUrl, getGalleryUrls } from '../../utils/cloudinary';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +20,10 @@ const ProductDisplay = ({product, openChat}) => {
     const conditions = product?.conditions
     const [enterprise, setEnterprise] = useState({name: ""});
     const {addToCart} = useContext(ShopContext);
+    const [sellerRating, setSellerRating] = useState({ average: 0, total: 0 });
+    const [myRating, setMyRating] = useState(0);
+    const [myComment, setMyComment] = useState('');
+    const [showRating, setShowRating] = useState(false);
     
     const itemId = "";
     const size = "";
@@ -42,14 +47,75 @@ const ProductDisplay = ({product, openChat}) => {
         console.log(itemId, size); 
     }
 
+    const fetchSellerRating = async () => {
+        if (!sellerId) return;
+        try {
+            const res = await fetch(`${url}/api/sellers/getratings/${sellerId}`);
+            const data = await res.json();
+            if (data.success) {
+                setSellerRating({ average: data.average, total: data.total });
+            }
+        } catch (err) {
+            console.error("Erro ao buscar avaliacao do vendedor:", err);
+        }
+    };
+
+    const submitSellerRating = async () => {
+        if (!localStorage.getItem('auth-token')) {
+            toast.warn("Faca login para avaliar!");
+            return;
+        }
+        if (myRating === 0) {
+            toast.warn("Selecione uma nota!");
+            return;
+        }
+        try {
+            const res = await fetch(`${url}/api/sellers/rateseller`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({
+                    sellerId: sellerId,
+                    rating: myRating,
+                    comment: myComment,
+                    userName: localStorage.getItem('users-name') || 'Usuario',
+                }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success("Avaliacao enviada!");
+                setShowRating(false);
+                setMyRating(0);
+                setMyComment('');
+                fetchSellerRating();
+            } else {
+                toast.error(data.message);
+            }
+        } catch (err) {
+            toast.error("Erro ao enviar avaliacao");
+        }
+    };
+
     useEffect(()=>{
         if(!sellerId) return;
         fetchSeller();
+        fetchSellerRating();
     },[sellerId, url]);
     
     const sendMessage = () => {
         openChat && openChat(sellerId);
     }
+
+    // Gerar URLs otimizadas
+    const optimizedGallery = product.gallery ? getGalleryUrls(product.gallery, {
+        width: 80,
+        height: 80,
+        quality: 'auto'
+    }) : [];
+    
+    const optimizedThumbnail = getThumbnailUrl(product.thumbnail, 500);
 
     return (
     <>
@@ -57,13 +123,29 @@ const ProductDisplay = ({product, openChat}) => {
             <div className="ProductDisplay-left">
                 <div className="ProductDisplay-img-list">
                     <div className="itens-list">
-                        {product.gallery && product.gallery.map((img, index) => (
-                            <img key={index} src={img} />
+                        {optimizedGallery.map((imgUrl, index) => (
+                            <img 
+                                key={index} 
+                                src={imgUrl}
+                                alt={`Gallery ${index}`}
+                                onClick={() => {
+                                    // Mudar imagem principal quando clicar
+                                    const mainImg = document.querySelector('.productDisplay-main-img');
+                                    if (mainImg) {
+                                        mainImg.src = product.gallery[index];
+                                    }
+                                }}
+                                style={{ cursor: 'pointer' }}
+                            />
                         ))}
                     </div>
                 </div>
                 <div className="productDisplay-img">
-                    <img src={product.thumbnail} className='productDisplay-main-img' />
+                    <img 
+                        src={optimizedThumbnail} 
+                        className='productDisplay-main-img' 
+                        alt={product.name}
+                    />
                 </div>
             </div>
             <div className="ProductDisplay-right">
@@ -116,7 +198,46 @@ const ProductDisplay = ({product, openChat}) => {
                     <div>
                         <p className='productDisplay-category'>
                             <span>Vendido por: <span className='span-infos'>{enterprise.name}</span></span>
+                            {sellerRating.total > 0 && (
+                                <span style={{marginLeft:'10px', color:'#ff9800'}}>
+                                    <i className="fa-solid fa-star"></i> {sellerRating.average} ({sellerRating.total} {sellerRating.total === 1 ? 'avaliacao' : 'avaliacoes'})
+                                </span>
+                            )}
                         </p>
+                        <span
+                            style={{color:'#2196f3', cursor:'pointer', fontSize:'13px', textDecoration:'underline'}}
+                            onClick={() => setShowRating(!showRating)}
+                        >
+                            {showRating ? 'Fechar' : 'Avaliar vendedor'}
+                        </span>
+                        {showRating && (
+                            <div style={{marginTop:'10px', padding:'10px', border:'1px solid #e0e0e0', borderRadius:'8px'}}>
+                                <p style={{fontSize:'13px', marginBottom:'5px'}}>Sua nota:</p>
+                                <div style={{display:'flex', gap:'5px', marginBottom:'8px'}}>
+                                    {[1,2,3,4,5].map(star => (
+                                        <i
+                                            key={star}
+                                            className={`fa-${myRating >= star ? 'solid' : 'regular'} fa-star`}
+                                            style={{cursor:'pointer', color:'#ff9800', fontSize:'20px'}}
+                                            onClick={() => setMyRating(star)}
+                                        ></i>
+                                    ))}
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Comentario (opcional)"
+                                    value={myComment}
+                                    onChange={(e) => setMyComment(e.target.value)}
+                                    style={{width:'100%', padding:'5px', border:'1px solid #ccc', borderRadius:'4px', marginBottom:'8px'}}
+                                />
+                                <button
+                                    onClick={submitSellerRating}
+                                    style={{backgroundColor:'#4caf50', color:'white', border:'none', padding:'5px 15px', borderRadius:'4px', cursor:'pointer', fontSize:'13px'}}
+                                >
+                                    Enviar avaliacao
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
                 

@@ -1,0 +1,123 @@
+.pedidos-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.pedidos-container h1 {
+    margin-bottom: 1.5rem;
+    font-size: 24px;
+    color: #333;
+}
+
+.pedidos-empty {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+}
+
+.pedidos-empty i {
+    font-size: 50px;
+    color: #ccc;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.pedido-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: white;
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pedido-header h3 {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+}
+
+.pedido-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.status-processando { background-color: #ff9800; }
+.status-em-andamento { background-color: #2196f3; }
+.status-sendo-preparado { background-color: #9c27b0; }
+.status-enviado { background-color: #00bcd4; }
+.status-finalizado { background-color: #4caf50; }
+.status-cancelado { background-color: #f44336; }
+
+.pedido-items {
+    margin: 10px 0;
+}
+
+.pedido-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pedido-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.pedido-item-info {
+    flex: 1;
+}
+
+.pedido-item-info p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.pedido-item-info span {
+    color: #888;
+    font-size: 12px;
+}
+
+.pedido-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.pedido-footer p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+}
+
+.pedido-total {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2e7d32;
+}
+
+@media (max-width: 800px) {
+    .pedido-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

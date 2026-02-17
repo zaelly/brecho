@@ -3,7 +3,28 @@
     overflow: hidden;
     border-radius: 1rem 1rem 5px 5px;
     margin-bottom: 0;
-    
+    position: relative;
+}
+
+.item-favorite-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+    cursor: pointer;
+    background: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.item-favorite-btn i {
+    font-size: 14px;
+    margin-right: -0.05rem;
 }
 .informations{
     padding:0 1rem;

@@ -25,7 +25,9 @@ const Footer = () => {
             <li>
                 <Link to={'/Imperdiveis'}>Ofertas</Link>
             </li>
-            <li>Contato</li>
+            <li>
+                <Link to={'/sobre'}>Sobre</Link>
+            </li>
         </ul>
         <div className="footer-social-icon">
              <a href="http://">

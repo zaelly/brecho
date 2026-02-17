@@ -1,52 +1,56 @@
 const express = require("express");
 const router = express.Router();
 const Seller = require('../models/Seller.js');
-const { fetchSeller } = require('../middlewares/auth.js');
+const { fetchSeller, fetchUser } = require('../middlewares/auth.js');
 const jwt = require("jsonwebtoken");
 const Product = require('../models/Product.js');
 const cors = require("cors")
 const multer = require("multer");
-const path = require("path");
 const bcrypt = require('bcryptjs');
-const fs = require("fs");
+const cloudinary = require("../config/cloudinary");
 
-// Usar o JSON e 
-// 
+// Usar o JSON e
+//
 router.use(express.json());
 router.use(cors());
 
 // -------------------------
 // Endpoints para VENDEDORES
 // -------------------------
-const port = process.env.PORT || 4000;
-const url = process.env.VITE_API_URL || `http://localhost:${port}`;
 
-// upload de avatar
-const dir = "./upload/images";
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-// Configuração do Multer para o upload de imagens
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename: (req, file, cb) => {
-    return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
+// Multer com memória para upload via Cloudinary
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 } 
- });
-
-// Rota para upload de imagens
-router.use("/images", express.static("upload/images"));
-router.post("/upload", upload.single("avatar"), (req, res) => {
-  res.json({
-    success: 1,
-    image_url: `${url}/images/${req.file.filename}`,
+// Função auxiliar para upload no Cloudinary
+async function uploadToCloudinary(file, folder) {
+  const b64 = Buffer.from(file.buffer).toString("base64");
+  const dataURI = `data:${file.mimetype};base64,${b64}`;
+  const result = await cloudinary.uploader.upload(dataURI, {
+    folder: `brecho-reverto/${folder}`,
+    resource_type: "auto",
+    transformation: [{ quality: "auto", fetch_format: "auto" }]
   });
+  return result;
+}
+
+// Rota para upload de avatar do vendedor
+router.post("/upload", upload.single("avatar"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: 0, message: "Nenhum arquivo enviado" });
+    }
+    const result = await uploadToCloudinary(req.file, 'sellers/avatars');
+    res.json({
+      success: 1,
+      image_url: result.secure_url,
+    });
+  } catch (error) {
+    console.error("Erro no upload do avatar:", error);
+    res.status(500).json({ success: 0, message: "Erro ao fazer upload da imagem" });
+  }
 });
 
 
@@ -59,13 +63,10 @@ router.post("/seller/signup", async (req, res) => {
       return res.status(400).json({ success: false, errors: "Email já cadastrado!" });
     }
 
-    // Criptografa a senha
-    const hashedPassword = await bcrypt.hash(password, 8);
-
-    const seller = new Seller({
+const seller = new Seller({
       name,
       email,
-      password: hashedPassword
+      password
     });
 
     await seller.save();
@@ -90,7 +91,7 @@ router.post("/seller/login", async (req, res) => {
     const { email, password } = req.body;
     const seller = await Seller.findOne({ email });
     if (seller) {
-      const isMatch = await bcrypt.compare(password, seller.password);
+      const isMatch = await seller.comparePassword(password);
       if (isMatch) {
         const data = {
           seller: {
@@ -108,12 +109,22 @@ router.post("/seller/login", async (req, res) => {
   }
 });
 
-//tras uma imagem carregada pelo usuario no perfil
-router.post("/uploadprofileimage", fetchSeller, upload.single('profile'), (req, res)=>{
-  res.json({
-    success:1,
-    image_url: `${url}/images/${req.file.filename}`
-  })
+//tras uma imagem carregada pelo vendedor no perfil
+router.post("/uploadprofileimage", fetchSeller, upload.single('profile'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: 0, message: "Nenhum arquivo enviado" });
+    }
+    const result = await uploadToCloudinary(req.file, 'sellers/profiles');
+    await Seller.findByIdAndUpdate(req.seller.id, { image: result.secure_url });
+    res.json({
+      success: 1,
+      image_url: result.secure_url
+    });
+  } catch (error) {
+    console.error("Erro no upload de perfil do vendedor:", error);
+    res.status(500).json({ success: 0, message: "Erro ao fazer upload da imagem" });
+  }
 })
 
 //perfil vendedor
@@ -130,9 +141,8 @@ router.post("/updateprofile", fetchSeller, async (req, res) => {
       if (shopDescription) updateFields.shopDescription = shopDescription;
       if (image) updateFields.image = image;
       if (gateways) updateFields.gateways = gateways;
-      if (new_password) {
-        const hashedPassword = await bcrypt.hash(new_password, 8);
-        updateFields.password = hashedPassword;
+if (new_password) {
+        updateFields.password = new_password;
     }
 
     await Seller.findByIdAndUpdate(req.seller.id, updateFields);
@@ -227,6 +237,66 @@ router.post("/checkout", fetchSeller, async (req, res) => {
   }catch(err){
     console.error("Erro no checkout:", err);
     res.status(500).json({ success: false, message: "Erro interno do servidor" });
+  }
+});
+
+// Avaliar vendedor (usuario logado)
+router.post("/rateseller", fetchUser, async (req, res) => {
+  try {
+    const { sellerId, rating, comment } = req.body;
+
+    if (!sellerId || !rating) {
+      return res.status(400).json({ success: false, message: "Vendedor e nota sao obrigatorios" });
+    }
+
+    const seller = await Seller.findById(sellerId);
+    if (!seller) {
+      return res.status(404).json({ success: false, message: "Vendedor nao encontrado" });
+    }
+
+    // verificar se usuario ja avaliou
+    const alreadyRated = seller.ratings && seller.ratings.find(r => r.userId === req.user.id);
+    if (alreadyRated) {
+      // atualizar avaliacao existente
+      alreadyRated.rating = rating;
+      alreadyRated.comment = comment;
+      alreadyRated.date = Date.now();
+    } else {
+      // nova avaliacao
+      if (!seller.ratings) seller.ratings = [];
+      seller.ratings.push({
+        userId: req.user.id,
+        userName: req.body.userName || 'Usuario',
+        rating: rating,
+        comment: comment || '',
+      });
+    }
+
+    await seller.save();
+    res.json({ success: true, message: "Avaliacao enviada!" });
+  } catch (err) {
+    console.error("Erro ao avaliar vendedor:", err);
+    res.status(500).json({ success: false, message: "Erro interno" });
+  }
+});
+
+// Buscar avaliacoes do vendedor
+router.get("/getratings/:sellerId", async (req, res) => {
+  try {
+    const seller = await Seller.findById(req.params.sellerId).select("ratings");
+    if (!seller) {
+      return res.status(404).json({ success: false, message: "Vendedor nao encontrado" });
+    }
+
+    const ratings = seller.ratings || [];
+    const average = ratings.length > 0
+      ? (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length).toFixed(1)
+      : 0;
+
+    res.json({ success: true, ratings, average, total: ratings.length });
+  } catch (err) {
+    console.error("Erro ao buscar avaliacoes:", err);
+    res.status(500).json({ success: false, message: "Erro interno" });
   }
 });
 

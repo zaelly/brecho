@@ -8,39 +8,90 @@ import Checkout from '../checkout/Checkout';
 const CartItems = () => {
     const {getTotalCartAmount, all_product, addToCart, cartItem, removeFromCart, profileDetail, fetchProfile} = useContext(ShopContext);
     const [selectedPayment, setSelectedPayment] = useState(null);
-    // const [paymentMethod, setPaymentMethod] = useState([])
     const isDisabled = !selectedPayment || getTotalCartAmount <= 0;
     const [checkout, setCheckout] = useState(false);
+    const [orderCreated, setOrderCreated] = useState(false);
+    const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-    console.log(profileDetail)
-    const finalizarCompra = () => {
+    const finalizarCompra = async () => {
         if(!profileDetail.adress || !profileDetail.cpf || !profileDetail.city){
-            toast.warn(`Endereço não encontrado. Adicione um endereço para entrega!`);
+            toast.warn('Endereco nao encontrado. Adicione um endereco para entrega!');
             return;
         }
         if(!selectedPayment){
             toast.warn('Nenhuma forma de pagamento selecionada');
             return;
-        }else{
-            toast.success(`Forma de pagamento selecionada: ${selectedPayment}`);
         }
 
-        // chama a API para finalizar a compra
-        setCheckout(true);
+        // montar os itens do pedido
+        const items = [];
+        for (const [key, quantity] of Object.entries(cartItem)) {
+            if (quantity > 0) {
+                const [itemId, size] = key.split("_");
+                const product = all_product.find(p => p._id === itemId);
+                if (product) {
+                    const price = product.inOffer ? product.new_price : product.current_price;
+                    items.push({
+                        productId: product._id,
+                        name: product.name,
+                        size: size,
+                        quantity: quantity,
+                        price: price,
+                        thumbnail: product.thumbnail,
+                    });
+                }
+            }
+        }
+
+        if (items.length === 0) {
+            toast.warn('Carrinho vazio!');
+            return;
+        }
+
+        try {
+            const res = await fetch(`${url}/api/order/order/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify({
+                    items: items,
+                    totalAmount: getTotalCartAmount,
+                    paymentForm: selectedPayment === 'pix' ? 1 : 0,
+                    address: profileDetail.adress,
+                    city: profileDetail.city,
+                    userName: profileDetail.name,
+                }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                toast.success('Pedido criado com sucesso!');
+                setOrderCreated(true);
+                setCheckout(true);
+            } else {
+                toast.error(data.message || 'Erro ao criar pedido');
+            }
+        } catch (err) {
+            console.error('Erro ao finalizar compra:', err);
+            toast.error('Erro ao finalizar compra');
+        }
     }
 
     useEffect(()=>{
         fetchProfile()
     }, [])
+
   return (
     <div className='CartItems'>
-        <h1>Carrinho</h1>  
+        <h1>Carrinho</h1>
         <div className="cartItems-format-main">
             <p>Produtos</p>
-            <p>Título</p>            
-            <p>Tamanho</p>            
+            <p>Titulo</p>
+            <p>Tamanho</p>
             <p>Quantidade</p>
-            <p>Preço</p>
+            <p>Preco</p>
             <p>Total</p>
         </div>
         <hr />
@@ -84,9 +135,8 @@ const CartItems = () => {
                 <div className="group-content">
                     <div className="optionsPayments">
                         <div className="optionPayment">
-                            {/* quando selecionado e clicado em gerar ele gera um qrcode */}
                             <h3>Formas de pagamentos:</h3>
-                            <div className={`optionCard ${selectedPayment === "pix" ? 'selectedPayment' : ''}`} 
+                            <div className={`optionCard ${selectedPayment === "pix" ? 'selectedPayment' : ''}`}
                                 onClick={() => setSelectedPayment(selectedPayment === "pix" ? null : "pix")}>
                                 <p><i className="fa-brands fa-pix"></i> Pix</p>
                             </div>
@@ -106,24 +156,23 @@ const CartItems = () => {
                         <hr />
                         <div className="cartItems-total-item">
                             <p>Frete:</p>
-                            <p>Grátis</p>
+                            <p>Gratis</p>
                         </div>
                         <hr />
                         <div className="cartItems-total-item">
                             <h3>Total:</h3>
                             <h3>R${getTotalCartAmount.toFixed(2).replace(".", ",")}</h3>
                         </div>
-                    </div> 
-                    {/* antes de finalizar verificar se o cliente tem endereço */}
-                    <button 
-                        onClick={finalizarCompra} 
-                        className={`${isDisabled ? 'disabledBtn' : ''}`} 
+                    </div>
+                    <button
+                        onClick={finalizarCompra}
+                        className={`${isDisabled ? 'disabledBtn' : ''}`}
                         disabled={isDisabled}
                     >
                         FINALIZAR
                     </button>
 
-                    {checkout && <Checkout closeModal={()=>setCheckout(false)}/>}
+                    {checkout && <Checkout closeModal={()=>setCheckout(false)} orderCreated={orderCreated}/>}
                 </div>
             </div>
         </div>

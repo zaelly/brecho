@@ -1,0 +1,351 @@
+.chatseller-wrapper {
+    display: flex;
+    height: calc(100vh - 70px);
+    width: 100%;
+    background: #f0f2f5;
+    overflow: hidden;
+}
+
+/* ====== LISTA DE CONVERSAS (lado esquerdo) ====== */
+.chatseller-sidebar {
+    width: 350px;
+    min-width: 350px;
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatseller-sidebar-header {
+    padding: 15px 20px;
+    background: #f0f2f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chatseller-sidebar-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #111b21;
+}
+
+.chatseller-sidebar-header p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #667781;
+}
+
+.chatseller-search {
+    padding: 8px 12px;
+    background: #f0f2f5;
+}
+
+.chatseller-search input {
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+.chatseller-conversations {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.chatseller-conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f2f5;
+    transition: background 0.15s;
+}
+
+.chatseller-conversation-item:hover {
+    background: #f5f6f6;
+}
+
+.chatseller-conversation-item.active {
+    background: #e9edef;
+}
+
+.chatseller-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.chatseller-avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #dfe5e7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+    color: #8696a0;
+    font-size: 20px;
+}
+
+.chatseller-conversation-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.chatseller-conversation-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.chatseller-conversation-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111b21;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chatseller-conversation-time {
+    font-size: 11px;
+    color: #667781;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.chatseller-conversation-preview {
+    font-size: 13px;
+    color: #667781;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chatseller-badge {
+    background: #25d366;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 50%;
+    min-width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.chatseller-empty-sidebar {
+    text-align: center;
+    padding: 40px 20px;
+    color: #667781;
+}
+
+.chatseller-empty-sidebar i {
+    font-size: 50px;
+    margin-bottom: 15px;
+    color: #c4c4c4;
+    display: block;
+}
+
+/* ====== AREA DE MENSAGENS (lado direito) ====== */
+.chatseller-chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #efeae2;
+}
+
+.chatseller-no-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f0f2f5;
+    color: #667781;
+}
+
+.chatseller-no-chat i {
+    font-size: 70px;
+    color: #c4c4c4;
+    margin-bottom: 20px;
+}
+
+.chatseller-no-chat h3 {
+    font-size: 22px;
+    color: #41525d;
+    font-weight: 300;
+    margin: 0 0 8px;
+}
+
+.chatseller-no-chat p {
+    font-size: 14px;
+    color: #667781;
+}
+
+/* header do chat aberto */
+.chatseller-chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #f0f2f5;
+    border-bottom: 1px solid #e0e0e0;
+    gap: 12px;
+}
+
+.chatseller-chat-header-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #111b21;
+    margin: 0;
+}
+
+.chatseller-chat-header-status {
+    font-size: 12px;
+    color: #667781;
+    margin: 0;
+}
+
+.chatseller-chat-back {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #54656f;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* area de mensagens */
+.chatseller-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.chatseller-msg {
+    max-width: 65%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    position: relative;
+    word-wrap: break-word;
+}
+
+.chatseller-msg-sent {
+    align-self: flex-end;
+    background: #d9fdd3;
+    border-radius: 8px 0 8px 8px;
+}
+
+.chatseller-msg-received {
+    align-self: flex-start;
+    background: #fff;
+    border-radius: 0 8px 8px 8px;
+}
+
+.chatseller-msg p {
+    margin: 0;
+    font-size: 14px;
+    color: #111b21;
+    line-height: 1.4;
+}
+
+.chatseller-msg-time {
+    font-size: 11px;
+    color: #667781;
+    text-align: right;
+    margin-top: 2px;
+}
+
+.chatseller-date-divider {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.chatseller-date-divider span {
+    background: #e1deda;
+    color: #54656f;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 8px;
+}
+
+/* input de mensagem */
+.chatseller-input-area {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #f0f2f5;
+    gap: 10px;
+}
+
+.chatseller-input-area input {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+}
+
+.chatseller-input-area button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #54656f;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chatseller-input-area button:hover {
+    background: #e0e0e0;
+}
+
+/* ====== RESPONSIVO ====== */
+@media (max-width: 900px) {
+    .chatseller-sidebar {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .chatseller-sidebar.hidden-mobile {
+        display: none;
+    }
+
+    .chatseller-chat-area.hidden-mobile {
+        display: none;
+    }
+
+    .chatseller-chat-back {
+        display: block;
+    }
+
+    .chatseller-messages {
+        padding: 15px 12px;
+    }
+
+    .chatseller-msg {
+        max-width: 85%;
+    }
+}

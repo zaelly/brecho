@@ -5,6 +5,8 @@ export const AdminContext = createContext(null);
 
 const AdminContextProvider = (props) =>{
     const url = import.meta.env.VITE_API_URL;
+    console.log(url);
+    
     const [allproducts, setAllProducts] = useState([]);
     const [profileDetail, setProfileDetail] = useState({
         name: '',
@@ -21,7 +23,7 @@ const AdminContextProvider = (props) =>{
     const [productDetails, setProductDetails] = useState({
         name:"",
         thumbnail:"",
-        gallery:"",
+        gallery:[],
         category: "Feminina",
         current_price: "",
         new_price: "",
@@ -37,6 +39,7 @@ const AdminContextProvider = (props) =>{
     })
     let offer = productDetails.inOffer;
     const [loading, setLoading] = useState(false);
+    const [editingProductId, setEditingProductId] = useState(null);
 
     const Add_product = async ()=>{
         if(loading) return;
@@ -58,7 +61,7 @@ const AdminContextProvider = (props) =>{
                 return;
                 }
                 if(product.new_price > product.old_price){
-                toast.warn("Preço antigo é MENOR que preço de oferta altere o valor!.");
+                toast.warn("Preço antigo é MENOR que preço de oferta altere o valor!");
                 return;
                 }
             } else {
@@ -69,48 +72,75 @@ const AdminContextProvider = (props) =>{
                 return;
                 }
             }
-            gallery.forEach(g =>{
-                product.gallery = [...product.gallery, g];
-            })
 
-            if(!gallery){
-                toast.warn("Adicione ao menos uma imagem adicional!");
+            // Validar imagens
+            if(!productDetails.thumbnail){
+                toast.warn("Adicione a imagem principal (thumbnail)!");
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('thumbnail', thumbnail);
-            gallery.forEach((file, index) => {
-                formData.append('gallery', file);
+            if(!productDetails.gallery || productDetails.gallery.length === 0){
+                toast.warn("Adicione ao menos uma imagem na galeria!");
+                return;
+            }
+
+            // Preparar dados para o backend (as imagens já são URLs)
+            const productData = {
+                name: product.name,
+                thumbnail: product.thumbnail,
+                gallery: product.gallery,
+                category: product.category,
+                current_price: product.current_price,
+                new_price: product.new_price,
+                old_price: product.old_price,
+                unit: product.unit,
+                size: product.size,
+                enable: product.enable,
+                inOffer: product.inOffer,
+                descriptionProduct: product.descriptionProduct,
+                conditions: product.conditions,
+                marca: product.marca
+            };
+
+            console.log("Produto a ser enviado:", productData);
+
+            const apiResponse = await fetch(`${url}/api/products/seller/addproduct`,{
+                method:'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token-seller': localStorage.getItem('auth-token')
+                },
+                body: JSON.stringify(productData)
             });
 
-            console.log(product, "produto a ser enviado para upload")
-
-            const uploadApi = await fetch(`${url}/api/products/upload-product`,{
-                method:'POST',
-                body: formData
-            })
-            const resp = await uploadApi.json();
+            const resp = await apiResponse.json();
 
             if(resp.success){
-                product.thumbnail = resp.thumbnail;
-                product.gallery = resp.gallery;
-
-                console.log(product, "produto a ser enviado")
-
-                const addProdutoApi = await fetch(`${url}/api/products/seller/addproduct` ,{
-                method:'POST',
-                headers:{
-                    Accept:'application/json',
-                    'Content-Type':'application/json',
-                    'auth-token-seller': localStorage.getItem('auth-token'),
-                },
-                body: JSON.stringify(product),
-                })
+                toast.success("Produto adicionado com sucesso!");
                 
-                const data = await addProdutoApi.json();
-                data.success ? successHandle() : toast.error("Adição de produto falhou!")
+                // Limpar formulário
+                setProductDetails({
+                    name:"",
+                    thumbnail:"",
+                    gallery:[],
+                    category: "Feminina",
+                    current_price: "",
+                    new_price: "",
+                    old_price: "",
+                    unit: "",
+                    sellerId: "",
+                    enable: false,
+                    inOffer: false,
+                    size: [],
+                    descriptionProduct: "",
+                    marca: '',
+                    conditions: ''
+                });
+                
+            } else {
+                toast.error(resp.message || "Erro ao adicionar produto!");
             }
+
         }catch(err){
             console.error("Erro ao adicionar produto:", err);
             toast.error("Erro ao adicionar produto!");
@@ -175,8 +205,114 @@ const AdminContextProvider = (props) =>{
         await fetchInfo();
     };
 
+    // carregar dados do produto no formulario para editar
     const edit_product = async(id) =>{
-        console.log("teste", id);
+        try {
+            const res = await fetch(`${url}/api/products/seller/getproduct/${id}`, {
+                headers: {
+                    'auth-token-seller': localStorage.getItem('auth-token'),
+                },
+            });
+            const data = await res.json();
+            if(data.success){
+                const p = data.product;
+                setProductDetails({
+                    name: p.name || "",
+                    thumbnail: p.thumbnail || "",
+                    gallery: p.gallery || [],
+                    category: p.category || "Feminina",
+                    current_price: p.current_price || "",
+                    new_price: p.new_price || "",
+                    old_price: p.old_price || "",
+                    unit: p.unit || "",
+                    sellerId: p.sellerId || "",
+                    enable: p.enable || false,
+                    inOffer: p.inOffer || false,
+                    size: p.size || [],
+                    descriptionProduct: p.descriptionProduct || "",
+                    marca: p.marca || "",
+                    conditions: p.conditions || "",
+                });
+                setEditingProductId(id);
+            } else {
+                toast.error("Erro ao buscar produto para edicao");
+            }
+        } catch(err) {
+            console.error("Erro ao buscar produto:", err);
+            toast.error("Erro ao buscar produto");
+        }
+    };
+
+    // salvar edicao do produto
+    const Save_edit_product = async () => {
+        if(loading) return;
+        setLoading(true);
+        try {
+            let product = { ...productDetails };
+            product.unit = Number(product.unit);
+            product.old_price = product.old_price ? Number(product.old_price) : undefined;
+            product.new_price = product.new_price ? Number(product.new_price) : undefined;
+            product.current_price = product.current_price ? Number(product.current_price) : undefined;
+
+            const productData = {
+                id: editingProductId,
+                name: product.name,
+                thumbnail: product.thumbnail,
+                gallery: product.gallery,
+                category: product.category,
+                current_price: product.current_price,
+                new_price: product.new_price,
+                old_price: product.old_price,
+                unit: product.unit,
+                size: product.size,
+                enable: product.enable,
+                inOffer: product.inOffer,
+                descriptionProduct: product.descriptionProduct,
+                conditions: product.conditions,
+                marca: product.marca
+            };
+
+            const res = await fetch(`${url}/api/products/seller/editproduct`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'auth-token-seller': localStorage.getItem('auth-token'),
+                },
+                body: JSON.stringify(productData),
+            });
+
+            const data = await res.json();
+            if(data.success){
+                toast.success("Produto editado com sucesso!");
+                setEditingProductId(null);
+                // limpar formulario
+                setProductDetails({
+                    name:"", thumbnail:"", gallery:[], category: "Feminina",
+                    current_price: "", new_price: "", old_price: "", unit: "",
+                    sellerId: "", enable: false, inOffer: false, size: [],
+                    descriptionProduct: "", marca: '', conditions: ''
+                });
+                await fetchInfo();
+            } else {
+                toast.error(data.message || "Erro ao editar produto!");
+            }
+        } catch(err) {
+            console.error("Erro ao editar produto:", err);
+            toast.error("Erro ao editar produto!");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // cancelar edicao
+    const cancelEdit = () => {
+        setEditingProductId(null);
+        setProductDetails({
+            name:"", thumbnail:"", gallery:[], category: "Feminina",
+            current_price: "", new_price: "", old_price: "", unit: "",
+            sellerId: "", enable: false, inOffer: false, size: [],
+            descriptionProduct: "", marca: '', conditions: ''
+        });
     };
 
     const handleImageThumbnail = (e)=>{
@@ -225,7 +361,7 @@ const AdminContextProvider = (props) =>{
         setProductDetails({
             name:"",
             thumbnail:"",
-            gallery: "",
+            gallery: [],
             category: "Feminina",
             current_price: "",
             new_price: "",
@@ -259,7 +395,7 @@ const AdminContextProvider = (props) =>{
     },[])
 
     const contextValue = {
-        fetchProfile, offer, loading, handleChange, Add_product, setGallery, handleImageGallery, setThumbnail, handleImageThumbnail, gallery, productDetails, setProductDetails, thumbnail, setProfileDetail, remove_product, edit_product, url, allproducts, profileDetail, fetchInfo, setAllProducts,
+        fetchProfile, offer, loading, handleChange, Add_product, setGallery, handleImageGallery, setThumbnail, handleImageThumbnail, gallery, productDetails, setProductDetails, thumbnail, setProfileDetail, remove_product, edit_product, Save_edit_product, cancelEdit, editingProductId, url, allproducts, profileDetail, fetchInfo, setAllProducts,
     }
     return(
         <AdminContext.Provider value={contextValue}>
