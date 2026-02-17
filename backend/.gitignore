@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Logs
 logs
 *.log
@@ -41,3 +42,7 @@ dist-ssr
 .env
 .env.development
 .env.production
+=======
+.vercel
+.env*.local
+>>>>>>> dcadcf6228dda8625a0f05152a88b14399d4e70d
