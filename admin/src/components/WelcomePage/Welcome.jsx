@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import './Welcome.css'
 import { AdminContext } from '../../context/AdminContext'
+import { Link } from 'react-router-dom'
 
 const Welcome = () => {
   const {allproducts, fetchInfo, url} = useContext(AdminContext)
@@ -40,14 +41,26 @@ const Welcome = () => {
 
       <div className="containerCommon">
         {/* MOSTRAR QUANTOS PRODUTOS TEM NO ESTOQUE */}
+        <Link to={'/admin/listproduct'} style={{textDecoration: "none", color: "inherit"}}>
+          <div className="box">
+            <p>Todos os Produtos:</p>
+            <hr className='hr'></hr>
+            <i className="fa-solid fa-dolly icon"></i>
+            <div className='group-box'>
+              <span>{countAllProducts}</span>
+            </div>
+          </div>
+        </Link>
         <div className="box">
-          <p>Todos os Produtos:</p>
+          <p>Populares:</p>
           <hr className='hr'></hr>
-          <i className="fa-solid fa-dolly icon"></i>
+          <i className="fa-solid fa-fire icon"></i>
           <div className='group-box'>
-            <span>{countAllProducts}</span>
+            {/* adicionar no model "bestSeller" */}
+            <span>15</span>
           </div>
         </div>
+
         <div className="box">
           <p>Produtos Ativos:</p>
           <hr className='hr'></hr>
@@ -75,6 +88,37 @@ const Welcome = () => {
             <span>15</span>
           </div>
         </div>
+
+        <Link to={'/admin/pdv'} style={{textDecoration: "none", color: "inherit"}}>
+          <div className="box">
+            <p>PDV</p>
+            <hr className='hr'></hr>
+            <i className="fa-solid fa-basket-shopping icon"></i>
+            <div className='group-box'>
+              <span style={{fontSize: "20px"}}>Começar Vender</span>
+            </div>
+            </div>
+        </Link>
+        <Link to={'/admin/chatseller'} style={{textDecoration: "none", color: "inherit"}}>
+          <div className="box">
+            <p>Mensagens</p>
+            <hr className='hr'></hr>
+            <i className="fa-regular fa-paper-plane icon"></i>
+            <div className='group-box'>
+              <span style={{fontSize: "20px"}}>Responder Clientes</span>
+            </div>
+            </div>
+        </Link>
+        <Link to={'/admin/reviewsproducts'} style={{textDecoration: "none", color: "inherit"}}>
+          <div className="box">
+            <p>Reviews</p>
+            <hr className='hr'></hr>
+            <i className="fa-solid fa-star icon"></i>
+            <div className='group-box'>
+              <span style={{fontSize: "20px"}}>Visualizar Reviews</span>
+            </div>
+            </div>
+        </Link>
 
         {/* ESTATISTICA DO MES QUE MAIS VENDEU */}
         <div className="statistic">

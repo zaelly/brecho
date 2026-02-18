@@ -125,11 +125,8 @@ const Navbar = () => {
                     <p>Seu Perfil</p>
                   </Link>
                 </div>
-                <div className="profile">
-                  <Link to='/admin/profile'>
-                    <img src={image_profile} alt=""/>
-                    <p>Seu Perfil</p>
-                  </Link>
+                <div className="logout-mobile" onClick={goOut}>
+                  Sair
                 </div>
               </div>
             </div>
