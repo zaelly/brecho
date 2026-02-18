@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import ListProductsReviews from '../../components/Reviews/ListProductsReviews/ListProductsReviews.jsx'
 import ChatSeller from '../../components/ChatSeller/ChatSeller.jsx'
 import Welcome from '../../components/WelcomePage/Welcome.jsx'
+import Pdv from '../../components/pdv/Pdv.jsx'
 
 const Admin = () => {
   return (
@@ -21,6 +22,7 @@ const Admin = () => {
         <Route path="/" element={<Welcome/>}/>
         <Route path='addproduct' element={<AddProduct/>}/>
         <Route path='listproduct' element={<ListProduct/>}/>
+        <Route path='pdv' element={<Pdv/>}/>
         <Route path='profile' element={<SellerProfile/>}/>
         <Route path='neworder' element={<NewOrders/>}/>
         <Route path='vieworder' element={<ViewOrder/>}/>

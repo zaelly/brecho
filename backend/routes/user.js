@@ -108,16 +108,17 @@ router.get('/getuserprofile', fetchUser, async(req,res)=>{
 
 router.post("/updateprofile", fetchUser, async (req, res) => {
   try {
-    const { name, email, new_password, image, cpf, adress, city } = req.body;
+    const { name, email, new_password, image, cpf, adress, city, cep, state } = req.body;
 
     const updateFields = {};
       if (name) updateFields.name = name;
       if (email) updateFields.email = email;
-      if (adress) updateFields.adress = adress;
+      if (adress !== undefined) updateFields.adress = adress;
       if (image) updateFields.image = image;
-      if (cpf) updateFields.cpf = cpf;
-      if (city) updateFields.city = city;
-      if (cep) updateFields.city = cep;
+      if (cpf && /^\d{11}$/.test(cpf)) updateFields.cpf = cpf;
+      if (city !== undefined) updateFields.city = city;
+      if (cep !== undefined) updateFields.cep = cep;
+      if (state !== undefined) updateFields.state = state;
       if (new_password) {
         updateFields.password = new_password;
     }

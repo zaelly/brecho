@@ -158,4 +158,20 @@ router.post('/order/create', fetchUser, async (req, res) => {
     }
 });
 
+// Total vendido por vendedor especifico
+router.get('/order/sellerTotalSold', fetchSeller, async (req, res) => {
+    try {
+        const result = await Order.aggregate([
+            { $match: { sellerId: req.seller.id } },
+            { $group: { _id: null, totalSold: { $sum: "$totalAmount" } } }
+        ]);
+
+        const totalSold = result.length > 0 ? result[0].totalSold : 0;
+        res.json({ success: true, totalSold });
+    } catch (error) {
+        console.error('Erro ao buscar total vendido:', error);
+        res.status(500).json({ success: false, message: "Erro ao buscar total vendido." });
+    }
+});
+
 module.exports = router;

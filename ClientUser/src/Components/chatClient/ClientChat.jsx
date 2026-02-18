@@ -18,11 +18,14 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
     socketRef.current = io(url);
 
     socketRef.current.on('receiveMessage', (data) => {
-      setAllMessages(prev => [...prev, {
-        content: data.content,
-        sender: data.sender,
-        time: data.time || new Date().toLocaleTimeString()
-      }]);
+      // filtrar: so aceitar mensagens do vendedor atual para este cliente
+      if (data.sender === sellerId || data.chat === sellerId) {
+        setAllMessages(prev => [...prev, {
+          content: data.content,
+          sender: data.sender,
+          time: data.time || new Date().toLocaleTimeString()
+        }]);
+      }
     });
 
     return () => {
@@ -30,7 +33,7 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
         socketRef.current.disconnect();
       }
     };
-  }, [url]);
+  }, [url, sellerId]);
 
   // entrar na sala quando tiver profileId
   useEffect(() => {
@@ -90,7 +93,7 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
     try{
       if (!sellerId || !profileId) return;
 
-      const res = await fetch(`${url}/api/chat/getMessages?chat=${sellerId}`, {
+      const res = await fetch(`${url}/api/chat/getMessages?chat=${sellerId}&clientId=${profileId}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -111,7 +114,7 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
     }
   };
 
-  const fetchSeller = async () => {
+  const fetchSellerInfo = async () => {
     if (!sellerId) return;
     try {
       const res = await fetch(`${url}/api/sellers/getseller/${sellerId}`);
@@ -124,7 +127,7 @@ const ClientChat = ({ isOpen, setIsOpen, sellerId }) => {
 
   useEffect(() => {
     if (!isOpen) return;
-    fetchSeller();
+    fetchSellerInfo();
     fetchProfile();
   }, [sellerId, isOpen]);
 

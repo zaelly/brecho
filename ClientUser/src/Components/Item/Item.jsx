@@ -35,35 +35,35 @@ const Item = (props) => {
   return (
     <Link to={`/products/${props.id}`}>
       <div className="item">
-          <div className="item-favorite-btn" onClick={handleFavorite}>
-            <i className={`${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart`}
-              style={{color: isFavorite ? 'red' : '#888'}}></i>
+        <div className="item-favorite-btn" onClick={handleFavorite}>
+          <i className={`${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart`}
+            style={{color: isFavorite ? 'red' : '#888'}}></i>
+        </div>
+        <img
+          onClick={handleScrollToTop}
+          src={getImageUrl()}
+          alt={props.name}
+          loading="lazy"
+        />
+        <div className="informations">
+          <p>{props.name}</p>
+          <div className="item-prices">
+            {
+            props.current_price ? (
+                <div className="item-price-new">
+                  R${props.current_price.toFixed(2).replace(".",",")}
+                </div>
+            ):( <>
+                <div className="item-price-new">
+                  R${props.new_price.toFixed(2).replace(".",",")}
+                </div>
+                <div className="item-price-old">
+                  R${props.old_price.toFixed(2).replace(".",",")}
+                </div>
+              </>)
+            }
           </div>
-            <img
-              onClick={handleScrollToTop}
-              src={getImageUrl()}
-              alt={props.name}
-              loading="lazy"
-            />
-          <div className="informations">
-            <p>{props.name}</p>
-            <div className="item-prices">
-              {
-              props.current_price ? (
-                  <div className="item-price-new">
-                    R${props.current_price.toFixed(2).replace(".",",")}
-                  </div>
-              ):( <>
-                  <div className="item-price-new">
-                    R${props.new_price.toFixed(2).replace(".",",")}
-                  </div>
-                  <div className="item-price-old">
-                    R${props.old_price.toFixed(2).replace(".",",")}
-                  </div>
-                </>)
-              }
-            </div>
-          </div>
+        </div>
       </div>
     </Link>
   )

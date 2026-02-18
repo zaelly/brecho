@@ -5,10 +5,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { ShopContext } from '../Context/ShopContext';
 import { Link } from 'react-router-dom';
 
+const estadosBrasil = [
+  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA",
+  "MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN",
+  "RS","RO","RR","SC","SP","SE","TO"
+];
+
 const PerfilUser = () => {
   const [image, setImage] = useState(null);
   const [btn_profile, setBtn_profile] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [cepLoading, setCepLoading] = useState(false);
   const {fetchProfile, profileDetail, setProfileDetail} = useContext(ShopContext);
   const url = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -24,13 +31,56 @@ const PerfilUser = () => {
   const handleChange = (e) => {
     setProfileDetail({ ...profileDetail, [e.target.name]: e.target.value });
   };
-  
+
+  const formatCep = (value) => {
+    const digits = value.replace(/\D/g, '').slice(0, 8);
+    if (digits.length > 5) {
+      return digits.slice(0, 5) + '-' + digits.slice(5);
+    }
+    return digits;
+  };
+
+  const handleCepChange = (e) => {
+    const formatted = formatCep(e.target.value);
+    setProfileDetail({ ...profileDetail, cep: formatted });
+
+    const digits = formatted.replace(/\D/g, '');
+    if (digits.length === 8) {
+      buscarCep(digits);
+    }
+  };
+
+  const buscarCep = async (cep) => {
+    setCepLoading(true);
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+      if (data.erro) {
+        toast.error('CEP nao encontrado!');
+        setCepLoading(false);
+        return;
+      }
+      setProfileDetail(prev => ({
+        ...prev,
+        adress: data.logradouro || prev.adress,
+        city: data.localidade || prev.city,
+        state: data.uf || prev.state,
+      }));
+      toast.success('Endereco preenchido pelo CEP!');
+    } catch (err) {
+      console.error('Erro ao buscar CEP:', err);
+      toast.error('Erro ao buscar CEP');
+    } finally {
+      setCepLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchProfile();
   }, []);
 
   const save_profile = async () => {
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     let responseData;
     let profile = {...profileDetail};
     if (image) {
@@ -72,9 +122,9 @@ const PerfilUser = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
-        data.success ? successHandle() : toast.error('Alteração de perfil falhou!');
+        data.success ? successHandle() : toast.error('Alteracao de perfil falhou!');
       })
-      .finally(() => setIsLoading(false)); // Stop loading
+      .finally(() => setIsLoading(false));
   };
 
   const goOut = () => {
@@ -104,7 +154,7 @@ const PerfilUser = () => {
               }
               setBtn_profile(!btn_profile);
             }}
-            disabled={isLoading} // Disable the button while saving
+            disabled={isLoading}
           >
             {isLoading ? 'Salvando...' : btn_profile ? 'Salvar' : 'Editar'}
           </button>
@@ -134,7 +184,7 @@ const PerfilUser = () => {
                     disabled={!btn_profile}/>
                 </div>
                 <div className="form-group col-md-6">
-                  <label htmlFor="name">Nome de Usúario</label>
+                  <label htmlFor="name">Nome de Usuario</label>
                   <input
                     value={profileDetail.name}
                     onChange={handleChange}
@@ -142,7 +192,7 @@ const PerfilUser = () => {
                     name="name"
                     className="form-control"
                     disabled={!btn_profile}
-                    placeholder="nome de usuário"
+                    placeholder="nome de usuario"
                   />
                 </div>
                 <div className="form-group col-md-6">
@@ -159,21 +209,34 @@ const PerfilUser = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label htmlFor="inputAddress">Endereço</label>
-                <input type='text' className="form-control"  name='adress'
-                placeholder="1234 Main St" disabled={!btn_profile} 
-                onChange={handleChange} value={profileDetail.adress}/>
+                <label>CEP</label>
+                <div style={{display:'flex', gap:'8px', alignItems:'center'}}>
+                  <input type='text' className="form-control" name='cep'
+                    placeholder="12345-678" disabled={!btn_profile}
+                    onChange={handleCepChange} value={profileDetail.cep || ''}
+                    maxLength={9}/>
+                  {cepLoading && <span style={{fontSize:'12px', color:'#999'}}>Buscando...</span>}
+                </div>
               </div>
               <div className="form-group">
-                <label htmlFor="inputAddress">CEP</label>
-                <input type='text' className="form-control"  name='cep'
-                placeholder="12345-678" disabled={!btn_profile} 
-                onChange={handleChange} value={profileDetail.cep}/>
+                <label>Endereco</label>
+                <input type='text' className="form-control" name='adress'
+                  placeholder="Rua, numero, complemento" disabled={!btn_profile}
+                  onChange={handleChange} value={profileDetail.adress || ''}/>
               </div>
               <div className="form-row">
                 <div className="form-group col-md-6">
-                  <label htmlFor="inputCity">Cidade</label>
-                  <input type="text" name='city' className="form-control" disabled={!btn_profile} onChange={handleChange} value={profileDetail.city}/>
+                  <label>Cidade</label>
+                  <input type="text" name='city' className="form-control" disabled={!btn_profile} onChange={handleChange} value={profileDetail.city || ''}/>
+                </div>
+                <div className="form-group col-md-6">
+                  <label>Estado</label>
+                  <select name='state' className="form-control" disabled={!btn_profile} onChange={handleChange} value={profileDetail.state || ''}>
+                    <option value="">Selecione o estado</option>
+                    {estadosBrasil.map(uf => (
+                      <option key={uf} value={uf}>{uf}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
           </form>
@@ -186,6 +249,11 @@ const PerfilUser = () => {
             <Link to="/favoritos">
               <button style={{backgroundColor:'#e91e63'}}>
                 <i className="fa-solid fa-heart mr-1"></i> Favoritos
+              </button>
+            </Link>
+            <Link to="/mensagens">
+              <button style={{backgroundColor:'#4caf50'}}>
+                <i className="fa-solid fa-comments"></i> Minhas Mensagens
               </button>
             </Link>
             <button className="logout" onClick={goOut}>

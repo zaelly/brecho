@@ -351,4 +351,41 @@ router.post('/removefromreview', fetchUser, async(req,res)=>{
     }
 })
 
+router.post('/addreviews', fetchUser, async (req, res) => {
+  try {
+    const { productId, rating, comment } = req.body;
+
+    if (!productId || !rating || !comment) {
+      return res.status(400).json({ success: false, message: "Todos os campos são obrigatórios." });
+    }
+
+    if (!comment.trim()) {
+      return res.status(400).json({ success: false, message: "Comentário não pode estar vazio." });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Produto não encontrado." });
+    }
+
+    const alreadyReviewed = product.reviews.find(r => r.userId && r.userId.toString() === req.user.id.toString());
+    if (alreadyReviewed) {
+      return res.status(400).json({ success: false, message: "Você já avaliou este produto." });
+    }
+
+    product.reviews.push({
+      name: req.user.name,
+      userId: req.user.id,
+      rating: Number(rating),
+      comment: comment.trim(),
+    });
+
+    await product.save();
+    res.json({ success: true, message: "Avaliação adicionada!", product });
+  } catch (error) {
+    console.error('Erro ao adicionar avaliação:', error);
+    res.status(500).json({ success: false, message: "Erro interno do servidor." });
+  }
+});
+
 module.exports = router;

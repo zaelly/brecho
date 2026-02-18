@@ -19,6 +19,7 @@ import Favorits from './Pages/Favorits'
 import MeusPedidos from './Pages/MeusPedidos'
 import ProductsFilter from './Components/ProductsFilter/ProductsFilter'
 import PerfilUser from './Pages/PerfilUser'
+import MinhasMensagens from './Pages/MinhasMensagens'
 import { ToastContainer } from 'react-toastify';
 import ClientChat from './Components/chatClient/ClientChat'
 import { useState } from 'react'
@@ -41,8 +42,8 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path='/' element={<Shop/>}/>
-            <Route path='/men' element={<Category banner={men_banner} category="Masculina"/>}/>
-            <Route path='/women' element={<Category banner={women_banner} category="Feminina"/>}/>
+            <Route path='/masculina' element={<Category banner={men_banner} category="Masculina"/>}/>
+            <Route path='/feminina' element={<Category banner={women_banner} category="Feminina"/>}/>
             <Route path='/kid' element={<Category banner={kids_banner} category="kid"/>}/>
             <Route path='/Unissex' element={<Category banner={Unissex_banner} category="Unissex"/>}/>
             <Route path='/Imperdiveis' element={<Category banner={desconto_banner} category="Imperdiveis"/>}/>
@@ -58,6 +59,7 @@ function App() {
             <Route path='/sobre' element={<Sobre/>}/>
             <Route path='/favoritos' element={<Favorits/>}/>
             <Route path='/meuspedidos' element={<MeusPedidos/>}/>
+            <Route path='/mensagens' element={<MinhasMensagens/>}/>
           </Routes>
         </main>
         <ClientChat isOpen={isOpen} setIsOpen={setIsOpen} sellerId={currentSellerId}/>

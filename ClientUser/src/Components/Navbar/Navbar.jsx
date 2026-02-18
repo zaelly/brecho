@@ -179,11 +179,11 @@ const Navbar = () => {
                         <li onClick={() => setMenu("home")} className={menu === "home" ? "category" : ""}>
                             <Link to="/">Home</Link>
                         </li>
-                        <li onClick={() => setMenu("men")} className={menu === "men" ? "category" : ""}>
-                            <Link to="men">Homens</Link>
+                        <li onClick={() => setMenu("masculina")} className={menu === "masculina" ? "category" : ""}>
+                            <Link to="masculina">Homens</Link>
                         </li>
-                        <li onClick={() => setMenu("women")} className={menu === "women" ? "category" : ""}>
-                            <Link to="women">Mulheres</Link>
+                        <li onClick={() => setMenu("feminina")} className={menu === "feminina" ? "category" : ""}>
+                            <Link to="feminina">Mulheres</Link>
                         </li>
                         <li onClick={() => setMenu("kid")} className={menu === "kid" ? "category" : ""}>
                             <Link to="kid">Crianças</Link>
@@ -260,11 +260,11 @@ const Navbar = () => {
                         <li onClick={() => {setMenu("home"); setIsMenuOpen(false);}} className={menu === "home" ? "category-mobile" : ""}>
                             <Link to="/"><i className="fa-solid fa-house"></i> Home</Link>
                         </li>
-                        <li onClick={() => {setMenu("men"); setIsMenuOpen(false);}} className={menu === "men" ? "category-mobile" : ""}>
-                            <Link to="men"><i className="fa-solid fa-person"></i> Homens</Link>
+                        <li onClick={() => {setMenu("masculina"); setIsMenuOpen(false);}} className={menu === "masculina" ? "category-mobile" : ""}>
+                            <Link to="masculina"><i className="fa-solid fa-person"></i> Homens</Link>
                         </li>
-                        <li onClick={() => {setMenu("women"); setIsMenuOpen(false);}} className={menu === "women" ? "category-mobile" : ""}>
-                            <Link to="women"><i className="fa-solid fa-person-dress"></i> Mulheres</Link>
+                        <li onClick={() => {setMenu("feminina"); setIsMenuOpen(false);}} className={menu === "feminina" ? "category-mobile" : ""}>
+                            <Link to="feminina"><i className="fa-solid fa-person-dress"></i> Mulheres</Link>
                         </li>
                         <li onClick={() => {setMenu("kid"); setIsMenuOpen(false);}} className={menu === "kid" ? "category-mobile" : ""}>
                             <Link to="kid"><i className="fa-solid fa-child"></i> Criancas</Link>

@@ -3,13 +3,31 @@ import './Welcome.css'
 import { AdminContext } from '../../context/AdminContext'
 
 const Welcome = () => {
-  const {allproducts, fetchInfo} = useContext(AdminContext)
+  const {allproducts, fetchInfo, url} = useContext(AdminContext)
   const [enableProdutos, setEnableProdutos] = useState([])
+  const [totalSold, setTotalSold] = useState(0)
 
   const countAllProducts = allproducts.length
 
+  const fetchTotalSold = async () => {
+    try {
+      const res = await fetch(`${url}/api/order/order/sellerTotalSold`, {
+        headers: {
+          'auth-token-seller': localStorage.getItem('auth-token'),
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTotalSold(data.totalSold);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar total vendido:", err);
+    }
+  };
+
   useEffect(()=>{
     fetchInfo()
+    fetchTotalSold()
     const filterEnable = allproducts.filter(p => p.enable)
     setEnableProdutos(filterEnable)
   },[])
@@ -20,7 +38,7 @@ const Welcome = () => {
         <h3>Bem vindo ao Painel Administrativo!</h3>
       </div>
 
-      <div className="containerCommon">      
+      <div className="containerCommon">
         {/* MOSTRAR QUANTOS PRODUTOS TEM NO ESTOQUE */}
         <div className="box">
           <p>Todos os Produtos:</p>
@@ -45,7 +63,7 @@ const Welcome = () => {
           <hr className='hr'></hr>
           <i className="fa-solid fa-sack-dollar icon"></i>
           <div className='group-box'>
-            <span>1.200,00</span>
+            <span>R${totalSold.toFixed(2).replace(".",",")}</span>
           </div>
         </div>
         <div className="box">
@@ -60,7 +78,7 @@ const Welcome = () => {
 
         {/* ESTATISTICA DO MES QUE MAIS VENDEU */}
         <div className="statistic">
-          
+
         </div>
 
         {/* QUANTO VENDEU */}

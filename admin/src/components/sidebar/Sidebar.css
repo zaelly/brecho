@@ -1,6 +1,7 @@
 .fa-cart-shopping,
 .fa-rectangle-list,
-.fa-truck, .fa-paper-plane, .fa-grip,
+.fa-truck, .fa-paper-plane, .fa-grip, 
+.fa-basket-shopping,
 .fa-bell, .fa-star, .fa-book-medical{
     margin-top: -17px;
     color:  rgb(255, 86, 19);
@@ -54,8 +55,8 @@
         padding-bottom: 0;
     }
     .fa-cart-shopping,
-    .fa-rectangle-list
-    .fa-truck{
+    .fa-rectangle-list,
+    .fa-truck, .fa-basket-shopping{
         margin-top: -17px;
         font-size: 20px;
     }

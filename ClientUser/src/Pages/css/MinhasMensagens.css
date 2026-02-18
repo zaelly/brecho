@@ -1,4 +1,4 @@
-.chatseller-wrapper {
+.clientmsg-wrapper {
     display: flex;
     height: calc(100vh - 70px);
     width: 100%;
@@ -6,8 +6,7 @@
     overflow: hidden;
 }
 
-/* ====== LISTA DE CONVERSAS (lado esquerdo) ====== */
-.chatseller-sidebar {
+.clientmsg-sidebar {
     width: 350px;
     min-width: 350px;
     background: #fff;
@@ -16,46 +15,45 @@
     flex-direction: column;
 }
 
-.chatseller-sidebar-header {
+.clientmsg-sidebar-header {
     padding: 15px 20px;
     background: #f0f2f5;
     border-bottom: 1px solid #e0e0e0;
 }
 
-.chatseller-sidebar-header h2 {
+.clientmsg-sidebar-header h2 {
     margin: 0;
     font-size: 18px;
     color: #111b21;
 }
 
-.chatseller-sidebar-header p {
+.clientmsg-sidebar-header p {
     margin: 4px 0 0;
     font-size: 12px;
     color: #667781;
 }
 
-.chatseller-search {
+.clientmsg-search {
     padding: 8px 12px;
     background: #f0f2f5;
 }
 
-.chatseller-search input {
+.clientmsg-search input {
     width: 100%;
     padding: 8px 14px;
     border: none;
     border-radius: 8px;
     background: #fff;
-    color: #303030;
     font-size: 14px;
     outline: none;
 }
 
-.chatseller-conversations {
+.clientmsg-conversations {
     flex: 1;
     overflow-y: auto;
 }
 
-.chatseller-conversation-item {
+.clientmsg-item {
     display: flex;
     align-items: center;
     padding: 12px 16px;
@@ -64,15 +62,15 @@
     transition: background 0.15s;
 }
 
-.chatseller-conversation-item:hover {
+.clientmsg-item:hover {
     background: #f5f6f6;
 }
 
-.chatseller-conversation-item.active {
+.clientmsg-item.active {
     background: #e9edef;
 }
 
-.chatseller-avatar {
+.clientmsg-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -81,7 +79,7 @@
     flex-shrink: 0;
 }
 
-.chatseller-avatar-placeholder {
+.clientmsg-avatar-placeholder {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -95,19 +93,19 @@
     font-size: 20px;
 }
 
-.chatseller-conversation-info {
+.clientmsg-info {
     flex: 1;
     min-width: 0;
 }
 
-.chatseller-conversation-top {
+.clientmsg-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2px;
 }
 
-.chatseller-conversation-name {
+.clientmsg-name {
     font-size: 15px;
     font-weight: 500;
     color: #111b21;
@@ -117,28 +115,12 @@
     white-space: nowrap;
 }
 
-.chatseller-conversation-time {
-    font-size: 11px;
-    color: #667781;
-    flex-shrink: 0;
-    margin-left: 8px;
-}
-
-.chatseller-conversation-preview {
-    font-size: 13px;
-    color: #667781;
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.chatseller-conversation-right{
+.clientmsg-right {
     display: flex;
     align-items: center;
 }
 
-.chatseller-badge {
+.clientmsg-badge {
     background: #25d366;
     color: white;
     font-size: 11px;
@@ -153,28 +135,44 @@
     flex-shrink: 0;
 }
 
-.chatseller-empty-sidebar {
+.clientmsg-time {
+    font-size: 11px;
+    color: #667781;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.clientmsg-preview {
+    font-size: 13px;
+    color: #667781;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.clientmsg-empty {
     text-align: center;
     padding: 40px 20px;
     color: #667781;
 }
 
-.chatseller-empty-sidebar i {
+.clientmsg-empty i {
     font-size: 50px;
     margin-bottom: 15px;
     color: #c4c4c4;
     display: block;
 }
 
-/* ====== AREA DE MENSAGENS (lado direito) ====== */
-.chatseller-chat-area {
+/* CHAT AREA */
+.clientmsg-chat {
     flex: 1;
     display: flex;
     flex-direction: column;
     background: #efeae2;
 }
 
-.chatseller-no-chat {
+.clientmsg-no-chat {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -184,26 +182,25 @@
     color: #667781;
 }
 
-.chatseller-no-chat i {
+.clientmsg-no-chat i {
     font-size: 70px;
     color: #c4c4c4;
     margin-bottom: 20px;
 }
 
-.chatseller-no-chat h3 {
+.clientmsg-no-chat h3 {
     font-size: 22px;
     color: #41525d;
     font-weight: 300;
     margin: 0 0 8px;
 }
 
-.chatseller-no-chat p {
+.clientmsg-no-chat p {
     font-size: 14px;
     color: #667781;
 }
 
-/* header do chat aberto */
-.chatseller-chat-header {
+.clientmsg-chat-header {
     display: flex;
     align-items: center;
     padding: 10px 16px;
@@ -212,20 +209,20 @@
     gap: 12px;
 }
 
-.chatseller-chat-header-name {
+.clientmsg-header-name {
     font-size: 16px;
     font-weight: 500;
     color: #111b21;
     margin: 0;
 }
 
-.chatseller-chat-header-status {
+.clientmsg-header-status {
     font-size: 12px;
     color: #667781;
     margin: 0;
 }
 
-.chatseller-chat-back {
+.clientmsg-back {
     display: none;
     background: none;
     border: none;
@@ -235,8 +232,7 @@
     padding: 5px;
 }
 
-/* area de mensagens */
-.chatseller-messages {
+.clientmsg-messages {
     flex: 1;
     overflow-y: auto;
     padding: 20px 60px;
@@ -245,7 +241,7 @@
     gap: 4px;
 }
 
-.chatseller-msg {
+.clientmsg-msg {
     max-width: 65%;
     padding: 8px 12px;
     border-radius: 8px;
@@ -253,38 +249,38 @@
     word-wrap: break-word;
 }
 
-.chatseller-msg-sent {
+.clientmsg-msg-sent {
     align-self: flex-end;
     background: #d9fdd3;
     border-radius: 8px 0 8px 8px;
 }
 
-.chatseller-msg-received {
+.clientmsg-msg-received {
     align-self: flex-start;
     background: #fff;
     border-radius: 0 8px 8px 8px;
 }
 
-.chatseller-msg p {
+.clientmsg-msg p {
     margin: 0;
     font-size: 14px;
     color: #111b21;
     line-height: 1.4;
 }
 
-.chatseller-msg-time {
+.clientmsg-msg-time {
     font-size: 11px;
     color: #667781;
     text-align: right;
     margin-top: 2px;
 }
 
-.chatseller-date-divider {
+.clientmsg-date-divider {
     text-align: center;
     margin: 10px 0;
 }
 
-.chatseller-date-divider span {
+.clientmsg-date-divider span {
     background: #e1deda;
     color: #54656f;
     font-size: 12px;
@@ -292,8 +288,7 @@
     border-radius: 8px;
 }
 
-/* input de mensagem */
-.chatseller-input-area {
+.clientmsg-input {
     display: flex;
     align-items: center;
     padding: 10px 16px;
@@ -301,7 +296,7 @@
     gap: 10px;
 }
 
-.chatseller-input-area input {
+.clientmsg-input input {
     flex: 1;
     padding: 10px 16px;
     border: none;
@@ -309,10 +304,9 @@
     font-size: 14px;
     outline: none;
     background: #fff;
-    color: #111b21;
 }
 
-.chatseller-input-area button {
+.clientmsg-input button {
     background: none;
     border: none;
     font-size: 20px;
@@ -325,34 +319,34 @@
     justify-content: center;
 }
 
-.chatseller-input-area button:hover {
+.clientmsg-input button:hover {
     background: #e0e0e0;
 }
 
-/* ====== RESPONSIVO ====== */
+/* RESPONSIVO */
 @media (max-width: 900px) {
-    .chatseller-sidebar {
+    .clientmsg-sidebar {
         width: 100%;
         min-width: 100%;
     }
 
-    .chatseller-sidebar.hidden-mobile {
+    .clientmsg-sidebar.hidden-mobile {
         display: none;
     }
 
-    .chatseller-chat-area.hidden-mobile {
+    .clientmsg-chat.hidden-mobile {
         display: none;
     }
 
-    .chatseller-chat-back {
+    .clientmsg-back {
         display: block;
     }
 
-    .chatseller-messages {
+    .clientmsg-messages {
         padding: 15px 12px;
     }
 
-    .chatseller-msg {
+    .clientmsg-msg {
         max-width: 85%;
     }
 }

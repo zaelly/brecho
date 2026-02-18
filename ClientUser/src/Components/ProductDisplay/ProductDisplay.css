@@ -1,4 +1,8 @@
 /* ===== BASE ===== */
+.pdv-title{
+    
+}
+
 .product-display{
     display: flex;
     gap: 2.5rem;
@@ -41,6 +45,7 @@
 .productDisplay-img{
     overflow: hidden;
     border-radius: 1rem;
+    width: 400px;
 }
 
 .productDisplay-main-img{
@@ -158,12 +163,20 @@
 
 .QuantityItens{
     color: black;
-    gap: 20px;
+    gap: 10px;
     align-items: center;
     display: flex;
-    padding: 0 2rem;
-    justify-content: center;
+    justify-content: left;
     background-color: transparent;
+}
+
+.QuantityItens input{
+    width: 50px;
+    text-align: center;
+    font-size: 1rem;
+    padding: 5px;
+    border: 1px solid #d4d4d4;
+    border-radius: 5px;
 }
 
 .QuantityItens button{
@@ -171,6 +184,7 @@
     background-color: transparent;
     font-size:1rem;
     padding: 5px 10px;
+    width: 40px;
     color: #252525;
     cursor: pointer;
 }

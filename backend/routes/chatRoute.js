@@ -65,9 +65,19 @@ router.post("/saveMessage", async (req, res) => {
 
 router.get("/getMessages", async (req, res) => {
     try{
-        const { chat } = req.query;
+        const { chat, clientId } = req.query;
 
-        let chatMessages = await Message.find({chat: chat}).sort({ createdAt: 1 });
+        let filter = { chat: chat };
+
+        // Se clientId for informado, filtrar apenas mensagens entre o cliente e o vendedor
+        if (clientId) {
+            filter.$or = [
+                { sender: clientId },
+                { sender: chat }
+            ];
+        }
+
+        let chatMessages = await Message.find(filter).sort({ createdAt: 1 });
         let messages = chatMessages.map(msg => ({
             content: msg.content,
             sender: msg.sender,
@@ -75,7 +85,6 @@ router.get("/getMessages", async (req, res) => {
         }));
 
         res.status(200).json({ success: true, data: messages });
-        console.log(messages, "Mensagens recuperadas com sucesso");
 
     }catch(error){
         res.status(500).json({ success: false, errors: error.message });
@@ -163,10 +172,11 @@ router.get("/sellerConversations", fetchSeller, async (req, res) => {
                 // usuario nao encontrado, usar padrao
             }
 
-            // contar mensagens do cliente (nao lidas - simplificado)
+            // contar mensagens nao lidas do cliente
             const msgCount = await Message.countDocuments({
                 chat: sellerId,
                 sender: clientId,
+                read: false,
             });
 
             conversations.push({
@@ -209,6 +219,12 @@ router.get("/sellerMessages", fetchSeller, async (req, res) => {
             ]
         }).sort({ createdAt: 1 });
 
+        // marcar mensagens do cliente como lidas
+        await Message.updateMany(
+            { chat: sellerId, sender: clientId, read: false },
+            { read: true }
+        );
+
         const data = messages.map(msg => ({
             content: msg.content,
             sender: String(msg.sender),
@@ -219,6 +235,107 @@ router.get("/sellerMessages", fetchSeller, async (req, res) => {
 
     } catch(error) {
         console.error("Erro ao buscar mensagens do vendedor:", error);
+        res.status(500).json({ success: false, errors: error.message });
+    }
+});
+
+// Buscar todas as conversas do cliente (agrupadas por vendedor)
+router.get("/clientConversations", fetchUser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // buscar todos os chats distintos onde o usuario enviou ou recebeu mensagens
+        // O cliente envia msgs com sender=userId e chat=sellerId
+        // O vendedor responde com sender=sellerId e chat=sellerId
+        // Entao o "chat" field = sellerId
+        const chatsAsSender = await Message.distinct('chat', { sender: userId });
+
+        // tambem buscar chats onde o vendedor respondeu para este cliente
+        // Mensagens do vendedor: sender=sellerId, chat=sellerId, mas precisamos saber quais sao para este cliente
+        // Na arquitetura atual, todas as msgs de um chat ficam com chat=sellerId
+        // Entao os chats que o cliente participa sao os que ele mandou msg
+        const sellerIds = chatsAsSender.map(id => String(id));
+
+        const Seller = require('../models/Seller.js');
+        const conversations = [];
+
+        for (const sellerId of sellerIds) {
+            // buscar ultima mensagem entre cliente e vendedor
+            const lastMsg = await Message.findOne({
+                chat: sellerId,
+                $or: [{ sender: userId }, { sender: sellerId }]
+            }).sort({ createdAt: -1 });
+
+            // buscar dados do vendedor
+            let sellerData = { name: 'Vendedor', image: '' };
+            try {
+                const seller = await Seller.findById(sellerId).select('name image');
+                if (seller) {
+                    sellerData = { name: seller.name, image: seller.image || '' };
+                }
+            } catch(e) {}
+
+            // contar mensagens nao lidas (do vendedor para o cliente)
+            const unreadCount = await Message.countDocuments({
+                chat: sellerId,
+                sender: sellerId,
+                read: false,
+            });
+
+            conversations.push({
+                sellerId: sellerId,
+                sellerName: sellerData.name,
+                sellerImage: sellerData.image,
+                lastMessage: lastMsg ? lastMsg.content : '',
+                lastMessageTime: lastMsg ? lastMsg.createdAt : null,
+                messageCount: unreadCount,
+            });
+        }
+
+        conversations.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+
+        res.json({ success: true, conversations });
+
+    } catch(error) {
+        console.error("Erro ao buscar conversas do cliente:", error);
+        res.status(500).json({ success: false, errors: error.message });
+    }
+});
+
+// Buscar mensagens entre cliente e um vendedor especifico
+router.get("/clientMessages", fetchUser, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { sellerId } = req.query;
+
+        if (!sellerId) {
+            return res.status(400).json({ success: false, message: "sellerId obrigatorio" });
+        }
+
+        const messages = await Message.find({
+            chat: sellerId,
+            $or: [
+                { sender: userId },
+                { sender: sellerId }
+            ]
+        }).sort({ createdAt: 1 });
+
+        // marcar mensagens do vendedor como lidas
+        await Message.updateMany(
+            { chat: sellerId, sender: sellerId, read: false },
+            { read: true }
+        );
+
+        const data = messages.map(msg => ({
+            content: msg.content,
+            sender: String(msg.sender),
+            createdAt: msg.createdAt,
+        }));
+
+        res.json({ success: true, data });
+
+    } catch(error) {
+        console.error("Erro ao buscar mensagens do cliente:", error);
         res.status(500).json({ success: false, errors: error.message });
     }
 });

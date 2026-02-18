@@ -147,15 +147,17 @@ const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orderRoute');
 const chatRoutes = require('./routes/chatRoute');
 const uploadRoutes = require('./routes/upload');
+const paymentRoutes = require('./routes/paymentRoute');
 
 // Usar as rotas no aplicativo
-app.use('/api/users', userRoutes); 
-app.use('/api/products', productRoutes); 
-app.use('/api/cart', cartRoutes);        
-app.use('/api/sellers', sellerRoutes);   
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/sellers', sellerRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Inicia o servidor
 server.listen(port, (err) => {

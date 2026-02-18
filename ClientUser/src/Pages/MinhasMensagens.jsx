@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState, useRef } from "react";
-import "./ChatSeller.css";
-import { AdminContext } from "../../context/AdminContext";
+import "./css/MinhasMensagens.css";
+import { ShopContext } from "../Context/ShopContext";
 import { io } from "socket.io-client";
 
-const ChatSeller = () => {
-  const { profileDetail, fetchProfile, url } = useContext(AdminContext);
-  const sellerId = profileDetail?.id || localStorage.getItem("seller-id");
+const MinhasMensagens = () => {
+  const { profileDetail, fetchProfile } = useContext(ShopContext);
+  const userId = profileDetail?._id;
+  const url = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
   const [conversations, setConversations] = useState([]);
-  const [activeChat, setActiveChat] = useState(null); // clientId selecionado
+  const [activeChat, setActiveChat] = useState(null);
   const [activeName, setActiveName] = useState("");
   const [activeImage, setActiveImage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -24,8 +25,7 @@ const ChatSeller = () => {
     socketRef.current = io(url);
 
     socketRef.current.on("receiveMessage", (data) => {
-      // se a msg e para o vendedor, adicionar na conversa ativa
-      if (data.chat === sellerId) {
+      if (data.sender === activeChat || data.chat === activeChat) {
         setMessages((prev) => [
           ...prev,
           {
@@ -34,10 +34,8 @@ const ChatSeller = () => {
             createdAt: new Date().toISOString(),
           },
         ]);
-
-        // atualizar lista de conversas tambem
-        fetchConversations();
       }
+      fetchConversations();
     });
 
     return () => {
@@ -45,37 +43,34 @@ const ChatSeller = () => {
         socketRef.current.disconnect();
       }
     };
-  }, [url, sellerId]);
+  }, [url, activeChat]);
 
-  // entrar na sala do vendedor
+  // entrar na sala do usuario
   useEffect(() => {
-    if (sellerId && socketRef.current) {
-      socketRef.current.emit("join", sellerId);
+    if (userId && socketRef.current) {
+      socketRef.current.emit("join", userId);
     }
-  }, [sellerId]);
+  }, [userId]);
 
-  // buscar perfil do vendedor
   useEffect(() => {
     fetchProfile();
   }, []);
 
-  // buscar conversas quando tiver sellerId
   useEffect(() => {
-    if (sellerId) {
+    if (userId) {
       fetchConversations();
     }
-  }, [sellerId]);
+  }, [userId]);
 
-  // scroll para baixo quando novas mensagens
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const fetchConversations = async () => {
     try {
-      const res = await fetch(`${url}/api/chat/sellerConversations`, {
+      const res = await fetch(`${url}/api/chat/clientConversations`, {
         headers: {
-          "auth-token-seller": localStorage.getItem("auth-token"),
+          "auth-token": localStorage.getItem("auth-token"),
         },
       });
       const data = await res.json();
@@ -87,18 +82,18 @@ const ChatSeller = () => {
     }
   };
 
-  const openConversation = async (clientId, clientName, clientImage) => {
-    setActiveChat(clientId);
-    setActiveName(clientName);
-    setActiveImage(clientImage);
+  const openConversation = async (sellerId, sellerName, sellerImage) => {
+    setActiveChat(sellerId);
+    setActiveName(sellerName);
+    setActiveImage(sellerImage);
     setMobileShowChat(true);
 
     try {
       const res = await fetch(
-        `${url}/api/chat/sellerMessages?clientId=${clientId}`,
+        `${url}/api/chat/clientMessages?sellerId=${sellerId}`,
         {
           headers: {
-            "auth-token-seller": localStorage.getItem("auth-token"),
+            "auth-token": localStorage.getItem("auth-token"),
           },
         }
       );
@@ -114,37 +109,35 @@ const ChatSeller = () => {
   };
 
   const sendMessage = async () => {
-    if (!newMessage.trim() || !activeChat || !sellerId) return;
+    if (!newMessage.trim() || !activeChat || !userId) return;
 
     const msgData = {
       content: newMessage,
-      sender: sellerId,
+      sender: userId,
       createdAt: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, msgData]);
 
-    // enviar via socket
     if (socketRef.current) {
       socketRef.current.emit("sendMessage", {
-        sender: sellerId,
+        sender: userId,
         receiver: activeChat,
         content: newMessage,
-        chat: sellerId,
+        chat: activeChat,
       });
     }
 
     setNewMessage("");
 
-    // salvar no banco
     try {
       await fetch(`${url}/api/chat/saveMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sender: sellerId,
+          sender: userId,
           content: msgData.content,
-          chat: sellerId,
+          chat: activeChat,
         }),
       });
     } catch (err) {
@@ -170,7 +163,6 @@ const ChatSeller = () => {
     return d.toLocaleDateString("pt-BR");
   };
 
-  // agrupar mensagens por data
   const getMessagesWithDividers = () => {
     const result = [];
     let lastDate = "";
@@ -186,161 +178,126 @@ const ChatSeller = () => {
     return result;
   };
 
-  // filtrar conversas pela busca
   const filteredConversations = conversations.filter((c) =>
-    c.clientName.toLowerCase().includes(searchTerm.toLowerCase())
+    c.sellerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="chatseller-wrapper">
-      {/* ====== SIDEBAR - Lista de conversas ====== */}
-      <div className={`chatseller-sidebar ${mobileShowChat ? "hidden-mobile" : ""}`}>
-        <div className="chatseller-sidebar-header">
-          <h2>Conversas</h2>
-          <p>{conversations.length} cliente{conversations.length !== 1 ? "s" : ""}</p>
+    <div className="clientmsg-wrapper">
+      {/* SIDEBAR */}
+      <div className={`clientmsg-sidebar ${mobileShowChat ? "hidden-mobile" : ""}`}>
+        <div className="clientmsg-sidebar-header">
+          <h2>Minhas Mensagens</h2>
+          <p>
+            {conversations.length} conversa{conversations.length !== 1 ? "s" : ""}
+          </p>
         </div>
 
-        <div className="chatseller-search">
+        <div className="clientmsg-search">
           <input
             type="text"
-            placeholder="Buscar conversa..."
+            placeholder="Buscar vendedor..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="chatseller-conversations">
+        <div className="clientmsg-conversations">
           {filteredConversations.length === 0 ? (
-            <div className="chatseller-empty-sidebar">
+            <div className="clientmsg-empty">
               <i className="fa-solid fa-comments"></i>
               <p>Nenhuma conversa ainda</p>
               <p style={{ fontSize: "12px" }}>
-                Quando clientes enviarem mensagens, elas aparecerao aqui
+                Inicie uma conversa pela pagina do produto
               </p>
             </div>
           ) : (
             filteredConversations.map((conv) => (
               <div
-                key={conv.clientId}
-                className={`chatseller-conversation-item ${
-                  activeChat === conv.clientId ? "active" : ""
-                }`}
+                key={conv.sellerId}
+                className={`clientmsg-item ${activeChat === conv.sellerId ? "active" : ""}`}
                 onClick={() =>
-                  openConversation(conv.clientId, conv.clientName, conv.clientImage)
+                  openConversation(conv.sellerId, conv.sellerName, conv.sellerImage)
                 }
               >
-                {conv.clientImage ? (
-                  <img
-                    src={conv.clientImage}
-                    alt={conv.clientName}
-                    className="chatseller-avatar"
-                  />
+                {conv.sellerImage ? (
+                  <img src={conv.sellerImage} alt={conv.sellerName} className="clientmsg-avatar" />
                 ) : (
-                  <div className="chatseller-avatar-placeholder">
-                    <i className="fa-solid fa-user"></i>
+                  <div className="clientmsg-avatar-placeholder">
+                    <i className="fa-solid fa-store"></i>
                   </div>
                 )}
 
-                <div className="chatseller-conversation-info">
-                  <div className="chatseller-conversation-top">
-                    <p className="chatseller-conversation-name">
-                      {conv.clientName}
-                    </p>
-                    <div className="chatseller-conversation-right">
+                <div className="clientmsg-info">
+                  <div className="clientmsg-top">
+                    <p className="clientmsg-name">{conv.sellerName}</p>
+                    <div className="clientmsg-right">
                       {conv.messageCount > 0 && (
-                        <div className="chatseller-badge">{conv.messageCount}</div>
+                        <div className="clientmsg-badge">{conv.messageCount}</div>
                       )}
-                      <span className="chatseller-conversation-time">
-                        {formatTime(conv.lastMessageTime)}
-                      </span>
+                      <span className="clientmsg-time">{formatTime(conv.lastMessageTime)}</span>
                     </div>
                   </div>
-                  <p className="chatseller-conversation-preview">
-                    {conv.lastMessage}
-                  </p>
+                  <p className="clientmsg-preview">{conv.lastMessage}</p>
                 </div>
-
-                
               </div>
             ))
           )}
         </div>
       </div>
 
-      {/* ====== AREA DO CHAT ====== */}
-      <div className={`chatseller-chat-area ${!mobileShowChat ? "hidden-mobile" : ""}`}>
+      {/* CHAT AREA */}
+      <div className={`clientmsg-chat ${!mobileShowChat ? "hidden-mobile" : ""}`}>
         {!activeChat ? (
-          <div className="chatseller-no-chat">
+          <div className="clientmsg-no-chat">
             <i className="fa-solid fa-comments"></i>
-            <h3>Chat do Vendedor</h3>
+            <h3>Minhas Mensagens</h3>
             <p>Selecione uma conversa para comecar</p>
           </div>
         ) : (
           <>
-            {/* Header do chat */}
-            <div className="chatseller-chat-header">
-              <button
-                className="chatseller-chat-back"
-                onClick={() => {
-                  setMobileShowChat(false);
-                  setActiveChat(null);
-                }}
-              >
+            <div className="clientmsg-chat-header">
+              <button className="clientmsg-back" onClick={() => { setMobileShowChat(false); setActiveChat(null); }}>
                 <i className="fa-solid fa-arrow-left"></i>
               </button>
 
               {activeImage ? (
-                <img
-                  src={activeImage}
-                  alt={activeName}
-                  className="chatseller-avatar"
-                />
+                <img src={activeImage} alt={activeName} className="clientmsg-avatar" />
               ) : (
-                <div className="chatseller-avatar-placeholder">
-                  <i className="fa-solid fa-user"></i>
+                <div className="clientmsg-avatar-placeholder">
+                  <i className="fa-solid fa-store"></i>
                 </div>
               )}
 
               <div>
-                <p className="chatseller-chat-header-name">{activeName}</p>
-                <p className="chatseller-chat-header-status">Cliente</p>
+                <p className="clientmsg-header-name">{activeName}</p>
+                <p className="clientmsg-header-status">Vendedor</p>
               </div>
             </div>
 
-            {/* Mensagens */}
-            <div className="chatseller-messages">
+            <div className="clientmsg-messages">
               {messages.length === 0 ? (
-                <div
-                  style={{
-                    textAlign: "center",
-                    color: "#667781",
-                    marginTop: "40px",
-                  }}
-                >
+                <div style={{ textAlign: "center", color: "#667781", marginTop: "40px" }}>
                   <p>Nenhuma mensagem ainda</p>
                 </div>
               ) : (
                 getMessagesWithDividers().map((item, i) => {
                   if (item.type === "divider") {
                     return (
-                      <div key={`div-${i}`} className="chatseller-date-divider">
+                      <div key={`div-${i}`} className="clientmsg-date-divider">
                         <span>{item.date}</span>
                       </div>
                     );
                   }
 
-                  const isSent = String(item.sender) === String(sellerId);
+                  const isSent = String(item.sender) === String(userId);
                   return (
                     <div
                       key={i}
-                      className={`chatseller-msg ${
-                        isSent ? "chatseller-msg-sent" : "chatseller-msg-received"
-                      }`}
+                      className={`clientmsg-msg ${isSent ? "clientmsg-msg-sent" : "clientmsg-msg-received"}`}
                     >
                       <p>{item.content}</p>
-                      <div className="chatseller-msg-time">
-                        {formatTime(item.createdAt)}
-                      </div>
+                      <div className="clientmsg-msg-time">{formatTime(item.createdAt)}</div>
                     </div>
                   );
                 })
@@ -348,8 +305,7 @@ const ChatSeller = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input de mensagem */}
-            <div className="chatseller-input-area">
+            <div className="clientmsg-input">
               <input
                 type="text"
                 placeholder="Digite uma mensagem..."
@@ -368,4 +324,4 @@ const ChatSeller = () => {
   );
 };
 
-export default ChatSeller;
+export default MinhasMensagens;

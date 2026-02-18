@@ -15,7 +15,7 @@ const Favorits = () => {
 
   return (
     <div className="favorits-container">
-      <h1><i className="fa-solid fa-heart" style={{color:'red'}}></i> Meus Favoritos</h1>
+      <h1><i className="fa-solid fa-heart mr-1" style={{color:'red'}}></i> Meus Favoritos</h1>
 
       {favProducts.length === 0 ? (
         <div className="favorits-empty">

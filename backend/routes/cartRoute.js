@@ -6,7 +6,8 @@ const { fetchUser } = require("../middlewares/auth");
 
 router.post('/addtocart', fetchUser, async (req, res) => {
   try {
-    const { itemId, size } = req.body;
+    const { itemId, size, quantity } = req.body;
+    const qty = Math.max(1, parseInt(quantity) || 1);
     if (!itemId || !size) return res.status(400).json({ success: false, message: "itemId e size são obrigatórios." });
 
     let user = await Users.findById(req.user.id);
@@ -16,7 +17,7 @@ router.post('/addtocart', fetchUser, async (req, res) => {
       cart[itemId] = {};
     }
 
-    cart[itemId][size] = (cart[itemId][size] || 0) + 1;
+    cart[itemId][size] = (cart[itemId][size] || 0) + qty;
 
     await Users.findByIdAndUpdate(req.user.id, { cartData: cart });
     res.json({ success: true, message: "Produto adicionado ao carrinho!" });

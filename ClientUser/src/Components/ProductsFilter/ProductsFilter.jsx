@@ -18,7 +18,7 @@ const ProductsFilter = () => {
               <Item key={i} 
                   id={item._id} 
                   name={item.name} 
-                  thumbnail={item.thumbnail}
+                  thumbnail={item.thumbnail || item.image}
                   current_price={item.current_price}
                   new_price={item.new_price}
                   old_price={item.old_price}

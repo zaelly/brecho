@@ -95,6 +95,12 @@ const Navbar = () => {
                       <p>Lista de Produtos</p>
                   </div>
                 </Link>
+                <Link to={'/admin/pdv'} style={{TextDecoderation: "none"}}>
+                  <div className="sidebar-item-mobile">
+                      <i className="fa-solid fa-basket-shopping"></i>
+                      <p>PDV</p>
+                  </div>
+                </Link>
                 <Link to={'/admin/neworder'} style={{TextDecoderation: "none"}}>
                   <div className="sidebar-item-mobile">
                       <i className="fa-solid fa-truck"></i>

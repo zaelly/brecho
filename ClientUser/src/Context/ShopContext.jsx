@@ -18,6 +18,8 @@ const ShopContextProvider = (props) => {
         cpf: '',
         adress: '',
         city: '',
+        cep: '',
+        state: '',
         gateways: [],
     });
 
@@ -145,6 +147,8 @@ const ShopContextProvider = (props) => {
             adress: data.data.adress,
             cpf: data.data.cpf,
             city: data.data.city,
+            cep: data.data.cep || '',
+            state: data.data.state || '',
             gateways: data.data.gateways || [],
         }));
         localStorage.setItem("users-id", usersId);
@@ -156,16 +160,16 @@ const ShopContextProvider = (props) => {
         }
     };
 
-    const addToCart = (itemId, size) => {
+    const addToCart = (itemId, size, quantity = 1) => {
         if(!size) {
             toast.warn("Selecione um tamanho primeiro!");
             return;
         }
-        
+
         const key = `${itemId}_${size}`;
         setCartItems(prev => ({
             ...prev,
-            [key]: (prev[key] || 0) + 1
+            [key]: (prev[key] || 0) + quantity
         }));
 
         if(localStorage.getItem('auth-token')){
@@ -174,9 +178,9 @@ const ShopContextProvider = (props) => {
                 headers: {
                     Accept:'application/form-data',
                     'auth-token': `${localStorage.getItem('auth-token')}`,
-                    'Content-Type': 'application/json' 
+                    'Content-Type': 'application/json'
                 },
-                body:JSON.stringify({itemId, size}),
+                body:JSON.stringify({itemId, size, quantity}),
             })
             .then((response)=>response.json())
             .then((data)=>{

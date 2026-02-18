@@ -43,6 +43,9 @@ const userSchema = new mongoose.Schema({
   cep:{
     type: String
   },
+  state:{
+    type: String
+  },
 });
 
 userSchema.index(

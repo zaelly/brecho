@@ -35,6 +35,12 @@ const Sidebar = () => {
                         <p>Lista de Produtos</p>
                     </div>
                 </Link>
+                <Link to={'/admin/pdv'} style={{TextDecoderation: "none"}}>
+                  <div className="sidebar-item">
+                      <i className="fa-solid fa-basket-shopping"></i>
+                      <p>PDV</p>
+                  </div>
+                </Link>
                 <Link to={'/admin/chatseller'} style={{TextDecoderation: "none"}}>
                     <div className="sidebar-item">
                         <i className="fa-regular fa-paper-plane"></i>

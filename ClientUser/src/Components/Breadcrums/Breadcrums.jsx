@@ -1,11 +1,12 @@
+import { Link } from 'react-router';
 import  './breadcrums.css'
 
 const Breadcrums = (props) => {
     const {product} = props;
   return (
     <div className='breadcrum'>
-        HOME <i className="fa-solid fa-arrow-right"></i> REVERTO 
-        <i className="fa-solid fa-arrow-right"></i> {product.category} 
+        Reverto <i className="fa-solid fa-arrow-right"></i> <Link to={"/"} style={{"textDecoration": "none"}}>Home</Link> 
+        <i className="fa-solid fa-arrow-right"></i> <Link to={`/${product.category}`} style={{"textDecoration": "none"}}>{product.category}</Link> 
         <i className="fa-solid fa-arrow-right"></i> {product.name}
     </div>
   )

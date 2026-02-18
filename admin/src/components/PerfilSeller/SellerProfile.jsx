@@ -12,6 +12,7 @@ const SellerProfile = () => {
   const url = import.meta.env.VITE_API_URL;
   const allProducts = allproducts.length;
   const [width, setWidth] = useState(window.innerWidth);
+  const [sellerRating, setSellerRating] = useState({ average: 0, total: 0 });
 
   const handleImage = (e) => {
     setImage(e.target.files[0]);
@@ -84,6 +85,25 @@ const SellerProfile = () => {
       .finally(() => setIsLoading(false)); // Stop loading
   };
 
+  const fetchSellerRating = async () => {
+      if (!profileDetail.id) return;
+      try {
+          const res = await fetch(`${url}/api/sellers/getratings/${profileDetail.id}`);
+          const data = await res.json();
+          if (data.success) {
+              setSellerRating({ average: data.average, total: data.total });
+          }
+      } catch (err) {
+          console.error("Erro ao buscar avaliacao do vendedor:", err);
+      }
+  };
+
+  useEffect(()=>{
+    console.log("ID DO SELLER:", profileDetail.id, profileDetail);
+    if(!profileDetail.id) return;
+    fetchSellerRating();
+  }, [profileDetail.id]);  
+  
   return (
     <div className="container-geral">
       <div className="container-config">
@@ -213,7 +233,7 @@ const SellerProfile = () => {
               <p>Popularidade:</p>
               <hr className='hr'></hr>
               <div className='group-box'>
-                <span>{profileDetail.stars || 0} </span>
+                <span>{sellerRating.average || 0} ({sellerRating.total || 0})</span>
                 <i className="fa-solid fa-star icon"></i>
               </div>
             </div>
@@ -225,15 +245,15 @@ const SellerProfile = () => {
                 <i className="fa-solid fa-boxes-stacked icon"></i>
               </div>
             </div>
-            <div className="vendas box">
+            {/* <div className="vendas box">
               <p>Vendas Completas:</p>
               <hr className='hr'></hr>
               <div className='group-box'>
-                {/* trocar para adicionar vendas */}
+                //trocar para adicionar vendas
                 <span>{allProducts || 0}</span>
                 <i className="fa-solid fa-cash-register icon"></i>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>    

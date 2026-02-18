@@ -24,9 +24,7 @@ const ProductDisplay = ({product, openChat}) => {
     const [myRating, setMyRating] = useState(0);
     const [myComment, setMyComment] = useState('');
     const [showRating, setShowRating] = useState(false);
-    
-    const itemId = "";
-    const size = "";
+    const [quantity, setQuantity] = useState(1);
 
     const fetchSeller = async () => {
         if (!sellerId) return;
@@ -39,12 +37,17 @@ const ProductDisplay = ({product, openChat}) => {
         }
     };
 
-    const removeQuantity = (itemId, size)=>{
-        console.log(itemId, size);
+    const removeQuantity = () => {
+        if (quantity > 1) setQuantity(prev => prev - 1);
     }
 
-    const addQuantity = (itemId, size)=>{
-        console.log(itemId, size); 
+    const addQuantity = () => {
+        const maxQty = product.unit || 99;
+        if (quantity < maxQty) {
+            setQuantity(prev => prev + 1);
+        } else {
+            toast.warn(`Maximo de ${maxQty} unidades disponiveis!`);
+        }
     }
 
     const fetchSellerRating = async () => {
@@ -259,9 +262,9 @@ const ProductDisplay = ({product, openChat}) => {
                 <div className="product-display-right-size">
                     <h2 className='tamanhos-h2'>Quantidade</h2>
                         <div className="QuantityItens">
-                            <button onClick={() => removeQuantity(itemId, size)}><i className="fa-solid fa-minus"></i></button>
-                                <input type="number" name="" id="" value="0" />
-                            <button onClick={()=> addQuantity(itemId, size)}><i className="fa-solid fa-plus"></i></button>
+                            <button onClick={removeQuantity}><i className="fa-solid fa-minus"></i></button>
+                                <input type="number" value={quantity} readOnly />
+                            <button onClick={addQuantity}><i className="fa-solid fa-plus"></i></button>
                         </div>
                 </div>
                 <div className="buttons">
@@ -270,7 +273,7 @@ const ProductDisplay = ({product, openChat}) => {
                             toast.warn("Selecione um tamanho!")
                             return;
                         }
-                        addToCart(product._id, selectedSize)
+                        addToCart(product._id, selectedSize, quantity)
                     }}>
                         <i className="fa-solid fa-cart-shopping"></i>
                         Add ao carrinho
